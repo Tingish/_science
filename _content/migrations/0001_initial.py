@@ -23,7 +23,7 @@ class Migration(SchemaMigration):
             ('lft', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
             ('rght', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
             ('tree_id', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
-            ('level', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
+            ('mptt_level', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
         ))
         db.send_create_signal(u'_content', ['StructureNode'])
 
@@ -114,8 +114,8 @@ class Migration(SchemaMigration):
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'isPublished': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'lft': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
+            'mptt_level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
             'parent': ('mptt.fields.TreeForeignKey', [], {'blank': 'True', 'related_name': "'children'", 'null': 'True', 'to': u"orm['_content.StructureNode']"}),
             'position': ('django.db.models.fields.PositiveIntegerField', [], {}),

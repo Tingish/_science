@@ -34,6 +34,10 @@ class StructureNode(MPTTModel):
     
     class Meta:
         unique_together = ('parent', 'position')
+        
+    class MPTTMeta:
+        level_attr = 'mptt_level'
+        order_insertion_by=['position']
 
 class Rating(models.Model):
     structureNode = models.OneToOneField(StructureNode, primary_key=True)
