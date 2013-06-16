@@ -132,10 +132,29 @@ INSTALLED_APPS = (
      'django.contrib.admindocs',
 	 'south',
      'mptt',
+     'registration',
      'homepage',
      '_content',
 )
+#Setting up user registration.
 
+#Uncomment the following for the live server.
+#ACCOUNT_ACTIVATION_DAYS=7
+#EMAIL_HOST='localhost'
+#EMAIL_PORT=1023
+#EMAIL_HOST_USER='username'
+#EMAIL_HOST_PASSWORD='password'
+
+#The following is only for the test server.
+# Before doing registration type the following: python -m smtpd -n -c DebuggingServer localhost:1025
+
+ACCOUNT_ACTIVATION_DAYS=7
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = 'testing@example.com'
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
