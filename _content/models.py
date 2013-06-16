@@ -13,6 +13,8 @@ class StructureNode(MPTTModel):
     author = models.ForeignKey(User, blank=True, null=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
     #setting up content
+    #If both content_type and id are null then it is a container node
+    #Otherwise it is a content node.
     #setting up relationships for multiple model types
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     #need to create a smarter object id that would work across object types.
@@ -52,7 +54,10 @@ class Paragraph(models.Model):
     text = models.TextField()
     
     def __str__(self):
-        return self.structureNode.title
+        if self.structureNode:
+            return self.structureNode.all()[0].title
+        
+        return "No Node"
     
 class Image(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
@@ -60,7 +65,10 @@ class Image(models.Model):
     localSource = models.FileField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
-        return self.structureNode.title
+        if self.structureNode:
+            return self.structureNode.all()[0].title
+        
+        return "No Node"
     
     def clean(self):
         from django.core.exceptions import ValidationError
@@ -75,7 +83,10 @@ class Timelike(models.Model):
     localSource = models.FileField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
-        return self.structureNode.title
+        if self.structureNode:
+            return self.structureNode.all()[0].title
+        
+        return "No Node"
     
     def clean(self):
         from django.core.exceptions import ValidationError
