@@ -132,6 +132,8 @@ INSTALLED_APPS = (
      'django.contrib.admindocs',
 	 'south',
      'mptt',
+     'homepage',
+     '_content',
 )
 
 # A sample logging configuration. The only tangible logging
