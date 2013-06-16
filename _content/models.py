@@ -58,8 +58,8 @@ class Paragraph(models.Model):
     text = models.TextField()
     
     def __str__(self):
-        if self.structureNode:
-            return self.structureNode.all()[0].title
+        if self.structureNode.order_by('pubDate').exists():
+            return self.structureNode.order_by('pubDate')[0].title
         
         return "No Node"
     
@@ -69,8 +69,8 @@ class Image(models.Model):
     localSource = models.FileField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
-        if self.structureNode:
-            return self.structureNode.all()[0].title
+        if self.structureNode.order_by('pubDate').exists():
+            return self.structureNode.order_by('pubDate').title
         
         return "No Node"
     
@@ -78,7 +78,7 @@ class Image(models.Model):
         from django.core.exceptions import ValidationError
         #allow only one source for video/audio
         
-        if (bool(self.linkSource) ^ bool(self.localSource)):
+        if not (not self.linkSource) ^ (not self.localSource):
             raise ValidationError('Please select exactly one source')
     
 class Timelike(models.Model):
@@ -87,8 +87,8 @@ class Timelike(models.Model):
     localSource = models.FileField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
-        if self.structureNode:
-            return self.structureNode.all()[0].title
+        if self.structureNode.order_by('pubDate').exists():
+            return self.structureNode.order_by('pubDate').title
         
         return "No Node"
     
@@ -96,7 +96,7 @@ class Timelike(models.Model):
         from django.core.exceptions import ValidationError
         #allow only one source for video/audio
         
-        if (bool(self.linkSource) ^ bool(self.localSource)):
+        if not (not self.linkSource) ^ (not self.localSource):
             raise ValidationError('Please select exactly one source')
     
     
