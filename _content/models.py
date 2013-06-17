@@ -27,7 +27,15 @@ class StructureNode(MPTTModel):
     def __str__(self):
         return '%i %i %i %s' % (self.pubDate.year, self.pubDate.month, self.pubDate.day, self.title)
     
+    #making a slug and creating ratings and views if it is an aritcle
     def save(self):
+        if not self.pk:
+            if (not self.content_type):
+                print(not self.content_type)
+                nodeRating = Rating(structureNode_id=self.id, rating = 1)
+                nodeViewCount = ViewCount(structureNode_id=self.id, viewCount= 1)
+                nodeRating.save()
+                nodeViewCount.save()
         super(StructureNode, self).save()
         self.slug = '%i/%i/%i/%s' % (self.pubDate.year, self.pubDate.month, self.pubDate.day, slugify(self.title))
         super(StructureNode, self).save()
@@ -70,7 +78,7 @@ class Image(models.Model):
     
     def __str__(self):
         if self.structureNode.order_by('pubDate').exists():
-            return self.structureNode.order_by('pubDate').title
+            return self.structureNode.order_by('pubDate')[0].title
         
         return "No Node"
     
@@ -88,7 +96,7 @@ class Timelike(models.Model):
     
     def __str__(self):
         if self.structureNode.order_by('pubDate').exists():
-            return self.structureNode.order_by('pubDate').title
+            return self.structureNode.order_by('pubDate')[0].title
         
         return "No Node"
     
