@@ -1,5 +1,5 @@
 from django.db import models
-from mptt.models import MPTTModel, TreeForeignKey
+from mptt.models import MPTTModel, TreeForeignKey, TreeOneToOneField
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -30,8 +30,7 @@ class StructureNode(MPTTModel):
     #making a slug and creating ratings and views if it is an aritcle
     def save(self):
         if not self.pk:
-            if (not self.content_type):
-                print(not self.content_type)
+            if (not self.object_id):
                 nodeRating = Rating(structureNode_id=self.id, rating = 1)
                 nodeViewCount = ViewCount(structureNode_id=self.id, viewCount= 1)
                 nodeRating.save()
@@ -48,14 +47,14 @@ class StructureNode(MPTTModel):
         order_insertion_by=['position']
 
 class Rating(models.Model):
-    structureNode = models.OneToOneField(StructureNode, primary_key=True)
+    structureNode = TreeOneToOneField(StructureNode, primary_key=True)
     rating = models.PositiveIntegerField()
     
     def __str__(self):
         return self.structureNode.title
     
 class ViewCount(models.Model):
-    structureNode = models.OneToOneField(StructureNode, primary_key=True)
+    structureNode = TreeOneToOneField(StructureNode, primary_key=True)
     viewCount = models.PositiveIntegerField()
     
     def __str__(self):
