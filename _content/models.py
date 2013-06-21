@@ -51,7 +51,7 @@ class StructureNode(MPTTModel):
                 nodeRating.save()
                 nodeViewCount.save()
         super(StructureNode, self).save()
-        if self.slug is None:
+        if self.slug is None or self.slug == "":
             # create a slug that's unique to siblings
             slug = slugify(self.title)
             self.slug = slug

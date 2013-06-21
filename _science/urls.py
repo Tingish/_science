@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     # Examples:
      url(r'^$', '_home.views.home', name='home'),
      url(r'^article/', include('_article.urls')),
+     url(r'^comment/', '_commentGarden.views.commentIndex', name='comment'),
     # url(r'^_science/', include('_science.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
