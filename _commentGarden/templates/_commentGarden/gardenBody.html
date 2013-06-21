@@ -1,7 +1,7 @@
 {% for Article in SubjectStream.article_set.all %}
 <div class="gardenPlant colour{{ SubjectStream.id }}">
 					
-					<h4>{{ Article.title }}</h4>
+					<h4>{{ StructureNode.title }}</h4>
 					<hr>
 					{% for comment in Article.sorted_comments_date %}
 					

@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 {% load mptt_tags %}
+
 {% block title %}
  Homepage
 {% endblock %}
+
 {% block head %}
 {% endblock %}
+
 {% block content %}
 <ul>
 	{% for StructureNode in top_article_list %}
