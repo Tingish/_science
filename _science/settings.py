@@ -135,6 +135,7 @@ INSTALLED_APPS = (
      'registration',
      'homepage',
      '_content',
+     '_article',
 )
 #Setting up user registration.
 

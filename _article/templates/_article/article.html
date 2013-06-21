@@ -10,10 +10,7 @@
 		         var time{{ Timelike.id }} = Popcorn.youtube(
 	           ".node{{ node.id }}video{{ node.content_object.id }}",
 	           "{{ node.content_object.linkSource }}" );
-	    {%  endif %}
-	    {% if not node.is_leaf_node %}
-	    	{{ children }}
-	    {% endif %}       
+	    {%  endif %}{% if not node.is_leaf_node %}{{ children }}{% endif %}  
 	{% endrecursetree %}
 		      });
 	    </script>
@@ -39,7 +36,7 @@
             		{% endif %}
             	{% elif node.isTypeTimelike %}   
             		This is a Timelike.
-            		{% if node.content_object.isLinkSource %}
+            		{% if not node.content_object.isLinkSource %}
             			This is from a link. <div class="node{{ node.id }}video{{ node.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
             		{% elif node.content_object.isLocalSource %}
             			This is local.

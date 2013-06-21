@@ -21,8 +21,22 @@ class StructureNode(MPTTModel):
     object_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = generic.GenericForeignKey()
     isPublished = models.BooleanField()
-    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    slug = models.SlugField(max_length=200, blank=True)
+    url = models.URLField(max_length=255, unique=True, blank=True)
     position = models.PositiveIntegerField()
+    
+    #These methods determine the content type of the node.
+    def isTypeNone(self):
+        return self.content_type == None
+    
+    def isTypeParagraph(self):
+        return self.content_type == ContentType.objects.get_for_model(Paragraph)
+    
+    def isTypeImage(self):
+        return self.content_type == ContentType.objects.get_for_model(Image)
+    
+    def isTypeTimelike(self):
+        return self.content_type == ContentType.objects.get_for_model(Timelike)
     
     def __str__(self):
         return '%i %i %i %s' % (self.pubDate.year, self.pubDate.month, self.pubDate.day, self.title)
@@ -37,7 +51,19 @@ class StructureNode(MPTTModel):
                 nodeRating.save()
                 nodeViewCount.save()
         super(StructureNode, self).save()
-        self.slug = '%i/%i/%i/%s' % (self.pubDate.year, self.pubDate.month, self.pubDate.day, slugify(self.title))
+        if self.slug is None:
+            # create a slug that's unique to siblings
+            slug = slugify(self.title)
+            self.slug = slug
+            siblings = self.get_siblings()
+            i = 1
+            while siblings.filter(slug=self.slug).exists():
+                i += 1
+                self.slug = slug + '-%d' % i
+        if self.parent:
+            self.url = '%s/%s' % (self.parent.url, self.slug)
+        else:
+            self.url = self.slug
         super(StructureNode, self).save()
     
     class Meta:
@@ -89,6 +115,14 @@ class Image(models.Model):
         if not (not self.linkSource) ^ (not self.localSource):
             raise ValidationError('Please select exactly one source')
     
+    #This is to determine the type of source    
+    def isLinkSource(self):
+        return not(not self.linkSource)
+    
+    def isLocalSource(self):
+        return not(not self.localSource)
+        
+    
 class Timelike(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
     linkSource = models.URLField(max_length=200, blank=True, null=True)
@@ -108,6 +142,12 @@ class Timelike(models.Model):
             raise ValidationError('Please select exactly one source')
     
     
+    #This is to determine the type of source
+    def isLinkSource(self):
+        return not(not self.linkSource)
+    
+    def isLocalSource(self):
+        return not(not self.localSource)
     
 
     

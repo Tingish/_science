@@ -1,6 +1,9 @@
 # Create your views here.
 from django.shortcuts import render
-from _content.models import StructureNode
+from _content.models import StructureNode, Timelike
+
 
 def home(request):
-    return render(request, 'homepage/home.html', {'nodes':StructureNode.tree.all()})
+    timelike_list = Timelike.objects.order_by('-id')
+    
+    return render(request, 'homepage/home.html', {'nodes':StructureNode.objects.all(), 'timelike_list':timelike_list})
