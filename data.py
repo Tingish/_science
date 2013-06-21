@@ -21,14 +21,16 @@ def DataTest(s, h, publish, words):
     print(numberOfExperiments)
     for x in range(1, numberOfExperiments+1):
         print(x)
-        tempExp = StructureNode(title=words + "experiment" + str(x), slug="experiment" + str(x),  isPublished=publish, position=x)
+        tempExp = StructureNode(title=words + "experiment" + str(x), slug=words + "experiment" + str(x),  isPublished=publish, position=x)
         tempExp.save()
         numberOfArticles = random.randint(1, 5)
         for y in range(1, numberOfArticles+1):
             tempArt = StructureNode(title= words + "experiment" + str(x)+"Article" + str(y), slug="article" + str(y), parent_id=tempExp.id, isPublished=publish, position=y)
             tempArt.save()
+            tempArt.rating.rating = random.randint(1,50)
+            tempArt.rating.save()
             numberOfSubparts = random.randint(1,10)
             for z in range(1, numberOfSubparts+1):
                 tempContent = StructureNode(title=words + "experiment" + str(x)+"Article" + str(y)+"Content" + str(z), slug="content" + str(z), parent_id=tempArt.id, content_type=GetObjectType(random.randint(1,3)), object_id = 1, isPublished=publish, position=z)
                 tempContent.save()
-DataTest(5,5, False, "test1")
+DataTest(5,5, True, "test1")

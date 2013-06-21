@@ -2,50 +2,12 @@
 {% load mptt_tags %}
 {% load staticfiles %}
 {% block head %}
-	<script src="{%	static 'popcorn/js/popcorn-complete.min.js' %}"></script>
-	<script type="text/javascript">    // ensure the web page (DOM) has loaded
-	      $(document).ready(function () {
-	{% recursetree nodes %}
-		{% if node.isTypeTimelike %}
-		         var time{{ Timelike.id }} = Popcorn.youtube(
-	           ".node{{ node.id }}video{{ node.content_object.id }}",
-	           "{{ node.content_object.linkSource }}" );
-	    {%  endif %}
-	    {% if not node.is_leaf_node %}
-	    	{{ children }}
-	    {% endif %}       
-	{% endrecursetree %}
-		      });
-	    </script>
+
 {% endblock %}
-{% block content %}<ul class="root">
-    {% recursetree nodes %}
-        <li>
-            {% if not node.is_leaf_node %}
-            {{ node.title }}
-                <ul class="children">
-                    {{ children }}
-                </ul>
-            {% else %}
-            	{% if node.isTypeParagraph %}
-            	   This is a Paragraph.
-            	   {{ node.content_object.text }}
-            	{% elif node.isTypeImage %}
-            		This is an Image.
-            		{% if node.content_object.isLinkSource %}
-            			This is from a link.
-            		{% elif node.content_object.isLocalSource %}
-            			This is local. <img src={{ node.content_object.localSource.url }} alt="" /> 
-            		{% endif %}
-            	{% elif node.isTypeTimelike %}   
-            		This is a Timelike.
-            		{% if node.content_object.isLinkSource %}
-            			This is from a link. <div class="node{{ node.id }}video{{ node.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
-            		{% elif node.content_object.isLocalSource %}
-            			This is local.
-            		{% endif %}
-            	{% endif %}  
-            {% endif %}
-        </li>
-    {% endrecursetree %}
-</ul>{% endblock %}
+{% block content %}
+<ul>
+	{% for StructureNode in top_article_list %}
+		<li>{{ StructureNode.title }} {{ StructureNode.rating.rating }}
+	{% endfor %}
+</ul>	
+{% endblock %}
