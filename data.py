@@ -60,5 +60,7 @@ def DataTestWithComments(h, words):
                     tempComment = StructureNode(title=words + "experiment" + str(x) + "Article" + str(y) + "Content" + str(z) + "Comment" + str(xx), parent_id=tempContent.id, content_type=GetObjectType(3), object_id = 1, isPublished=False, position=xx)
                     tempComment.save()
 
+# Need to add another feature to allow for multiple threads of comments and multiple responses to those comments.
+
 #DataTest(10, True, "test10")
 DataTestWithComments(5, "commenttest1")
