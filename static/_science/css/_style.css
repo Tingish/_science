@@ -10,3 +10,35 @@ body:after {
 body:after {
   clear: both;
 }
+.body {
+  margin: 0 auto;
+}
+.experimentTitle {
+  margin-right: 25.833333333333332%;
+}
+.articleContainer {
+  display: block;
+  width: 101.66666666666666%;
+  margin: 0 -0.8333333333333334%;
+  *zoom: 1;
+}
+.articleContainer:before,
+.articleContainer:after {
+  content: "";
+  display: table;
+}
+.articleContainer:after {
+  clear: both;
+}
+.articleContainer .articleMeta {
+  display: inline;
+  float: left;
+  width: 23.333333333333332%;
+  margin: 0 0.8333333333333334%;
+}
+.articleContainer .articleContent {
+  display: inline;
+  float: left;
+  width: 73.33333333333333%;
+  margin: 0 0.8333333333333334%;
+}
