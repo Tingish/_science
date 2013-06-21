@@ -4,6 +4,7 @@ from _content.models import StructureNode, Timelike
 
 
 def home(request):
-    timelike_list = Timelike.objects.order_by('-id')
+    top_article_list = StructureNode.objects.exclude(rating__isnull=True).order_by('-rating__rating')
     
-    return render(request, 'homepage/home.html', {'nodes':StructureNode.objects.all(), 'timelike_list':timelike_list})
+    
+    return render(request, 'homepage/home.html', {'top_article_list':top_article_list})

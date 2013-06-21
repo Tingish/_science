@@ -36,7 +36,7 @@
             		{% endif %}
             	{% elif node.isTypeTimelike %}   
             		This is a Timelike.
-            		{% if not node.content_object.isLinkSource %}
+            		{% if node.content_object.isLinkSource %}
             			This is from a link. <div class="node{{ node.id }}video{{ node.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
             		{% elif node.content_object.isLocalSource %}
             			This is local.
