@@ -1,5 +1,5 @@
 from django.db import models
-from mptt.models import MPTTModel, TreeForeignKey
+from mptt.models import MPTTModel, TreeForeignKey, TreeOneToOneField
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -13,6 +13,8 @@ class StructureNode(MPTTModel):
     author = models.ForeignKey(User, blank=True, null=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
     #setting up content
+    #If both content_type and id are null then it is a container node
+    #Otherwise it is a content node.
     #setting up relationships for multiple model types
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     #need to create a smarter object id that would work across object types.
@@ -25,23 +27,35 @@ class StructureNode(MPTTModel):
     def __str__(self):
         return '%i %i %i %s' % (self.pubDate.year, self.pubDate.month, self.pubDate.day, self.title)
     
+    #making a slug and creating ratings and views if it is an aritcle
     def save(self):
+        if not self.pk:
+            super(StructureNode, self).save()
+            if (not self.content_type):
+                nodeRating = Rating(structureNode_id=self.id, rating = 1)
+                nodeViewCount = ViewCount(structureNode_id=self.id, viewCount= 1)
+                nodeRating.save()
+                nodeViewCount.save()
         super(StructureNode, self).save()
         self.slug = '%i/%i/%i/%s' % (self.pubDate.year, self.pubDate.month, self.pubDate.day, slugify(self.title))
         super(StructureNode, self).save()
     
     class Meta:
         unique_together = ('parent', 'position')
+        
+    class MPTTMeta:
+        level_attr = 'mptt_level'
+        order_insertion_by=['position']
 
 class Rating(models.Model):
-    structureNode = models.OneToOneField(StructureNode, primary_key=True)
+    structureNode = TreeOneToOneField(StructureNode)
     rating = models.PositiveIntegerField()
     
     def __str__(self):
         return self.structureNode.title
     
 class ViewCount(models.Model):
-    structureNode = models.OneToOneField(StructureNode, primary_key=True)
+    structureNode = TreeOneToOneField(StructureNode)
     viewCount = models.PositiveIntegerField()
     
     def __str__(self):
@@ -52,7 +66,10 @@ class Paragraph(models.Model):
     text = models.TextField()
     
     def __str__(self):
-        return self.structureNode.title
+        if self.structureNode.order_by('pubDate').exists():
+            return self.structureNode.order_by('pubDate')[0].title
+        
+        return "No Node"
     
 class Image(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
@@ -60,13 +77,16 @@ class Image(models.Model):
     localSource = models.FileField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
-        return self.structureNode.title
+        if self.structureNode.order_by('pubDate').exists():
+            return self.structureNode.order_by('pubDate')[0].title
+        
+        return "No Node"
     
     def clean(self):
         from django.core.exceptions import ValidationError
         #allow only one source for video/audio
         
-        if (bool(self.linkSource) ^ bool(self.localSource)):
+        if not (not self.linkSource) ^ (not self.localSource):
             raise ValidationError('Please select exactly one source')
     
 class Timelike(models.Model):
@@ -75,13 +95,16 @@ class Timelike(models.Model):
     localSource = models.FileField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
-        return self.structureNode.title
+        if self.structureNode.order_by('pubDate').exists():
+            return self.structureNode.order_by('pubDate')[0].title
+        
+        return "No Node"
     
     def clean(self):
         from django.core.exceptions import ValidationError
         #allow only one source for video/audio
         
-        if (bool(self.linkSource) ^ bool(self.localSource)):
+        if not (not self.linkSource) ^ (not self.localSource):
             raise ValidationError('Please select exactly one source')
     
     
