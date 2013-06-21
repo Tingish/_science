@@ -15,34 +15,50 @@
 		      });
 	    </script>
 {% endblock %}
-{% block content %}<ul class="root">
+{% block content %}
     {% recursetree nodes %}
-        <li>
-            {% if not node.is_leaf_node %}
-            {{ node.title }}
-                <ul class="children">
-                    {{ children }}
-                </ul>
-            {% else %}
-            	{% if node.isTypeParagraph %}
-            	   This is a Paragraph.
-            	   {{ node.content_object.text }}
-            	{% elif node.isTypeImage %}
-            		This is an Image.
-            		{% if node.content_object.isLinkSource %}
-            			This is from a link.
-            		{% elif node.content_object.isLocalSource %}
-            			This is local. <img src={{ node.content_object.localSource.url }} alt="" /> 
-            		{% endif %}
-            	{% elif node.isTypeTimelike %}   
-            		This is a Timelike.
-            		{% if node.content_object.isLinkSource %}
-            			This is from a link. <div class="node{{ node.id }}video{{ node.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
-            		{% elif node.content_object.isLocalSource %}
-            			This is local.
-            		{% endif %}
-            	{% endif %}  
-            {% endif %}
-        </li>
+		{% if node.is_root_node %}
+		<div class="experimentTitle"><h1>{{ node.title }}</h1></div>
+			{% if not node.is_leaf_node %}
+				{{ children }}
+			{% endif %}
+		{% endif %}
+			{% if node.isTypeNone and node.isPublished == True and not node.is_root_node %}
+				<div class='articleCont'>
+					<div class='articleMeta'>
+						<h5>{{node.pubDate|date}}</h5>
+						<h5>{{node.title}}</h5>
+						{% if node.author %}
+						<h5>{{node.author.name}}</h5>
+						{% endif %}
+					</div>
+					
+						{% if not node.is_leaf_node %}
+							<div class='articleContent'>
+	        				{{ children }}
+	        				</div>
+	        			{% endif %}
+	        		
+	        	</div>		
+	    	{% elif node.isTypeParagraph and node.isPublished == True and not node.is_root_node %}       
+	        	   <p>This is a Paragraph.
+	        	   {{ node.content_object.text }}</p>
+	    	{% elif node.isTypeImage and node.isPublished == True and not node.is_root_node %}
+	    		<p>This is an Image.</p>
+	    		{% if node.content_object.isLinkSource and node.isPublished == True %}
+	    			<p>This is from a link.</p>
+	    		{% elif node.content_object.isLocalSource and node.isPublished == True %}
+	    			<p>This is local.</p> <img src={{ node.content_object.localSource.url }} alt="" /> 
+	    		{% endif %}
+	    	{% elif node.isTypeTimelike and node.isPublished == True and not node.is_root_node %}   
+	    		<p>This is a Timelike.</p>
+	    		{% if not node.content_object.isLinkSource and node.isPublished == True and not node.is_root_node %}
+	    			<p>This is from a link.</p> <div class="node{{ node.id }}video{{ node.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
+	    		{% elif node.content_object.isLocalSource and node.isPublished == True and not node.is_root_node %}
+	    			<p>This is local.</p>
+	    		{% endif %}
+	    	{% endif %} 
+
+
     {% endrecursetree %}
-</ul>{% endblock %}
+{% endblock %}
