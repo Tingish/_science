@@ -7,4 +7,4 @@ def home(request):
     top_article_list = StructureNode.objects.exclude(rating__isnull=True).order_by('-rating__rating')
     
     
-    return render(request, 'homepage/home.html', {'top_article_list':top_article_list})
+    return render(request, '_home/home.html', {'top_article_list':top_article_list})

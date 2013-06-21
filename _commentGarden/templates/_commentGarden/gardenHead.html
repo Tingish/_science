@@ -1,0 +1,12 @@
+{% load staticfiles %}
+ <script src="{% static 'html5test/js/jquery.masonry.min.js' %}"></script>
+ <script type="text/javascript">
+ 	$(document).ready(function(){
+ 		$(".gardenPlot").masonry({
+ 			columnWidth : function(){ return $(".gardenPlot").width()} ,
+ 			itemselector : ".gardenPlant",
+ 			isAnimated:true,
+ 			
+ 		});
+ 	});
+ </script>

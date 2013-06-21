@@ -133,9 +133,10 @@ INSTALLED_APPS = (
 	 'south',
      'mptt',
      'registration',
-     'homepage',
+     '_home',
      '_content',
      '_article',
+     '_commentGarden',
 )
 #Setting up user registration.
 

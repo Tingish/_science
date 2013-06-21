@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load mptt_tags %}
+{% load staticfiles %}
+{% block title %}
+ Comments
+{% endblock %}
+{% block head %}
+	{% include "_commentGarden/gardenHead.html" %}
+{% endblock %}
+{% block content %}
+	{% if comment_list %}
+		<div class="container">
+			<div class="row">
+				
+						
+						{% for SubjectStream  in comment_list %}
+						<div class="category colour{{ SubjectStream.id }} span3"><h3>{{ SubjectStream.title }}</h3></div>								
+						{% endfor %}
+					
+				
+			</div>
+		
+		<div class="row push">
+
+				{% for SubjectStream  in comment_list %}
+					<div class="gardenplot span3">
+					{% include "_commentGarden/gardenBody.html" %}
+					</div>
+				{% endfor %}
+					
+		</div>
+		</div>	
+	{% endif %}
+{% endblock %}
+
