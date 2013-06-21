@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% load mptt_tags %}
+{% block title %}
+ Homepage
+{% endblock %}
+{% block head %}
+<<<<<<< HEAD
+{% endblock %}
 {% block content %}<ul class="root">
     {% recursetree nodes %}
         <li>
@@ -11,4 +17,31 @@
             {% endif %}
         </li>
     {% endrecursetree %}
-</ul>{% endblock %}
+</ul>
+
+<!-- Find FEATURED -->
+	<!-- I need a code to find the 5 most recent updates -->
+
+	<!-- I need a code to find the 5 best rated updates. -->
+
+
+
+<!-- Display NAVBAR -->
+
+
+<!-- Display FEATURED -->
+
+
+<!-- Display 
+{% endblock %}
+=======
+
+{% endblock %}
+{% block content %}
+<ul>
+	{% for StructureNode in top_article_list %}
+		<li>{{ StructureNode.title }} {{ StructureNode.rating.rating }}
+	{% endfor %}
+</ul>	
+{% endblock %}
+>>>>>>> 239f8caaf515e3802c69d919ccc8d51cd870ac45
