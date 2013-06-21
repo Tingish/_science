@@ -10,8 +10,11 @@ body:after {
 body:after {
   clear: both;
 }
+.body {
+  margin: 0 auto;
+}
 .experimentTitle {
-  margin-right: 42.50000000000001%;
+  margin-right: 25.833333333333332%;
 }
 .articleContainer {
   display: block;
