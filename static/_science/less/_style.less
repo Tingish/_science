@@ -1,27 +1,40 @@
+
 @import 'grid.less';
 @import 'lesshat.less';
 
-@column-width: 80;
-@gutter_width: 80-@column-width;
+
+
+@column-width: 60;
+@gutter_width: 20;
 @columns: 12;
 
 @total-width: 100%;
 
-.body{
+body {
+} 
+
+.center {
+  width: 80%;
+  margin: 0px auto:
+  *zoom: 1;
+  float: none;
+  display:block;
 }
 
+
+
 .experimentTitle {
-  .pull(3);  
+  .push(5);  
 }
 
 .articleContainer {
   .row(12);
   
   .articleMeta{
-    .column(3);
+    .column(4);
   }
   .articleContent{
-    .column(9);
+    .column(8);
   }
 }
 

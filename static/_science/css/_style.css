@@ -10,16 +10,21 @@ body:after {
 body:after {
   clear: both;
 }
-.body {
-  margin: 0 auto;
+.center {
+  width: 80%;
+  margin-right: auto;
+  margin-left: auto;
+  *zoom: 1;
+  float: none;
+  display: block;
 }
 .experimentTitle {
-  margin-right: 25.833333333333332%;
+  margin-left: 42.708333333333336%;
 }
 .articleContainer {
   display: block;
-  width: 101.66666666666666%;
-  margin: 0 -0.8333333333333334%;
+  width: 102.08333333333333%;
+  margin: 0 -1.0416666666666665%;
   *zoom: 1;
 }
 .articleContainer:before,
@@ -33,12 +38,12 @@ body:after {
 .articleContainer .articleMeta {
   display: inline;
   float: left;
-  width: 23.333333333333332%;
-  margin: 0 0.8333333333333334%;
+  width: 31.25%;
+  margin: 0 1.0416666666666665%;
 }
 .articleContainer .articleContent {
   display: inline;
   float: left;
-  width: 73.33333333333333%;
-  margin: 0 0.8333333333333334%;
+  width: 64.58333333333334%;
+  margin: 0 1.0416666666666665%;
 }

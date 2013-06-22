@@ -16,6 +16,7 @@
 	    </script>
 {% endblock %}
 {% block content %}
+	<div class="center">
     {% recursetree nodes %}
 		{% if node.is_root_node %}
 		<div class="experimentTitle"><h1>{{ node.title }}</h1></div>
@@ -58,7 +59,7 @@
 	    			<p>This is local.</p>
 	    		{% endif %}
 	    	{% endif %} 
-
-
+	
     {% endrecursetree %}
+	</div>
 {% endblock %}
