@@ -33,4 +33,36 @@ def DataTest(s, h, publish, words):
             for z in range(1, numberOfSubparts+1):
                 tempContent = StructureNode(title=words + "experiment" + str(x)+"Article" + str(y)+"Content" + str(z), slug="content" + str(z), parent_id=tempArt.id, content_type=GetObjectType(random.randint(1,3)), object_id = 1, isPublished=publish, position=z)
                 tempContent.save()
+
 DataTest(5,5, True, "test3")
+
+def DataTestWithComments(h, words):
+    numberOfExperiments = random.randint(1, h)
+    print(numberOfExperiments)
+    for x in range(1, numberOfExperiments+1):
+        print("x=" + str(x))
+        tempExp = StructureNode(title=words + "experiment" + str(x), slug=words + "experiment" + str(x),  isPublished=True, position=x)
+        tempExp.save()
+        numberOfArticles = random.randint(1, 5)
+        for y in range(1, numberOfArticles+1):
+            print("y=" + str(y))
+            tempArt = StructureNode(title= words + "experiment" + str(x)+"Article" + str(y), parent_id=tempExp.id, isPublished=True, position=y)
+            tempArt.save()
+            tempArt.rating.rating = random.randint(1,50)
+            tempArt.rating.save()
+            numberOfSubparts = random.randint(1,10)
+            for z in range(1, numberOfSubparts+1):
+                print("z=" + str(z))
+                tempContent = StructureNode(title=words + "experiment" + str(x)+"Article" + str(y)+"Content" + str(z), parent_id=tempArt.id, content_type=GetObjectType(random.randint(1,3)), object_id = 1, isPublished=True, position=z)
+                tempContent.save()
+                numberofComments = random.randint(1,5)
+                for xx in range(1, numberofComments+1):
+                    print("xx=" + str(xx))
+                    tempComment = StructureNode(title=words + "experiment" + str(x) + "Article" + str(y) + "Content" + str(z) + "Comment" + str(xx), parent_id=tempContent.id, content_type=GetObjectType(3), object_id = 1, isPublished=False, position=xx)
+                    tempComment.save()
+
+# Need to add another feature to allow for multiple threads of comments and multiple responses to those comments.
+
+#DataTest(10, True, "test10")
+DataTestWithComments(5, "commenttest1")
+
