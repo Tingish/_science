@@ -1,4 +1,4 @@
-
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 @import 'grid.less';
 @import 'lesshat.less';
 
@@ -11,30 +11,68 @@
 @total-width: 100%;
 
 body {
+   font-family: 'Open Sans', sans-serif;
+   font-weight: 300;
 } 
+
+img {
+  height: auto;
+  vertical-align:middle;
+  border: 0;
+}
 
 .center {
   width: 80%;
-  margin: 0px auto:
+  margin: 0 auto;
   *zoom: 1;
   float: none;
   display:block;
 }
 
-
+.contentContainerImage {
+  margin-left: -20px;
+  list-style: none;
+  *zoom: 1;
+  
+  display: block;
+  padding: 4px;
+  line-height: 20px;
+  border: 1px solid #ddd;
+  .border-radius(4px);
+  .box-shadow(0 1px 3px rgba(0,0,0, 0.055););
+  .transition(all 0.2s ease-in-out);
+  
+  > img {
+    display: block;
+    max-width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  
+  &:before, &:after {
+    display: table;
+    line-height: 0;
+    content: "";  
+  }
+  
+  &:after {
+     clear: both;
+  }
+}
 
 .experimentTitle {
-  .push(5);  
+ 
 }
 
 .articleContainer {
   .row(12);
   
   .articleMeta{
-    .column(4);
+    .column(3);
   }
   .articleContent{
-    .column(8);
+    .column(9);
+    max-width: 720px;
   }
 }
 
