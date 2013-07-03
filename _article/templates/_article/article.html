@@ -74,8 +74,8 @@
     <div class="stickyCommentBox">HERE BEGINS THE COMMENTS
     {% recursetree nodes %}
      		{% if node.isTypeNone and node.isPublished == False and not node.is_root_node %}
-				<div class='articleContainer {{ node.slug }}'>
-					<div class='articleMeta'>
+				<div class='commentContainer {{ node.slug }}'>
+					<div class='commentMeta'>
 						<h5>{{node.pubDate|date}}</h5>
 						<h5>{{node.title}}</h5>
 						{% if node.author %}
@@ -84,14 +84,14 @@
 					</div>
 					
 						{% if not node.is_leaf_node %}
-							<div class='articleContent'>
+							<div class='commentContent'>
 	        				{{ children }}
 	        				</div>
 	        			{% endif %}
 	        		
 	        	</div>		
 	    	{% elif node.isTypeParagraph and node.isPublished == False and not node.is_root_node %}
-	    		<div class='contentContainer {{ node.slug }}'>       
+	    		<div class='contentContainerParagragh {{ node.slug }}'>       
 	        	   <p>This is a Paragraph.
 	        	   {{ node.content_object.text }}</p>
 	        	</div>
@@ -105,7 +105,7 @@
 		    		{% endif %}
 		    	
 	    	{% elif node.isTypeTimelike and node.isPublished == False and not node.is_root_node %}
-	    		<div class='contentContainer {{ node.slug }}'> 	  
+	    		<div class='contentContainerTimelike {{ node.slug }}'> 	  
 		    		<p>This is a Timelike.</p>
 		    		{% if not node.content_object.isLinkSource and node.isPublished == False and not node.is_root_node %}
 		    			<p>This is from a link.</p> <div class="node{{ node.id }}video{{ node.content_object.id }}"  style="width: 360px; height: 300px;" ></div>

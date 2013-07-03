@@ -12,7 +12,7 @@ body:after {
   clear: both;
 }
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans';
   font-weight: 300;
 }
 img {
@@ -68,8 +68,8 @@ img {
 }
 .articleContainer {
   display: block;
-  width: 102.08333333333333%;
-  margin: 0 -1.0416666666666665%;
+  width: 101.66666666666666%;
+  margin: 0 -0.8333333333333334%;
   *zoom: 1;
 }
 .articleContainer:before,
@@ -83,31 +83,176 @@ img {
 .articleContainer .articleMeta {
   display: inline;
   float: left;
-  width: 22.916666666666664%;
-  margin: 0 1.0416666666666665%;
+  width: 23.333333333333332%;
+  margin: 0 0.8333333333333334%;
 }
 .articleContainer .articleContent {
   display: inline;
   float: left;
-  width: 72.91666666666666%;
-  margin: 0 1.0416666666666665%;
+  width: 73.33333333333333%;
+  margin: 0 0.8333333333333334%;
   max-width: 720px;
 }
 @media screen and (max-width: 960px) {
   .articleContainer .articleMeta {
     display: inline;
     float: left;
-    width: 97.91666666666666%;
-    margin: 0 1.0416666666666665%;
+    width: 98.33333333333333%;
+    margin: 0 0.8333333333333334%;
   }
   .articleContainer .articleContent {
     display: inline;
     float: left;
-    width: 97.91666666666666%;
-    margin: 0 1.0416666666666665%;
+    width: 98.33333333333333%;
+    margin: 0 0.8333333333333334%;
   }
+}
+.articlePreviewList {
+  width: 80%;
+  margin: 0 auto;
+  *zoom: 1;
+  float: none;
+  display: block;
+  max-width: 960px;
+}
+.articlePreviewList .articlePreviewContainer {
+  display: block;
+  width: 101.66666666666666%;
+  margin: 0 -0.8333333333333334%;
+  *zoom: 1;
+}
+.articlePreviewList .articlePreviewContainer:before,
+.articlePreviewList .articlePreviewContainer:after {
+  content: "";
+  display: table;
+}
+.articlePreviewList .articlePreviewContainer:after {
+  clear: both;
+}
+.articlePreviewList .articlePreviewContainer .previewThumbnail {
+  display: inline;
+  float: left;
+  width: 15%;
+  margin: 0 0.8333333333333334%;
+}
+.articlePreviewList .articlePreviewContainer .previewParagraphWImage {
+  display: inline;
+  float: left;
+  width: 81.66666666666667%;
+  margin: 0 0.8333333333333334%;
+}
+.articlePreviewList .articlePreviewContainer .previewPragraph {
+  display: inline;
+  float: left;
+  width: 98.33333333333333%;
+  margin: 0 0.8333333333333334%;
+}
+@media screen and (max-width: 480px) {
+  .articlePreviewList .articlePreviewContainer .previewThumbnail {
+    display: inline;
+    float: left;
+    width: 98.33333333333333%;
+    margin: 0 0.8333333333333334%;
+  }
+  .articlePreviewList .articlePreviewContainer .previewParagraphWImage {
+    display: inline;
+    float: left;
+    width: 98.33333333333333%;
+    margin: 0 0.8333333333333334%;
+  }
+  .articlePreviewList .articlePreviewContainer .previewPragraph {
+    display: inline;
+    float: left;
+    width: 98.33333333333333%;
+    margin: 0 0.8333333333333334%;
+  }
+}
+.heroUnit {
+  height: 0;
+  padding-bottom: 30%;
+  border: 1px solid;
+  width: 80%;
+  margin: 0 auto;
+  *zoom: 1;
+  float: none;
+  display: block;
 }
 .stickyCommentBox.stuck {
   position: fixed;
   top: 0;
+}
+.commentContainer {
+  display: block;
+  width: 101.66666666666666%;
+  margin: 0 -0.8333333333333334%;
+  *zoom: 1;
+  border: 1px solid #ddd;
+}
+.commentContainer:before,
+.commentContainer:after {
+  content: "";
+  display: table;
+}
+.commentContainer:after {
+  clear: both;
+}
+.commentContainer .commentMeta {
+  display: inline;
+  float: left;
+  width: 23.333333333333332%;
+  margin: 0 0.8333333333333334%;
+}
+.commentContainer .commentContent {
+  display: inline;
+  float: left;
+  width: 73.33333333333333%;
+  margin: 0 0.8333333333333334%;
+  border-left: 1px solid #ddd;
+  max-width: 720px;
+}
+@media screen and (max-width: 960px) {
+  .commentContainer {
+    border: 0px;
+  }
+  .commentContainer .commentMeta {
+    display: inline;
+    float: left;
+    width: 98.33333333333333%;
+    margin: 0 0.8333333333333334%;
+    border: 1px solid #ddd;
+  }
+  .commentContainer .commentContent {
+    display: inline;
+    float: left;
+    width: 98.33333333333333%;
+    margin: 0 0.8333333333333334%;
+    border: 1px solid #ddd;
+  }
+}
+.commentFlowerContainer {
+  border: 0px;
+  width: 25%;
+  min-width: 320px;
+  display: block;
+}
+.commentFlowerContainer .commentFlowerMeta {
+  display: inline;
+  float: left;
+  width: 98.33333333333333%;
+  margin: 0 0.8333333333333334%;
+  border: 1px solid #ddd;
+}
+.commentFlowerContainer .commentFlowerContent {
+  display: inline;
+  float: left;
+  width: 98.33333333333333%;
+  margin: 0 0.8333333333333334%;
+  border: 1px solid #ddd;
+}
+.gardenPlot {
+  width: 80%;
+  margin: 0 auto;
+  *zoom: 1;
+  float: none;
+  display: block;
 }

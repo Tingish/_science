@@ -38,6 +38,36 @@ class StructureNode(MPTTModel):
     def isTypeTimelike(self):
         return self.content_type == ContentType.objects.get_for_model(Timelike)
     
+    def getNearestAbstractParagraph(self):
+        if self.isTypeParagraph():
+            return self.content_object.text
+        else:
+            for child in self.get_descendants():
+                if child.isTypeParagraph():
+                    return child.content_object.text
+                    break
+            for predecessor in self.get_ancestors():
+                if predecessor.isTypeParagraph():
+                    return predecessor.content_object.text
+                    break
+            else:
+                return "NO PARAGRAPHS ANYWHERE!"
+            
+    def getNearestAbstractImage(self):
+        if self.isTypeImage():
+            return self.content_object
+        else:
+            for child in self.get_descendants():
+                if child.isTypeImage():
+                    return child.content_object
+                    break
+            for predecessor in self.get_ancestors():
+                if predecessor.isTypeImage():
+                    return predecessor.content_object
+                    break
+            else:
+                return False
+                
     def __str__(self):
         return '%i %i %i %s' % (self.pubDate.year, self.pubDate.month, self.pubDate.day, self.title)
     
