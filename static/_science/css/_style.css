@@ -1,4 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
+
+@import url(http://fonts.googleapis.com/css?family=Inconsolata);
 body {
   width: 100%;
   *zoom: 1;
@@ -255,4 +257,88 @@ img {
   *zoom: 1;
   float: none;
   display: block;
+}
+.header {
+  display: block;
+  width: 101.66666666666666%;
+  margin: 0 -0.8333333333333334%;
+  *zoom: 1;
+  height: 150px;
+}
+.header:before,
+.header:after {
+  content: "";
+  display: table;
+}
+.header:after {
+  clear: both;
+}
+.header .motto {
+  float: left;
+  width: 23.333333333333332%;
+  margin: 0 0.8333333333333334%;
+  text-align: right;
+  font-size: 150px;
+  line-height: 150px;
+  display: inline;
+  font-family: 'Inconsolata', sans-serif;
+}
+.header .navbarContainer {
+  display: inline;
+  float: left;
+  width: 73.33333333333333%;
+  margin: 0 0.8333333333333334%;
+}
+.header .navbarContainer nav {
+  display: block;
+  width: 102.22222222222221%;
+  margin: 0 -1.1111111111111112%;
+  *zoom: 1;
+  height: 30px;
+}
+.header .navbarContainer nav:before,
+.header .navbarContainer nav:after {
+  content: "";
+  display: table;
+}
+.header .navbarContainer nav:after {
+  clear: both;
+}
+.header .navbarContainer nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.header .navbarContainer nav ul li {
+  display: inline;
+}
+.header .navbarContainer .leaderboard {
+  display: block;
+  width: 102.22222222222221%;
+  margin: 0 -1.1111111111111112%;
+  *zoom: 1;
+  height: 90px;
+}
+.header .navbarContainer .leaderboard:before,
+.header .navbarContainer .leaderboard:after {
+  content: "";
+  display: table;
+}
+.header .navbarContainer .leaderboard:after {
+  clear: both;
+}
+.header .navbarContainer .words {
+  display: block;
+  width: 102.22222222222221%;
+  margin: 0 -1.1111111111111112%;
+  *zoom: 1;
+  height: 30px;
+}
+.header .navbarContainer .words:before,
+.header .navbarContainer .words:after {
+  content: "";
+  display: table;
+}
+.header .navbarContainer .words:after {
+  clear: both;
 }

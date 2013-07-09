@@ -1,4 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
+@import url(http://fonts.googleapis.com/css?family=Inconsolata);
 @import 'grid.less';
 @import 'lesshat.less';
 
@@ -12,6 +13,7 @@
 
 body {
    font-family: 'Open Sans';
+   
    font-weight: 300;
 } 
 
@@ -199,4 +201,46 @@ img {
 
 .gardenPlot {
   .center;
+}
+
+footer {
+  
+}
+
+.header {
+  .row(12);
+  height: 150px;
+  .motto {
+    .column(3);
+    text-align: right;
+    font-size: 150px;
+    line-height: 150px;
+    display: inline;
+    font-family: 'Inconsolata', sans-serif;
+  }
+  .navbarContainer {
+    .column(9);
+    nav {
+      .row(9);
+      height: 30px;
+      ul {
+        list-style-type:none;
+        margin:0;
+        padding:0;
+        li {
+          display: inline;
+        } 
+      }
+    }
+    
+    .leaderboard {
+      .row(9);
+      height: 90px;
+    }
+    
+    .words {
+      .row(9);
+      height: 30px;
+    }
+  }
 }
