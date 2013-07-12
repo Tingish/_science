@@ -178,7 +178,13 @@ class Timelike(models.Model):
     
     def isLocalSource(self):
         return not(not self.localSource)
-    
 
+#These are tags to organize nodes by subject type.    
+class tag(models.Model):
+    name = models.CharField(max_length=200)
+    nodes = models.ManyToManyField(StructureNode)
+    
+    def __str__(self):
+        return self.name
     
     
