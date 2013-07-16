@@ -12,11 +12,11 @@
 		<nav>
 			<div class="navcontainer">
 				<ul>
-					<li><a href={% url "home" %}>Home</a></li>  
-			        <li><a href="#">Physics</a></li>  
-			        <li><a href="#">Chemistry</a></li>  
-			        <li><a href="#">Biology</a></li>  
-			        <li><a href="#">Forum</a></li> 
+					<li><a href='{% url "home" %}'>Home</a></li>  
+			        <li><a href='{% url "subject" "physics" %}'>Physics</a></li>  
+			        <li><a href='{% url "subject" "chemistry" %}'>Chemistry</a></li>  
+			        <li><a href='{% url "subject" "biology" %}'>Biology</a></li>  
+			        <li><a href='{% url "comment" %}'>Forum</a></li> 
 				</ul>
 			</div>
 		</nav>
