@@ -11,6 +11,11 @@
 
 @total-width: 100%;
 
+* {
+  .box-sizing(border-box);
+  -webkit-font-smoothing: antialiased;
+}
+
 body {
    font-family: 'Open Sans';
    
@@ -136,12 +141,40 @@ img {
 
 .heroUnit {
   .row(12);
-
+  display:block;
   width: 80%;
-  height: 0;
-  padding-bottom: 30%;
-  border: 1px solid;
+  height: 600px;
+  overflow:hidden;
+  font-size: 16px;
+  line-height: 1.24;
+  color:#292929;
   .center;
+  &:after{
+    clear: both;
+  }
+  &:before{
+    content: " ";
+    display:table;
+  }
+  .heroUnitElement1{
+    border-right: 1px solid;
+    float: left;
+    width: 50%;
+    border-color: #282828 !important;
+    display: block;
+  }
+  .heroUnitElement2{
+    
+  }
+  .heroUnitElement3{
+    
+  }
+  .heroUnitElement4{
+    
+  }
+  .heroUnitElement5{
+    
+  }
 }
 
 .stickyCommentBox {

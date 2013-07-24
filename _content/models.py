@@ -24,6 +24,7 @@ class StructureNode(MPTTModel):
     slug = models.SlugField(max_length=200, blank=True)
     url = models.URLField(max_length=255, unique=True, blank=True)
     position = models.PositiveIntegerField()
+    subscribedUser = models.ManyToManyField(User, blank=True, null=True, related_name="subscribedArticles")
     
     #These methods determine the content type of the node.
     def isTypeNone(self):
@@ -186,5 +187,21 @@ class Tag(models.Model):
     
     def __str__(self):
         return self.name
+    
+#added filter to get descendents from queryset
+from django.db.models import Q 
+import operator 
+def get_queryset_descendants(nodes, include_self=True): 
+    if not nodes: 
+        return StructureNode.tree.none() 
+    filters = [] 
+    for n in nodes: 
+        lft, rght = n.lft, n.rght 
+        if include_self: 
+            lft -=1 
+            rght += 1 
+        filters.append(Q(tree_id=n.tree_id, lft__gt=lft, rght__lt=rght)) 
+    q = reduce(operator.or_, filters) 
+    return StructureNode.tree.filter(q)     
     
     

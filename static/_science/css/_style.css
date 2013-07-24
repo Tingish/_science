@@ -189,6 +189,10 @@ img {
 .heroUnit:after {
   clear: both;
 }
+.heroUnit .heroUnitElement1 {
+  width: 50%;
+  height: 100%;
+}
 .stickyCommentBox.stuck {
   position: fixed;
   top: 0;
