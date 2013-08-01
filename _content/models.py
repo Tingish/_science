@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.template.defaultfilters import slugify
+from json_field import JSONField
 
 # Create your models here.
 
@@ -25,6 +26,10 @@ class StructureNode(MPTTModel):
     url = models.URLField(max_length=255, unique=True, blank=True)
     position = models.PositiveIntegerField()
     subscribedUser = models.ManyToManyField(User, blank=True, null=True, related_name="subscribedArticles")
+    isComment = models.BooleanField()
+    start = models.PositiveIntegerField()
+    end = models.PositiveIntegerField()
+    
     
     #These methods determine the content type of the node.
     def isTypeNone(self):
@@ -38,6 +43,9 @@ class StructureNode(MPTTModel):
     
     def isTypeTimelike(self):
         return self.content_type == ContentType.objects.get_for_model(Timelike)
+    
+    def isTypeDataset(self):
+        return self.content_type == ContentType.objects.get_for_model(Dataset)
     
     def getNearestAbstractParagraph(self):
         if self.isTypeParagraph():
@@ -179,6 +187,10 @@ class Timelike(models.Model):
     
     def isLocalSource(self):
         return not(not self.localSource)
+    
+class Dataset(models.Model):
+    structureNode = generic.GenericRelation(StructureNode)
+    data = JSONField()
 
 #These are tags to organize nodes by subject type.    
 class Tag(models.Model):
@@ -188,7 +200,7 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
     
-#added filter to get descendents from queryset
+#added filter to get descendants from queryset
 from django.db.models import Q 
 import operator 
 def get_queryset_descendants(nodes, include_self=True): 

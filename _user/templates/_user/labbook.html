@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load mptt_tags %}
+{% load staticfiles %}
+
+{% block title %}
+{{ user.username }} | Labbook
+{% endblock %}
+
+{% block head %}
+<script src="{%	static 'popcorn/js/popcorn-complete.min.js' %}"></script>
+<script>
+$(window).load(function () {
+	{% for StructureNode in labbook_list %}
+		{% if StructureNode.isTypeTimelike %}
+			var timenode{{ StructureNode.id }}video{{ StructureNode.content_object.id }} = Popcorn.youtube(
+	           ".node{{ StructureNode.id }}video{{ StructureNode.content_object.id }}",
+	           "{{ StructureNode.content_object.linkSource }}" );
+		{% endif %}
+	{% endfor %}
+	});
+</script>
+{% endblock %}
+
+{% block content %}
+	<div class="Submission">
+		
+	</div>	
+	{% for StructureNode in labbook_list %}
+		<div class="postContainer">
+			<div class="postMeta">
+				{% ifchanged StructureNode.pubDate.date %} <h5>{{ StructureNode.pubDate|date }}</h5> {% endifchanged %}
+				<h5>{{ StructureNode.pubDate|time }}</h5>
+			</div>
+			
+			<div class="postContent">
+				{% if StructureNode.isTypeParagraph %}
+				<p>This is a Paragraph.
+	        	   {{ StructureNode.content_object.text }}</p>
+				{% elif StructureNode.isTypeImage %}
+					{% if StructureNode.content_object.isLinkSource %}
+		    			<p>This is from a link.</p>
+		    		{% elif StructureNode.content_object.isLocalSource  %}
+		    			<p>This is local.</p> <div class='contentContainerImage {{ StructureNode.slug }}'><img src={{ StructureNode.content_object.localSource.url }} alt="" /></div> 
+		    		{% endif %}
+				{% elif StructureNode.isTypeTimelike %}					 
+		    		<p>This is a Timelike.</p>
+		    		{% if not StructureNode.content_object.isLinkSource%}
+		    			<p>This is from a link.</p> <div class="node{{ StructureNode.id }}video{{ StructureNode.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
+		    		{% elif StructureNode.content_object.isLocalSource %}
+		    			<p>This is local.</p>
+		    		{% endif %}	
+				{% endif %}
+			</div>	
+		</div>	
+	{% endfor %}
+{% endblock %}
+
