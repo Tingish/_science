@@ -3,6 +3,7 @@
 
 from django.shortcuts import render
 from _content.models import StructureNode, get_queryset_descendants
+from _user.forms import ParagraphFormLabbook, ImageFormLabbook, TimelikeFormLabbook
 from django.contrib.auth.decorators import login_required
 
 
@@ -25,5 +26,9 @@ def userComment(request):
 def userLabbook(request):
 
     labbook_list = StructureNode.objects.filter(isPublished = False, author=request.user).exclude(content_type = None).order_by('-pubDate')
+    text_form = ParagraphFormLabbook()
+    image_form = ImageFormLabbook()
+    timelike_form = TimelikeFormLabbook()
     
-    return render(request, '_user/labbook.html', {'labbook_list': labbook_list,}) #'form':CommentForm()})
+    
+    return render(request, '_user/labbook.html', {'labbook_list': labbook_list, 'textForm': text_form, 'imageForm': image_form, 'timelikeForm':timelike_form,}) #'form':CommentForm()})

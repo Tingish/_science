@@ -5,8 +5,9 @@
 @import 'variables.less';
 
 
+
 @grid-columns: 12;
-@grid-gutter-width: 0px;
+@grid-gutter-width: 30px;
 @grid-float-breakpoint: 768px;
 @theme: #555;
 
@@ -30,9 +31,23 @@ body {
 
 
 .mainContentContainer {
+  position: relative;
   .make-row();
   .sideContainer{
     .make-column(3);
+    
+    .commentContainer {
+        .make-row();
+        
+        .commentMeta{
+          .make-column(12);
+          
+        }
+        .commentContent{
+          .make-column(12);
+      
+        }
+      }
   }
   .bulkContainer{
       .make-column(9);
@@ -41,6 +56,7 @@ body {
       
       .articlePreviewContainer {
         .make-row();
+        position: relative;
         .previewThumbnail {
           .make-column(3);
               
@@ -56,13 +72,15 @@ body {
     }
     .articleContainer {
       .make-row();
-      
-      .articleMeta{
+            .articleMeta{
         .make-column(4);
       }
       .articleContent{
+        
         .make-column(8);
-
+        .contentContainer{
+          position:relative;
+        }
       }
 
     }
@@ -79,6 +97,7 @@ body {
   .articlePreviewList {
   
     .articlePreviewContainer {
+        position: relative;
         .make-row();
       .previewThumbnail {
         .make-column(12);
@@ -106,36 +125,8 @@ body {
   top:0;
 }
 
-.commentContainer {
-  .make-row();
-  border: 1px solid #ddd;
-  
-  .commentMeta{
-    .make-column(3);
-    
-  }
-  .commentContent{
-    .make-column(9);
-    border-left: 1px solid #ddd;
-    max-width: 720px;
-  }
-}
 
-@media screen and (max-width: 960px) {
-  .commentContainer {
-    border: 0px;
-    .make-row();
-    .commentMeta{
-      .make-column(12);
-      border: 1px solid #ddd;
-    }
-    .commentContent{
-      .make-column(12);
-      border: 1px solid #ddd;
-      
-    }
-  }  
-}
+
 
 .commentFlowerContainer {
   border: 0px;
@@ -191,7 +182,173 @@ footer {
 }
 
 img {
-  width: 90%;
+  width: 100%;
+}
+
+//labbook styles
+.submission{
+  
+  .btn-text{
+    .btn-primary;
+    width: 100px;
+  }
+  
+  .btn-picture{
+    .btn-success;
+    width: 100px;
+  }
+  
+  .btn-timelike{
+    .btn-warning;
+    width: 100px;
+  }
+  
+  .btn-data{
+    .btn-info;
+    width: 100px;
+  }
+
+}
+
+.heroUnit {
+  height:600px;
+  overflow:hidden;
+  .heroUnitBody{
+    &::before{
+      content: " ";
+      display: table;
+    }
+    &::after{
+      clear:both;
+      content: " ";
+      display: table;
+    }
+    .heroUnitElement1{
+      border-right:1px solid;
+      float: left;
+      width:50%;
+      border-color:#282828 !important;
+      .heroUnitArticle1{
+        height:600px;
+        width:100%;
+        border-color:#282828 !important;
+        position: relative;
+        z-index: 0;
+      }
+    }
+  }
+}
+
+.commentSqaure {
+  position:absolute;
+  top:15px;
+  right:15px;
+  z-index:100;
+}
+
+.btn-comment {
+  .btn-default;
+  padding: 0 7px;
+  font-size: 13px;
+  line-height: 23px;
+  font-weight: 900;
+  position: absolute;
+  top: 20px;
+  right: 0px;
+  z-index:100;
+}
+
+.articleCommentPosition{
+  
+  top: -10px;
+  right: -25px;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+//Style for submission forms in labbook
+.submission {
+  .make-row();
+  .submitLabel {
+    .make-column(2);
+  }
+  .submissionBulk {
+    padding-top: 13px;
+    .make-column(7);
+    width: 442px !important;
+    background: white;
+    padding-bottom: 13px;
+    
+    .submissionForms{
+      .textFormView{
+        button{
+          margin-top:15px;
+        }
+        #textForm {
+          .titleSubmission{
+            .titleInputContainer{
+              #id_textFormTitle{
+                .form-control;
+              }
+  
+            }
+          }
+          
+          .textSubmission{
+            .textInputContainer{
+              #id_textFormText{
+                .form-control;
+                min-height: 192px;
+              }
+            }
+          }
+          
+          .tagSubmission{
+            .tagInputContainer{
+              #id_textFormTag{
+                .form-control;
+                display: inline;
+                width:379px;
+              }
+            }
+          }
+          
+        }
+      }
+      
+      
+      
+    }
+    
+  }
+}
+
+.input-prepend{
+  display: inline-block;
+  margin-bottom:10px;
+  font-size: 0;
+  white-space: nowrap;
+  vertical-align: middle;
+  
+  .add-on{
+    margin-right: -1px;
+    vertical-align: top;
+    display: inline-block;
+    width: auto;
+    min-width: 16px;
+    padding: 4px 5px;
+    font-size: 20px;
+    font-weight: normal;
+    text-align: center;
+    text-shadow: 0 1px 0 #ffffff;
+    background-color:#eeeeee;
+    border: 1px solid #ccc;
+    &:first-child{
+      border-radius: 4px 0 0 4px;
+    }
+  } 
 }
 
 

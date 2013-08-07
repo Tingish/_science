@@ -27,8 +27,8 @@ class StructureNode(MPTTModel):
     position = models.PositiveIntegerField()
     subscribedUser = models.ManyToManyField(User, blank=True, null=True, related_name="subscribedArticles")
     isComment = models.BooleanField()
-    start = models.PositiveIntegerField()
-    end = models.PositiveIntegerField()
+    start = models.PositiveIntegerField(blank=True, null=True)
+    end = models.PositiveIntegerField(blank=True, null=True)
     
     
     #These methods determine the content type of the node.
@@ -104,6 +104,12 @@ class StructureNode(MPTTModel):
         else:
             self.url = self.slug
         super(StructureNode, self).save()
+        
+    # determines the number of comments on this structurenode
+    
+    def commentCount(self):
+        number = self.get_descendants().filter(content_type=None).count()
+        return number
     
     class Meta:
         unique_together = ('parent', 'position')

@@ -7,19 +7,23 @@
 	<head>
 		<meta charset="utf-8">
     	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    	<meta name="description" content="">
     	<meta name="viewport" content = "device-width, initial-scale=1.0">
     	<title>_Science{% block title %}{% endblock %}</title>
-    	<link rel = "stylesheet" type="text/css" href="{% static '_science/css/_style1.css' %}"/>
     	<script src="{% static 'jquery/js/jquery-1.9.1.min.js' %}"></script>
-    	<script src="{% static 'waypoint/js/waypoints.min.js' %}"></script>
-    	<script src="{% static 'waypoint/js/waypoints-sticky.min.js' %}"></script>
-    	<script src="{% static 'easing/js/jquery.easing.1.3.js' %}"></script>
+    	<link rel = "stylesheet" type="text/css" href="{% static '_science/css/_style1.css' %}"/>
     	<script src="{% static '_science/js/_science.js' %}"></script>
+    	<script src="{% static '_science/js/bootstrap.min.js' %}"></script>
+    	<link rel="stylesheet" type="text/css" href="{% static 'font-awesome/css/font-awesome.min.css' %}"/>
+		<script>
+		    document.documentElement.className = document.documentElement.className.replace("no-js","js");
+		</script>
     	{% block head %}{% endblock %}
 	</head>
 	<body>
 		<div class="container">
 		{% include 'navbar.html' %}
+		{% block mainContent %}{% endblock %}
 		<div class="mainContentContainer">
 			<div class="bulkContainer">
 			{% block content %}{% endblock %}

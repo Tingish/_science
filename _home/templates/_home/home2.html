@@ -22,5 +22,22 @@
 			</div>
 		
 	{% endfor %}
+	</div>
+	<div class="pagination">
+	    <span class="step-links">
+	    	{% if top_article_list.has_previous or top_article_list.has_next %}
+	        {% if top_article_list.has_previous %}
+	            <a href="?page={{ top_article_list.previous_page_number }}">previous</a>
+	        {% endif %}
+	
+	        <span class="current">
+	            Page {{ top_article_list.number }} of {{ top_article_list.paginator.num_pages }}.
+	        </span>
+	
+	        {% if top_article_list.has_next %}
+	            <a href="?page={{ top_article_list.next_page_number }}">next</a>
+	        {% endif %}
+	        {% endif %}
+	    </span>
 	</div>	
 {% endblock %}
