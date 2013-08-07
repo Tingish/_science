@@ -25,10 +25,15 @@ def userComment(request):
 @login_required
 def userLabbook(request):
 
-    labbook_list = StructureNode.objects.filter(isPublished = False, author=request.user).exclude(content_type = None).order_by('-pubDate')
+    labbook_list = StructureNode.objects.filter(isLabnote = True, author=request.user).exclude(content_type = None).order_by('-pubDate')
     text_form = ParagraphFormLabbook()
     image_form = ImageFormLabbook()
     timelike_form = TimelikeFormLabbook()
-    
-    
+    print(request.POST)
+    if (request.method == 'POST'): #if form has been submitted
+        if (request.POST['formType'] == 'textForm'):
+            textForm = ParagraphFormLabbook(request.POST)
+            if (textForm.is_valid()):
+                print(request.POST)
+                
     return render(request, '_user/labbook.html', {'labbook_list': labbook_list, 'textForm': text_form, 'imageForm': image_form, 'timelikeForm':timelike_form,}) #'form':CommentForm()})

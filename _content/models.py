@@ -29,6 +29,8 @@ class StructureNode(MPTTModel):
     isComment = models.BooleanField()
     start = models.PositiveIntegerField(blank=True, null=True)
     end = models.PositiveIntegerField(blank=True, null=True)
+    isLabnote = models.BooleanField()
+    
     
     
     #These methods determine the content type of the node.

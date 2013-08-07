@@ -9,7 +9,7 @@
 {% block head %}
 <script src="{%	static 'popcorn/js/popcorn-complete.min.js' %}"></script>
 <script>
-$(window).load(function () {
+$(document).ready(function () {
 	{% for StructureNode in labbook_list %}
 		{% if StructureNode.isTypeTimelike %}
 			var timenode{{ StructureNode.id }}video{{ StructureNode.content_object.id }} = Popcorn.youtube(
@@ -17,6 +17,18 @@ $(window).load(function () {
 	           "{{ StructureNode.content_object.linkSource }}" );
 		{% endif %}
 	{% endfor %}
+
+		$(".textFormView").hide();
+		$("#text-submit").click(function(){
+			$(".textFormView").show();
+			$(".submissionMenu").hide();
+		});
+		$("#textFormClose").click(function(e){
+			e.preventDefault();
+			$(".submissionMenu").show();
+			$(".textFormView").hide();
+		});
+		
 	});
 </script>
 {% endblock %}
@@ -35,7 +47,7 @@ $(window).load(function () {
 			</div>				
 			<div class="submissionForms">
 				<div class="textFormView">
-					<form id="textForm" action"" method="post" class="form-group">
+					<form id="textForm" action"" method="post">
 						{% csrf_token %}{{ textForm.non_field.errors }}
 						<div class="titleSubmission">
 							{{ textForm.textFormTitle.errors }}
@@ -62,10 +74,13 @@ $(window).load(function () {
 							</div>
 						</div>
 						<div class="hiddenFields">
+							<input type="hidden" name="formType" value="textForm">
+							<input type="hidden" name="isLabnote" value=true>
 						</div>
 						<button type="submit" class="btn btn-primary">Submit</button>
 						<button id="textFormClose" class="btn btn-default pull-right">Close</button>
 					</form>
+					
 				</div>
 				<div class="imageFormView">
 				
