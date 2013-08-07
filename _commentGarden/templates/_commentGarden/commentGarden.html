@@ -11,15 +11,34 @@
 {% endblock %}
 
 {% block content %}
-<p>This is content</p>
+	{% if comment_list %}
+<!--		<div class="om container">
+			<div class="row">
+				{% for SubjectStream in comment_list %}
+					<div class="category colour{{ SubjectStream.id }} span3"><h3>{{ SubjectStream.title }}</h3></div>								
+				{% endfor %}				
+			</div>
+			<div class="row push">
+				{% for SubjectStream  in comment_list %}
+					<div class="gardenplot span3">
+					{% include "_commentGarden/gardenBody.html" %}
+					</div>
+				{% endfor %}
+			</div>
+		</div>	
+!-->
+	{% endif %}
+
+<div class="om">
+<p>This is what's behind the scenes</p>
 	{% if comment_list %}
 
 <ul>
     {% recursetree comment_list %}
         <li>
-            {{ node.title }}
+            {{ node.title }} {{node.is_root_node}}
             {% if not node.is_leaf_node %}
-                <ul class="children">
+                <ul class="om children">
                     {{ children }}
                 </ul>
             {% endif %}
@@ -28,5 +47,6 @@
 </ul>
 
 	{% endif %}
+</div>
 {% endblock %}
 

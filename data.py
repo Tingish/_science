@@ -54,13 +54,17 @@ def DataTestWithComments(h, words):
                 print("z=" + str(z))
                 tempContent = StructureNode(title=words + "experiment" + str(x)+"Article" + str(y)+"Content" + str(z), parent_id=tempArt.id, content_type=GetObjectType(random.randint(1,3)), object_id = 1, isPublished=True, position=z)
                 tempContent.save()
-                numberofComments = random.randint(1,5)
-                for xx in range(1, numberofComments+1):
+                numberofCommentThreads = random.randint(1,5)
+                for xx in range(1, numberofCommentThreads+1):
                     print("xx=" + str(xx))
-                    tempComment = StructureNode(title=words + "experiment" + str(x) + "Article" + str(y) + "Content" + str(z) + "Comment" + str(xx), parent_id=tempContent.id, content_type=GetObjectType(3), object_id = 1, isPublished=False, position=xx)
-                    tempComment.save()
+                    tempCommentThread = StructureNode(title=words + "experiment" + str(x) + "Article" + str(y) + "Content" + str(z) + "CommentThread" + str(xx), parent_id=tempContent.id, content_type=GetObjectType(3), object_id = 1, isPublished=False, position=xx)
+                    tempCommentThread.save()
+                    numberofComments = random.randint(1,5)
+                    for yy in range(1, numberofComments+1):
+                        print("yy=" + str(yy))
+                        tempComment = StructureNode(title=words + "experiment" + str(x) + "Article" + str(y) + "Content" + str(z) + "CommentThread" + str(xx) + "Comment" + str(yy), parent_id=tempCommentThread.id, content_type=GetObjectType(3), object_id = 1, isPublished=False, position=yy)
+                        tempComment.save()
 
-# Need to add another feature to allow for multiple threads of comments and multiple responses to those comments.
 
 #DataTest(10, True, "test10")
 DataTestWithComments(5, "commenttest1")
