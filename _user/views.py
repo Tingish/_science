@@ -24,7 +24,7 @@ def userComment(request):
     return render(request, '_commentGarden/commentgarden.html', {'comment_list': comment_list,}) #'form':CommentForm()})
 
 @login_required
-def userLabbook(request):
+def userLabbook(request, subject_url):
 
     
     text_form = ParagraphFormLabbook()
@@ -39,8 +39,10 @@ def userLabbook(request):
             image_form = imageFormLabbookSave(request)
         elif (request.POST['formType'] == 'timelikeForm'):
             timelike_form = timelikeFormLabbookSave(request)
-                
-    labbook_list = StructureNode.objects.filter(isLabnote = True, author=request.user).exclude(content_type = None).order_by('-pubDate')            
+    if (subject_url):            
+        labbook_list = StructureNode.objects.filter(isLabnote = True, author=request.user).exclude(content_type = None).order_by('-pubDate').filter(tag__name__iexact=subject_url)
+    else:
+        labbook_list = StructureNode.objects.filter(isLabnote = True, author=request.user).exclude(content_type = None).order_by('-pubDate')                
     return render(request, '_user/labbook.html', {'labbook_list': labbook_list, 'textForm': text_form, 'imageForm': image_form, 'timelikeForm':timelike_form,'dataForm': data_form}) #'form':CommentForm()})
 
 def textFormLabbookSave(request):

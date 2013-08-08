@@ -10,5 +10,6 @@ from _user import views
 urlpatterns = patterns('',
                        url(r'^$', views.userDashboard, name='userDashboard'),
                        url(r'^comment/$', views.userComment, name='userComment'),
-                       url(r'^labbook/$', views.userLabbook, name='userLabbook'),
+                       url(r'^labbook/(?P<subject_url>.*)$', views.userLabbook, name='userLabbook'),
+                       
                       )
