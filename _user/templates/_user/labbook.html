@@ -176,14 +176,7 @@ $(document).ready(function () {
 								</div>
 							</div>
 						</div>	
-						<div class="tagSubmission">
-							{% csrf_token %}{{ timelikeForm.non_field.errors }}
-							<div class="titleSubmission">
-								{{ timelikeForm.timelikeFormTitle.errors }}
-								<div class="titleInputContainer">
-									{{ timelikeForm.timelikeFormTitle }}
-								</div>
-							</div>
+						<div class="tagSubmission">	
 							{{ timelikeForm.timelikeFormTag.errors }}
 							<div class="tagInputContainer">
 								<div class="input-prepend">
