@@ -5,6 +5,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.template.defaultfilters import slugify
 from json_field import JSONField
+import re
+
 
 # Create your models here.
 
@@ -139,10 +141,10 @@ class Paragraph(models.Model):
     text = models.TextField()
     
     def __str__(self):
-        if self.structureNode.order_by('pubDate').exists():
+        if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":
             return self.structureNode.order_by('pubDate')[0].title
         
-        return "No Node"
+        return "No Title"
     
 class Image(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
@@ -150,10 +152,10 @@ class Image(models.Model):
     localSource = models.FileField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
-        if self.structureNode.order_by('pubDate').exists():
+        if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":
             return self.structureNode.order_by('pubDate')[0].title
         
-        return "No Node"
+        return "No Title"
     
     def clean(self):
         from django.core.exceptions import ValidationError
@@ -176,10 +178,10 @@ class Timelike(models.Model):
     localSource = models.FileField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
-        if self.structureNode.order_by('pubDate').exists():
+        if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":
             return self.structureNode.order_by('pubDate')[0].title
         
-        return "No Node"
+        return "No Title"
     
     def clean(self):
         from django.core.exceptions import ValidationError
@@ -223,5 +225,15 @@ def get_queryset_descendants(nodes, include_self=True):
         filters.append(Q(tree_id=n.tree_id, lft__gt=lft, rght__lt=rght)) 
     q = reduce(operator.or_, filters) 
     return StructureNode.tree.filter(q)     
-    
-    
+
+#splits on multiple white space or a hashtag    
+def hashTagParser(string):
+    return filter(None, re.split(r'\s{2,}|#', string))
+
+def tagSaveHelper(string):
+    if Tag.objects.filter(name=string).exists():
+        return Tag.objects.get(name=string) 
+    else:
+        newTag = Tag(name=string)
+        newTag.save()
+        return newTag 

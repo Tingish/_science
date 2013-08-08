@@ -19,14 +19,34 @@ $(document).ready(function () {
 	{% endfor %}
 
 		$(".textFormView").hide();
+		$(".imageFormView").hide();
+		$(".timelikeFormView").hide();
 		$("#text-submit").click(function(){
 			$(".textFormView").show();
+			$(".submissionMenu").hide();
+		});
+		$("#image-submit").click(function(){
+			$(".imageFormView").show();
+			$(".submissionMenu").hide();
+		});
+		$("#timelike-submit").click(function(){
+			$(".timelikeFormView").show();
 			$(".submissionMenu").hide();
 		});
 		$("#textFormClose").click(function(e){
 			e.preventDefault();
 			$(".submissionMenu").show();
 			$(".textFormView").hide();
+		});
+		$("#imageFormClose").click(function(e){
+			e.preventDefault();
+			$(".submissionMenu").show();
+			$(".imageFormView").hide();
+		});
+		$("#timelikeFormClose").click(function(e){
+			e.preventDefault();
+			$(".submissionMenu").show();
+			$(".timelikeFormView").hide();
 		});
 		
 	});
@@ -41,8 +61,8 @@ $(document).ready(function () {
 		<div class="submissionBulk">
 			<div class="submissionMenu">	
 				<button type="button" class="btn btn-text" id="text-submit">Text</button>
-				<button type="button" class="btn btn-picture" id="photo-submit">Photo</button>
-				<button type="button" class="btn btn-timelike" id="video-submit">Video</button>
+				<button type="button" class="btn btn-picture" id="image-submit">Photo</button>
+				<button type="button" class="btn btn-timelike" id="timelike-submit">Video</button>
 				<button type="button" class="btn btn-data"id="data-submit">Data</button>
 			</div>				
 			<div class="submissionForms">
@@ -63,9 +83,6 @@ $(document).ready(function () {
 						</div>
 						<div class="tagSubmission">
 							{{ textForm.textFormTag.errors }}
-							
-								
-							
 							<div class="tagInputContainer">
 								<div class="input-prepend">
 									<span class="add-on"><i class="icon-tags"></i></span>
@@ -83,10 +100,88 @@ $(document).ready(function () {
 					
 				</div>
 				<div class="imageFormView">
-				
+					<form id="imageForm" action"" method="post">
+						{% csrf_token %}{{ textForm.non_field.errors }}
+						<div class="titleSubmission">
+							{{ imageForm.imageFormTitle.errors }}
+							<div class="titleInputContainer">
+								{{ imageForm.imageFormTitle }}
+							</div>
+						</div>
+						<div class="imageSubmission">
+							<h3>Submit Image</h3>
+							<div class="localSourceSubmission">
+								{{ imageForm.imageFormLocalSource.errors }}
+								<div class="localSourceInputContainer">
+									{{ imageForm.imageFormLocalSource }}
+								</div>
+							</div>
+							<h3>Or</h3>
+							<div class="linkSourceSubmission">
+								{{ imageForm.imageFormLinkSource.errors }}
+								<div class="linkSourceInputContainer">
+									{{ imageForm.imageFormLinkSource }}
+								</div>
+							</div>
+						</div>	
+						<div class="tagSubmission">
+							{{ imageForm.imageFormTag.errors }}
+							<div class="tagInputContainer">
+								<div class="input-prepend">
+									<span class="add-on"><i class="icon-tags"></i></span>
+									{{ imageForm.imageFormTag }}
+								</div>
+							</div>
+						</div>
+						<div class="hiddenFields">
+							<input type="hidden" name="formType" value="imageForm">
+							<input type="hidden" name="isLabnote" value=true>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+						<button id="imageFormClose" class="btn btn-default pull-right">Close</button>							
+					</form>
 				</div>
 				<div class="timelikeFormView">
-				
+					<form id="timelikeForm" action"" method="post">
+						{% csrf_token %}{{ timelikeForm.non_field.errors }}
+						<div class="titleSubmission">
+							{{ timelikeForm.timelikeFormTitle.errors }}
+							<div class="titleInputContainer">
+								{{ timelikeForm.timelikeFormTitle }}
+							</div>
+						</div>
+						<div class="timelikeSubmission">
+							<h3>Submit Video</h3>
+							<div class="localSourceSubmission">
+								{{ timelikeForm.timelikeFormLocalSource.errors }}
+								<div class="localSourceInputContainer">
+									{{ timelikeForm.timelikeFormLocalSource }}
+								</div>
+							</div>
+							<h3>Or</h3>
+							<div class="linkSourceSubmission">
+								{{ timelikeForm.timelikeFormLinkSource.errors }}
+								<div class="linkSourceInputContainer">
+									{{ timelikeForm.timelikeFormLinkSource }}
+								</div>
+							</div>
+						</div>	
+						<div class="tagSubmission">
+							{{ timelikeForm.timelikeFormTag.errors }}
+							<div class="tagInputContainer">
+								<div class="input-prepend">
+									<span class="add-on"><i class="icon-tags"></i></span>
+									{{ timelikeForm.timelikeFormTag }}
+								</div>
+							</div>
+						</div>
+						<div class="hiddenFields">
+							<input type="hidden" name="formType" value="timelikeForm">
+							<input type="hidden" name="isLabnote" value=true>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+						<button id="timelikeFormClose" class="btn btn-default pull-right">Close</button>							
+					</form>
 				</div>
 				<div class="dataFormView">
 				
@@ -104,8 +199,7 @@ $(document).ready(function () {
 			
 			<div class="postContent">
 				{% if StructureNode.isTypeParagraph %}
-				<p>This is a Paragraph.
-	        	   {{ StructureNode.content_object.text }}</p>
+				<p>{{ StructureNode.content_object.text }}</p>
 				{% elif StructureNode.isTypeImage %}
 					{% if StructureNode.content_object.isLinkSource %}
 		    			<p>This is from a link.</p>

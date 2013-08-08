@@ -279,55 +279,23 @@ img {
     .make-column(2);
   }
   .submissionBulk {
-    padding-top: 13px;
+    
     .make-column(7);
+    padding: 15px;
     width: 442px !important;
     background: white;
-    padding-bottom: 13px;
     border-radius: 4px;
     
     .submissionForms{
-      .textFormView{
+      .textFormView, .imageFormView, .timelikeFormView{
         button{
           margin-top:15px;
         }
-        #textForm {
-          .titleSubmission{
-            .titleInputContainer{
-              #id_textFormTitle{
-                .form-control;
-              }
-  
-            }
-          }
-          
-          .textSubmission{
-            .textInputContainer{
-              #id_textFormText{
-                .form-control;
-                min-height: 192px;
-              }
-            }
-          }
-          
-          .tagSubmission{
-            .tagInputContainer{
-              #id_textFormTag{
-                .form-control;
-                display: inline;
-                width:380px;
-              }
-            }
-          }
-          
-        }
       }
-      
-      
-      
+ 
     }
-    
   }
+        
 }
 
 .input-prepend{
@@ -356,4 +324,50 @@ img {
   } 
 }
 
+.titleSubmission{
+  .titleInputContainer{
+    #id_textFormTitle, #id_imageFormTitle, #id_timelikeFormTitle{
+      .form-control;
+    }
 
+  }
+}
+
+.tagSubmission{
+  .tagInputContainer{
+   input{
+      .form-control;
+      display: inline;
+      width:380px;
+    }
+  }
+}
+          
+.textSubmission{
+  .textInputContainer{
+    textarea{
+      .form-control;
+      min-height: 192px;
+    }
+  }
+}
+
+
+.imageSubmission, .timelikeSubmission {
+  margin-bottom:15px;
+  .locaSourceSubmission{
+    .localSourceInputContainer{
+      input{
+        
+      }
+    }
+  }
+  
+  .linkSourceSubmission {   
+    .linkSourceInputContainer{
+      input{
+        .form-control;
+      }
+    }
+  }
+}
