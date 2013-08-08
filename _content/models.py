@@ -96,7 +96,7 @@ class StructureNode(MPTTModel):
         super(StructureNode, self).save()
         if self.slug is None or self.slug == "":
             # create a slug that's unique to siblings
-            slug = slugify(self.title)
+            slug = slugify('title' + self.title)
             self.slug = slug
             siblings = self.get_siblings()
             i = 1

@@ -100,8 +100,8 @@ $(document).ready(function () {
 					
 				</div>
 				<div class="imageFormView">
-					<form id="imageForm" action"" method="post">
-						{% csrf_token %}{{ textForm.non_field.errors }}
+					<form id="imageForm" action"" method="post" enctype="multipart/form-data">
+						{% csrf_token %}{{ imageForm.non_field.errors }}
 						<div class="titleSubmission">
 							{{ imageForm.imageFormTitle.errors }}
 							<div class="titleInputContainer">
@@ -142,7 +142,7 @@ $(document).ready(function () {
 					</form>
 				</div>
 				<div class="timelikeFormView">
-					<form id="timelikeForm" action"" method="post">
+					<form id="timelikeForm" action"" method="post" enctype="multipart/form-data">
 						{% csrf_token %}{{ timelikeForm.non_field.errors }}
 						<div class="titleSubmission">
 							{{ timelikeForm.timelikeFormTitle.errors }}

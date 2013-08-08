@@ -53,7 +53,10 @@ def textFormLabbookSave(request):
             tempStructureNode.content_type = ContentType.objects.get_for_model(Paragraph)
             tempStructureNode.object_id = tempParagraph.id
             tempStructureNode.isPublished = False
-            tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
+            if StructureNode.objects.order_by('-position').exists():
+                tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
+            else:
+                tempStructureNode.position = 1
             tempStructureNode.isComment = False
             tempStructureNode.isLabnote = True
             tempStructureNode.save()
@@ -81,7 +84,11 @@ def imageFormLabbookSave(request):
             tempStructureNode.content_type = ContentType.objects.get_for_model(Image)
             tempStructureNode.object_id = tempImage.id
             tempStructureNode.isPublished = False
-            tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
+            if StructureNode.objects.order_by('-position').exists():
+                tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
+            else:
+                tempStructureNode.position = 1
+            tempStructureNode.isComment = False
             tempStructureNode.isComment = False
             tempStructureNode.isLabnote = True
             tempStructureNode.save()
@@ -109,7 +116,11 @@ def timelikeFormLabbookSave(request):
             tempStructureNode.content_type = ContentType.objects.get_for_model(Timelike)
             tempStructureNode.object_id = tempTimelike.id
             tempStructureNode.isPublished = False
-            tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
+            if StructureNode.objects.order_by('-position').exists():
+                tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
+            else:
+                tempStructureNode.position = 1
+            tempStructureNode.isComment = False
             tempStructureNode.isComment = False
             tempStructureNode.isLabnote = True
             tempStructureNode.save()
