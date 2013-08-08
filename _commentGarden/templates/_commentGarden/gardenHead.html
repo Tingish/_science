@@ -1,19 +1,16 @@
 {% load staticfiles %}
- <script src="{% static 'html5test/js/jquery.masonry.min.js' %}"></script>
+ <script src="{% static 'masonry/js/jquery.masonry.min.js' %}"></script>
  <script type="text/javascript">
- 	$(document).ready(function(){
+ 	$(window).load(function(){
  		$(".gardenPlot").masonry({
- 			columnWidth : function(){ return $(".gardenPlot").width()} ,
- 			itemselector : ".gardenPlant",
+ 			
+ 			itemselector : ".commentFlowerContainer",
  			isAnimated:true,
  			
  		});
+ 		$(".gardenPlot").masonry("reload");
  	});
+ 		$(window).resize(function(){
+		$(".gardenPlot").masonry("reload");
+	});
  </script>
- <style type="text/css">
-	.om {
-		border : 1px solid red;
-		margin : -1px;
-		width: 90%;
-	}
- </style>

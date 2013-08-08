@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.template.defaultfilters import slugify
+from json_field import JSONField
+import re
+
 
 # Create your models here.
 
@@ -24,6 +27,13 @@ class StructureNode(MPTTModel):
     slug = models.SlugField(max_length=200, blank=True)
     url = models.URLField(max_length=255, unique=True, blank=True)
     position = models.PositiveIntegerField()
+    subscribedUser = models.ManyToManyField(User, blank=True, null=True, related_name="subscribedArticles")
+    isComment = models.BooleanField()
+    start = models.PositiveIntegerField(blank=True, null=True)
+    end = models.PositiveIntegerField(blank=True, null=True)
+    isLabnote = models.BooleanField()
+    
+    
     
     #These methods determine the content type of the node.
     def isTypeNone(self):
@@ -38,6 +48,39 @@ class StructureNode(MPTTModel):
     def isTypeTimelike(self):
         return self.content_type == ContentType.objects.get_for_model(Timelike)
     
+    def isTypeDataset(self):
+        return self.content_type == ContentType.objects.get_for_model(Dataset)
+    
+    def getNearestAbstractParagraph(self):
+        if self.isTypeParagraph():
+            return self.content_object.text
+        else:
+            for child in self.get_descendants():
+                if child.isTypeParagraph():
+                    return child.content_object.text
+                    break
+            for predecessor in self.get_ancestors():
+                if predecessor.isTypeParagraph():
+                    return predecessor.content_object.text
+                    break
+            else:
+                return "NO PARAGRAPHS ANYWHERE!"
+            
+    def getNearestAbstractImage(self):
+        if self.isTypeImage():
+            return self.content_object
+        else:
+            for child in self.get_descendants():
+                if child.isTypeImage():
+                    return child.content_object
+                    break
+            for predecessor in self.get_ancestors():
+                if predecessor.isTypeImage():
+                    return predecessor.content_object
+                    break
+            else:
+                return False
+                
     def __str__(self):
         return '%i %i %i %s' % (self.pubDate.year, self.pubDate.month, self.pubDate.day, self.title)
     
@@ -53,7 +96,7 @@ class StructureNode(MPTTModel):
         super(StructureNode, self).save()
         if self.slug is None or self.slug == "":
             # create a slug that's unique to siblings
-            slug = slugify(self.title)
+            slug = slugify('title' + self.title)
             self.slug = slug
             siblings = self.get_siblings()
             i = 1
@@ -65,6 +108,12 @@ class StructureNode(MPTTModel):
         else:
             self.url = self.slug
         super(StructureNode, self).save()
+        
+    # determines the number of comments on this structurenode
+    
+    def commentCount(self):
+        number = self.get_descendants().filter(content_type=None).count()
+        return number
     
     class Meta:
         unique_together = ('parent', 'position')
@@ -92,10 +141,10 @@ class Paragraph(models.Model):
     text = models.TextField()
     
     def __str__(self):
-        if self.structureNode.order_by('pubDate').exists():
+        if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":
             return self.structureNode.order_by('pubDate')[0].title
         
-        return "No Node"
+        return "No Title"
     
 class Image(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
@@ -103,10 +152,10 @@ class Image(models.Model):
     localSource = models.FileField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
-        if self.structureNode.order_by('pubDate').exists():
+        if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":
             return self.structureNode.order_by('pubDate')[0].title
         
-        return "No Node"
+        return "No Title"
     
     def clean(self):
         from django.core.exceptions import ValidationError
@@ -129,10 +178,10 @@ class Timelike(models.Model):
     localSource = models.FileField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
-        if self.structureNode.order_by('pubDate').exists():
+        if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":
             return self.structureNode.order_by('pubDate')[0].title
         
-        return "No Node"
+        return "No Title"
     
     def clean(self):
         from django.core.exceptions import ValidationError
@@ -149,6 +198,42 @@ class Timelike(models.Model):
     def isLocalSource(self):
         return not(not self.localSource)
     
+class Dataset(models.Model):
+    structureNode = generic.GenericRelation(StructureNode)
+    data = JSONField()
 
+#These are tags to organize nodes by subject type.    
+class Tag(models.Model):
+    name = models.CharField(max_length=200)
+    nodes = models.ManyToManyField(StructureNode)
     
+    def __str__(self):
+        return self.name
     
+#added filter to get descendants from queryset
+from django.db.models import Q 
+import operator 
+def get_queryset_descendants(nodes, include_self=True): 
+    if not nodes: 
+        return StructureNode.tree.none() 
+    filters = [] 
+    for n in nodes: 
+        lft, rght = n.lft, n.rght 
+        if include_self: 
+            lft -=1 
+            rght += 1 
+        filters.append(Q(tree_id=n.tree_id, lft__gt=lft, rght__lt=rght)) 
+    q = reduce(operator.or_, filters) 
+    return StructureNode.tree.filter(q)     
+
+#splits on multiple white space or a hashtag    
+def hashTagParser(string):
+    return filter(None, re.split(r'\s{2,}|#', string))
+
+def tagSaveHelper(string):
+    if Tag.objects.filter(name=string).exists():
+        return Tag.objects.get(name=string) 
+    else:
+        newTag = Tag(name=string)
+        newTag.save()
+        return newTag 

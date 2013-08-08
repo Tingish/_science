@@ -1,0 +1,373 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
+@import url(http://fonts.googleapis.com/css?family=Inconsolata);
+@import 'mixins.less';
+@import 'bootstrap.less';
+@import 'variables.less';
+
+
+
+@grid-columns: 12;
+@grid-gutter-width: 0;
+@grid-float-breakpoint: 768px;
+@theme: #555;
+
+
+* {
+  .box-sizing(border-box);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+   
+   background: #cdd4db;
+   
+} 
+
+
+
+.experimentTitle {
+ 
+}
+
+
+.mainContentContainer {
+  position: relative;
+  .make-row();
+  .sideContainer{
+    .make-column(3);
+    
+    .commentContainer {
+        .make-row();
+        
+        .commentMeta{
+          .make-column(12);
+          
+        }
+        .commentContent{
+          .make-column(12);
+      
+        }
+      }
+  }
+  .bulkContainer{
+      .make-column(9);
+    
+    .articlePreviewList {
+      
+      .articlePreviewContainer {
+        .make-row();
+        position: relative;
+        .previewThumbnail {
+          .make-column(3);
+              
+        }
+        .previewParagraphWImage {
+          .make-column(9);
+        }
+        
+        .previewPragraph {
+          .make-column(12);
+        }
+      }
+    }
+    .articleContainer {
+      .make-row();
+            .articleMeta{
+        .make-column(4);
+      }
+      .articleContent{
+        
+        .make-column(8);
+        .contentContainer{
+          position:relative;
+          margin-right: 40px;
+        }
+      }
+
+    }
+
+  }
+}
+
+#head {
+  text-decoration:none;
+  color: inherit;
+}
+
+@media screen and (max-width: 480px) {
+  .articlePreviewList {
+  
+    .articlePreviewContainer {
+        position: relative;
+        .make-row();
+      .previewThumbnail {
+        .make-column(12);
+            
+      }
+      .previewParagraphWImage {
+        .make-column(12);
+      }
+      
+      .previewPragraph {
+        .make-column(12);
+      }
+    }
+  }
+}
+
+
+
+.stickyCommentBox {
+
+}
+
+.stickyCommentBox.stuck {
+  position:fixed;
+  top:0;
+}
+
+
+
+
+.commentFlowerContainer {
+  border: 0px;
+  width: 32%;
+  display: block;
+  .make-row();
+  .commentFlowerMeta{
+    .make-column(12);
+    border: 1px solid #ddd;
+  }
+  .commentFlowerContent{
+    .make-column(12);
+    border: 1px solid #ddd;
+    
+  }
+}
+
+.gardenPlot {
+  .container;
+}
+
+footer {
+  
+}
+
+@media screen and (min-width: 768px) {
+    .navbar-nav > li > a {
+    border-radius: inherit;
+  } 
+  
+  .navbar-brand {
+    display:none;
+  }
+  
+  .headBrand {
+    font-size:30px;
+    font-family: 'Inconsolata', sans-serif;
+    .mainTrademark {
+      font-size:150px;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .headBrand {
+    display:none;
+  }
+}  
+
+.signInButton {
+  margin-right: 12px;
+}
+
+img {
+  width: 100%;
+}
+
+//labbook styles
+.submission{
+  
+  .btn-text{
+    .btn-primary;
+    width: 100px;
+  }
+  
+  .btn-picture{
+    .btn-success;
+    width: 100px;
+  }
+  
+  .btn-timelike{
+    .btn-warning;
+    width: 100px;
+  }
+  
+  .btn-data{
+    .btn-info;
+    width: 100px;
+  }
+
+}
+
+.heroUnit {
+  height:600px;
+  overflow:hidden;
+  .heroUnitBody{
+    &::before{
+      content: " ";
+      display: table;
+    }
+    &::after{
+      clear:both;
+      content: " ";
+      display: table;
+    }
+    .heroUnitElement1{
+      border-right:1px solid;
+      float: left;
+      width:50%;
+      border-color:#282828 !important;
+      .heroUnitArticle1{
+        height:600px;
+        width:100%;
+        border-color:#282828 !important;
+        position: relative;
+        z-index: 0;
+      }
+    }
+  }
+}
+
+.commentSqaure {
+  position:absolute;
+  top:15px;
+  right:15px;
+  z-index:100;
+}
+
+.btn-comment {
+  .btn-default;
+  padding: 0 7px;
+  font-size: 13px;
+  line-height: 23px;
+  font-weight: 900;
+
+  z-index:100;
+}
+
+.articleCommentPosition{
+  position: absolute;
+  top: -10px;
+  right: -25px;
+}
+
+.homeCommentPosition{
+  position: absolute;
+  top: 20px;
+  right: -30px;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+//Style for submission forms in labbook
+.submission {
+  .make-row();
+  .submitLabel {
+    .make-column(2);
+  }
+  .submissionBulk {
+    
+    .make-column(7);
+    padding: 15px;
+    width: 442px !important;
+    background: white;
+    border-radius: 4px;
+    
+    .submissionForms{
+      .textFormView, .imageFormView, .timelikeFormView{
+        button{
+          margin-top:15px;
+        }
+      }
+ 
+    }
+  }
+        
+}
+
+.input-prepend{
+  display: inline-block;
+  margin-bottom:10px;
+  font-size: 0;
+  white-space: nowrap;
+  vertical-align: middle;
+  
+  .add-on{
+    margin-right: -1px;
+    vertical-align: top;
+    display: inline-block;
+    width: auto;
+    min-width: 16px;
+    padding: 4px 5px;
+    font-size: 20px;
+    font-weight: normal;
+    text-align: center;
+    text-shadow: 0 1px 0 #ffffff;
+    background-color:#eeeeee;
+    border: 1px solid #ccc;
+    &:first-child{
+      border-radius: 4px 0 0 4px;
+    }
+  } 
+}
+
+.titleSubmission{
+  .titleInputContainer{
+    #id_textFormTitle, #id_imageFormTitle, #id_timelikeFormTitle{
+      .form-control;
+    }
+
+  }
+}
+
+.tagSubmission{
+  .tagInputContainer{
+   input{
+      .form-control;
+      display: inline;
+      width:380px;
+    }
+  }
+}
+          
+.textSubmission{
+  .textInputContainer{
+    textarea{
+      .form-control;
+      min-height: 192px;
+    }
+  }
+}
+
+
+.imageSubmission, .timelikeSubmission {
+  margin-bottom:15px;
+  .locaSourceSubmission{
+    .localSourceInputContainer{
+      input{
+        
+      }
+    }
+  }
+  
+  .linkSourceSubmission {   
+    .linkSourceInputContainer{
+      input{
+        .form-control;
+      }
+    }
+  }
+}
