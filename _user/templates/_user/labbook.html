@@ -202,7 +202,7 @@ $(document).ready(function () {
 				<p>{{ StructureNode.content_object.text }}</p>
 				{% elif StructureNode.isTypeImage %}
 					{% if StructureNode.content_object.isLinkSource %}
-		    			<p>This is from a link.</p>
+		    			<p>This is from a link.</p><div class='contentContainerImage {{ StructureNode.slug }}'><img src={{ StructureNode.content_object.linkSource }} alt="" /></div>
 		    		{% elif StructureNode.content_object.isLocalSource  %}
 		    			<p>This is local.</p> <div class='contentContainerImage {{ StructureNode.slug }}'><img src={{ StructureNode.content_object.localSource.url }} alt="" /></div> 
 		    		{% endif %}
