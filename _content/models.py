@@ -149,7 +149,7 @@ class Paragraph(models.Model):
 class Image(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
     linkSource = models.URLField(max_length=200, blank=True, null=True)
-    localSource = models.FileField(upload_to='content/image', blank=True, null=True)
+    localSource = models.ImageField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
         if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":

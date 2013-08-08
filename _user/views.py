@@ -3,7 +3,7 @@
 
 from django.shortcuts import render
 from _content.models import StructureNode, get_queryset_descendants, Paragraph, hashTagParser, tagSaveHelper, Image, Timelike
-from _user.forms import ParagraphFormLabbook, ImageFormLabbook, TimelikeFormLabbook
+from _user.forms import ParagraphFormLabbook, ImageFormLabbook, TimelikeFormLabbook, DataFormLabbook
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 
@@ -30,6 +30,7 @@ def userLabbook(request):
     text_form = ParagraphFormLabbook()
     image_form = ImageFormLabbook()
     timelike_form = TimelikeFormLabbook()
+    data_form = DataFormLabbook()
     print(request.POST)
     if (request.method == 'POST'): #if form has been submitted
         if (request.POST['formType'] == 'textForm'):
@@ -40,7 +41,7 @@ def userLabbook(request):
             timelike_form = timelikeFormLabbookSave(request)
                 
     labbook_list = StructureNode.objects.filter(isLabnote = True, author=request.user).exclude(content_type = None).order_by('-pubDate')            
-    return render(request, '_user/labbook.html', {'labbook_list': labbook_list, 'textForm': text_form, 'imageForm': image_form, 'timelikeForm':timelike_form,}) #'form':CommentForm()})
+    return render(request, '_user/labbook.html', {'labbook_list': labbook_list, 'textForm': text_form, 'imageForm': image_form, 'timelikeForm':timelike_form,'dataForm': data_form}) #'form':CommentForm()})
 
 def textFormLabbookSave(request):
         if (ParagraphFormLabbook(request.POST).is_valid()):
