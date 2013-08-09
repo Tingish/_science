@@ -200,7 +200,8 @@ class Timelike(models.Model):
     
 class Dataset(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
-    data = JSONField()
+    data = JSONField(blank=True, null=True)
+    dataFile = models.FileField(upload_to='content/data', blank=True, null=True)
 
 #These are tags to organize nodes by subject type.    
 class Tag(models.Model):
