@@ -21,7 +21,7 @@ class ImageFormLabbook(forms.Form):
         return cleaned_data
         
 class TimelikeFormLabbook(forms.Form):
-    timelikeFormTitle = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Title", }), required=False)
+    timelikeFormTitle = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Title", "accept": "video/*",}), required=False)
     timelikeFormTag = forms.CharField(required=False)
     timelikeFormLocalSource = forms.FileField(required=False)
     timelikeFormLinkSource = forms.URLField(widget=forms.TextInput(attrs={"placeholder": "Enter URL of video."}),required=False)

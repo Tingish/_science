@@ -24,14 +24,14 @@
 		<div class="container">
 		{% include 'navbar.html' %}
 		{% block mainContent %}{% endblock %}
-		<div class="mainContentContainer">
-			<div class="bulkContainer">
-			{% block content %}{% endblock %}
+			<div class="mainContentContainer">
+				<div class="bulkContainer">
+				{% block content %}{% endblock %}
+				</div>
+				<div class="sideContainer">
+					{% block sideContent %}Stuff{% endblock %}
+				</div>	
 			</div>
-			<div class="sideContainer">
-				{% block sideContent %}Stuff{% endblock %}
-			</div>	
-		</div>
 		{% include 'footer.html' %}
 		</div>
 	</body>

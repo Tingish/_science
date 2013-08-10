@@ -39,6 +39,8 @@ def userLabbook(request, subject_url):
             image_form = imageFormLabbookSave(request)
         elif (request.POST['formType'] == 'timelikeForm'):
             timelike_form = timelikeFormLabbookSave(request)
+        elif (request.POST['formType'] == "testForm"):
+            print(request.POST['addNewVariable'])    
     if (subject_url):            
         labbook_list = StructureNode.objects.filter(isLabnote = True, author=request.user).exclude(content_type = None).order_by('-pubDate').filter(tag__name__iexact=subject_url)
     else:
