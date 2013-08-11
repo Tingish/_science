@@ -57,11 +57,11 @@ def DataTestWithComments(h, words):
                 tempContent.save()
                 numberofComments = random.randint(1,5)
                 for w in range(1, numberofComments+1):
-                    tempComment = StructureNode(title=words + "experiment" + str(x) + "Article" + str(y) + "Content" + str(z) + "Comment" + str(w), parent_id=tempContent.id, isPublished=False, position=w)
+                    tempComment = StructureNode(title=words + "experiment" + str(x) + "Article" + str(y) + "Content" + str(z) + "Comment" + str(w), parent_id=tempContent.id, isComment=True, position=w)
                     tempComment.save()
                     for xx in range(1, numberofComments+1):
                         print("xx=" + str(xx))
-                        tempCommentContent = StructureNode(title=words + "experiment" + str(x) + "Article" + str(y) + "Content" + str(z) + "Comment" + str(w) +"Content" + str(xx), parent_id=tempComment.id, content_type=GetObjectType(3), object_id = 1, isPublished=False, position=xx)
+                        tempCommentContent = StructureNode(title=words + "experiment" + str(x) + "Article" + str(y) + "Content" + str(z) + "Comment" + str(w) +"Content" + str(xx), parent_id=tempComment.id, content_type=GetObjectType(3), object_id = 1, isComment=True, position=xx)
                         tempCommentContent.save()
 
 
