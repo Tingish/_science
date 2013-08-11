@@ -203,6 +203,32 @@ class Dataset(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
     data = JSONField(blank=True, null=True)
     dataFile = models.FileField(upload_to='content/data', blank=True, null=True)
+    
+    def getGlobalDict(self):
+        decodedData = json.loads(json.dumps(self.data))
+        return decodedData["Global Variables"]
+    
+    def getDatasetList(self):
+        decodedData = json.loads(json.dumps(self.data))
+        return decodedData["Data Set"]
+    
+    def getGlobalVariableNames(self):
+        decodedData = json.loads(json.dumps(self.data))
+        print(decodedData["Global Variables"].keys())
+        
+        return decodedData["Global Variables"].keys()
+    
+    def getGlobalVariableValues(self):
+        decodedGlobalData = json.loads(json.dumps(self.data))["Global Variables"]
+        decodedGlobalValues = []
+        for name in self.getGlobalVariableNames():
+            decodedGlobalValues.append(decodedGlobalData[name])
+        return decodedGlobalValues
+    
+    def getDatasetVariableNames(self):
+        decodedDataSet = json.loads(json.dumps(self.data))["Data Set"][0]
+        print(decodedDataSet.keys())     
+        return decodedDataSet.keys()
 
 #These are tags to organize nodes by subject type.    
 class Tag(models.Model):

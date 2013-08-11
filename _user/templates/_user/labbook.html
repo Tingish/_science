@@ -328,7 +328,7 @@ $(document).ready(function () {
 				}
 				else
 				{
-					alert("The form is complete.");
+					
 					$(".globalVariableNameInputBox").attr("name", "globalVariableName");
 					$(".datasetTitleInputBox").attr("name", "datasetVariableName");
 					return true;				
@@ -556,6 +556,43 @@ $(document).ready(function () {
 		    		{% elif StructureNode.content_object.isLocalSource %}
 		    			<p>This is local.</p>
 		    		{% endif %}	
+		    	{% elif StructureNode.isTypeDataset %}
+		    		<h3>Global Variables(constants?)</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>		    					
+		    					{% for key, value in StructureNode.content_object.getGlobalDict.items %}
+		    						<th>{{ key }}</th>
+		    					{% endfor %}		    					
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				<tr>		    					
+		    					{% for key, value in StructureNode.content_object.getGlobalDict.items %}
+		    						<td>{{ value }}</td>
+		    					{% endfor %}
+		    				</tr>
+		    			</tbody>			
+		    		</table>
+		    		<h3>Data Set</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>
+		    					{% for key in StructureNode.content_object.getDatasetVariableNames %}		    						
+		    						<th>{{ key }}</th>		    						
+		    					{% endfor %}
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				{% for Dict in StructureNode.content_object.getDatasetList %}
+		    				<tr>		    							    					
+		    						{% for key, value in Dict.items %}
+		    						<td>{{ value }}</td>
+		    						{% endfor %}
+		    				</tr>
+		    				{% endfor %}
+		    			</tbody>	
+		    		</table>			
 				{% endif %}
 			</div>	
 		</div>	
