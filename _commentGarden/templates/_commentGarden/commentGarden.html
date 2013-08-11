@@ -10,11 +10,11 @@
 	{% include "_commentGarden/gardenHead.html" %}
 {% endblock %}
 
-{% block content %}
+{% block mainContent %}
 	<div class="gardenPlot">
 		{% recursetree comment_list %}
      		{% if node.isTypeNone and node.isPublished == False and not node.is_root_node %}
-				{% if not node.get_previous_sibling %}<div class='commentFlowerContainer {{ node.slug }}'><div class="commentFlowerHead">THIS IS THE MAIN TITLE</div>{% endif %}
+				{% if not node.get_previous_sibling %}<div class='commentFlowerContainer {{ node.slug }}'><div class="commentFlowerHead"><div>THIS IS THE MAIN TITLE</div><div class="commentFlowerHeadButtons"><a href="%">_</a> <a href="%">x</a></div></div>{% endif %}
 					<div class='commentFlowerMeta'>
 						<h5>{{node.pubDate|date}} {{node.mptt_level}}</h5>
 						<h5>{{node.title}}</h5>
