@@ -5,6 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.template.defaultfilters import slugify
 from json_field import JSONField
+import json
 import re
 
 
@@ -149,7 +150,7 @@ class Paragraph(models.Model):
 class Image(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
     linkSource = models.URLField(max_length=200, blank=True, null=True)
-    localSource = models.FileField(upload_to='content/image', blank=True, null=True)
+    localSource = models.ImageField(upload_to='content/image', blank=True, null=True)
     
     def __str__(self):
         if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":
@@ -200,7 +201,34 @@ class Timelike(models.Model):
     
 class Dataset(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
-    data = JSONField()
+    data = JSONField(blank=True, null=True)
+    dataFile = models.FileField(upload_to='content/data', blank=True, null=True)
+    
+    def getGlobalDict(self):
+        decodedData = json.loads(json.dumps(self.data))
+        return decodedData["Global Variables"]
+    
+    def getDatasetList(self):
+        decodedData = json.loads(json.dumps(self.data))
+        return decodedData["Data Set"]
+    
+    def getGlobalVariableNames(self):
+        decodedData = json.loads(json.dumps(self.data))
+        print(decodedData["Global Variables"].keys())
+        
+        return decodedData["Global Variables"].keys()
+    
+    def getGlobalVariableValues(self):
+        decodedGlobalData = json.loads(json.dumps(self.data))["Global Variables"]
+        decodedGlobalValues = []
+        for name in self.getGlobalVariableNames():
+            decodedGlobalValues.append(decodedGlobalData[name])
+        return decodedGlobalValues
+    
+    def getDatasetVariableNames(self):
+        decodedDataSet = json.loads(json.dumps(self.data))["Data Set"][0]
+        print(decodedDataSet.keys())     
+        return decodedDataSet.keys()
 
 #These are tags to organize nodes by subject type.    
 class Tag(models.Model):
@@ -236,4 +264,25 @@ def tagSaveHelper(string):
     else:
         newTag = Tag(name=string)
         newTag.save()
-        return newTag 
+        return newTag
+
+#A helper function to serialize POST data.   
+def datasetFormatter(requestPOST):
+    globalVariableNameList = filter(None, requestPOST.getlist('globalVariableName'))
+    datasetVariableNameList = filter(None, requestPOST.getlist('datasetVariableName'))
+    globalVariableDict = {}
+    for name in globalVariableNameList:
+        globalVariableDict[name] = requestPOST[name]
+    datasetVariableList = []
+    numElements = len(requestPOST.getlist("dataSetName_"+datasetVariableNameList[0])) - 1
+    for number in range(0, numElements):
+        tempDict = {}    
+        for name in datasetVariableNameList:           
+            tempDict[name] = requestPOST.getlist("dataSetName_"+name)[number]
+        datasetVariableList.append(tempDict)
+    finalDict = {}
+    finalDict["Global Variables"] = globalVariableDict
+    finalDict["Data Set"] = datasetVariableList
+    finalJSON = json.dumps(finalDict)      
+    return finalJSON
+    

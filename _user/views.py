@@ -2,8 +2,8 @@
 # Create your views here.
 
 from django.shortcuts import render
-from _content.models import StructureNode, get_queryset_descendants, Paragraph, hashTagParser, tagSaveHelper, Image, Timelike
-from _user.forms import ParagraphFormLabbook, ImageFormLabbook, TimelikeFormLabbook
+from _content.models import StructureNode, get_queryset_descendants, Paragraph, hashTagParser, tagSaveHelper, Image, Timelike, Dataset, datasetFormatter
+from _user.forms import ParagraphFormLabbook, ImageFormLabbook, TimelikeFormLabbook, DataFormLabbook
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 
@@ -24,12 +24,13 @@ def userComment(request):
     return render(request, '_commentGarden/commentgarden.html', {'comment_list': comment_list,}) #'form':CommentForm()})
 
 @login_required
-def userLabbook(request):
+def userLabbook(request, subject_url):
 
     
     text_form = ParagraphFormLabbook()
     image_form = ImageFormLabbook()
     timelike_form = TimelikeFormLabbook()
+    data_form = DataFormLabbook()
     print(request.POST)
     if (request.method == 'POST'): #if form has been submitted
         if (request.POST['formType'] == 'textForm'):
@@ -38,9 +39,13 @@ def userLabbook(request):
             image_form = imageFormLabbookSave(request)
         elif (request.POST['formType'] == 'timelikeForm'):
             timelike_form = timelikeFormLabbookSave(request)
-                
-    labbook_list = StructureNode.objects.filter(isLabnote = True, author=request.user).exclude(content_type = None).order_by('-pubDate')            
-    return render(request, '_user/labbook.html', {'labbook_list': labbook_list, 'textForm': text_form, 'imageForm': image_form, 'timelikeForm':timelike_form,}) #'form':CommentForm()})
+        elif (request.POST['formType'] == "dataForm"):
+            dataFormLabbookSave(request)    
+    if (subject_url):            
+        labbook_list = StructureNode.objects.filter(isLabnote = True, author=request.user).exclude(content_type = None).order_by('-pubDate').filter(tag__name__iexact=subject_url)
+    else:
+        labbook_list = StructureNode.objects.filter(isLabnote = True, author=request.user).exclude(content_type = None).order_by('-pubDate')                
+    return render(request, '_user/labbook.html', {'labbook_list': labbook_list, 'textForm': text_form, 'imageForm': image_form, 'timelikeForm':timelike_form,'dataForm': data_form}) #'form':CommentForm()})
 
 def textFormLabbookSave(request):
         if (ParagraphFormLabbook(request.POST).is_valid()):
@@ -133,4 +138,31 @@ def timelikeFormLabbookSave(request):
         else:
             print("nothing is ever valid")
             return TimelikeFormLabbook(request.POST)
-    
+        
+def dataFormLabbookSave(request):
+        if (DataFormLabbook(request.POST).is_valid()):
+            tempDataset = Dataset()
+            tempDataset.data = datasetFormatter(request.POST) 
+            tempDataset.save()
+            tempStructureNode = StructureNode()
+            tempStructureNode.title = request.POST['dataFormTitle']
+            tempStructureNode.author = request.user
+            tempStructureNode.content_type = ContentType.objects.get_for_model(Dataset)
+            tempStructureNode.object_id = tempDataset.id
+            tempStructureNode.isPublished = False
+            if StructureNode.objects.order_by('-position').exists():
+                tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
+            else:
+                tempStructureNode.position = 1
+            tempStructureNode.isComment = False
+            tempStructureNode.isLabnote = True
+            tempStructureNode.save()
+            tagList = hashTagParser(request.POST['dataFormTag'])
+            for tag in tagList:
+                tempStructureNode.tag_set.add(tagSaveHelper(tag))
+            tempStructureNode.save()    
+            print("something is valid")
+            return ParagraphFormLabbook()
+        else:
+            print("nothing is ever valid")
+            return ParagraphFormLabbook(request.POST)

@@ -182,7 +182,7 @@ footer {
 }
 
 img {
-  width: 100%;
+  max-width: 100%;
 }
 
 //labbook styles
@@ -279,13 +279,13 @@ img {
     .make-column(2);
   }
   .submissionBulk {
-    
-    .make-column(7);
+    .clearfix();
+    float:left;
     padding: 15px;
-    width: 442px !important;
+    width: auto;
     background: white;
     border-radius: 4px;
-    
+    overflow: auto;
     .submissionForms{
       .textFormView, .imageFormView, .timelikeFormView{
         button{
@@ -326,7 +326,7 @@ img {
 
 .titleSubmission{
   .titleInputContainer{
-    #id_textFormTitle, #id_imageFormTitle, #id_timelikeFormTitle{
+    input{
       .form-control;
     }
 
@@ -369,5 +369,66 @@ img {
         .form-control;
       }
     }
+  }
+}
+
+.postContainer{
+  //background-color: lighten(#62A0AD, 10%);
+  .make-row();
+  margin-top:15px;
+  .postMeta{
+    .make-column(3);
+    //background-color: #62A0AD;
+    padding: 15px;
+    border-radius: 4px;
+    a{
+      color: #000;
+    }
+  }
+  
+  .postContent{
+   
+    .make-column(9);
+    padding: 15px;
+  }
+}
+
+.globalVariableSubmission{
+  .globalVariableTitle, .globalVariableInput{
+    .make-row();
+    .globalVariableName, .globalVariableNameInput{
+      float: left;
+      width: percentage(1/2);
+    }
+    .globalVariableValue, .globalVariableValueInput{
+      float: left;
+      width: percentage(1/2);
+    }
+    
+    input{
+      .form-control;
+    }
+  }
+}
+
+.dataSetSubmission{
+  margin-bottom: 15px;
+  input{
+    .form-control;
+  }
+  .dataSetSubmissionTitle, .dataSetSubmissionInput{
+    .make-row();
+    .dataSetAddNewVariableInput{
+      display:inline-block;
+      width: 140px;
+    }
+    
+    .dataSetColumn{
+      display:inline-block;
+      width: 140px;
+    }
+  }
+  .dataSetSubmissionTitle {
+    margin-bottom:15px;
   }
 }
