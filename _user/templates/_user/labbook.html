@@ -293,13 +293,14 @@ $(document).ready(function () {
 		});
 		
 		//This is to validate submission for the data set form.
-		$(".dataFormView").on("submit", "#dataForm" ,function(e){
+		$("#dataForm").on('submit', function(e){
 			//First we check that all the lines except the last are completed.
+			
 			
 			var isComplete = true;
 			for (var x=0; x < globalVariableCount - 1;x++)
 			{
-				$(".globalVariableLevel_"+i).each(function(){
+				$(".globalVariableLevel_"+x).each(function(){
 					if($(this).val().length == 0){
 						isComplete = false;
 					}
@@ -321,17 +322,16 @@ $(document).ready(function () {
 				
 			
 			if(!(isComplete)){
-					e.preventDefault();
+					
 					alert("The form is not complete.");
-					return false;
+					return false;	
 				}
 				else
 				{
 					alert("The form is complete.");
 					$(".globalVariableNameInputBox").attr("name", "globalVariableName");
 					$(".datasetTitleInputBox").attr("name", "datasetVariableName");
-					return false;
-					e.preventDefault();
+					return true;				
 				}
 		});
 		
@@ -471,7 +471,7 @@ $(document).ready(function () {
 					</form>
 				</div>
 				<div class="dataFormView">
-					<form id="dataForm" action"" method="post" enctype="multipart/form-data">
+					<form id="dataForm" action"" method="post">
 						{% csrf_token %}{{ dataForm.non_field.errors }}
 						<div class="titleSubmission">
 							{{ dataForm.dataFormTitle.errors }}
@@ -523,7 +523,7 @@ $(document).ready(function () {
 							<input type="hidden" name="formType" value="dataForm">
 							<input type="hidden" name="isLabnote" value=true>
 						</div>
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button id="dataFormButton" type="submit" class="btn btn-primary">Submit</button>
 						<button id="dataFormClose" class="btn btn-default pull-right">Close</button>	
 					</form>	
 				</div>

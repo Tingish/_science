@@ -5,6 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.template.defaultfilters import slugify
 from json_field import JSONField
+import json
 import re
 
 
@@ -237,4 +238,25 @@ def tagSaveHelper(string):
     else:
         newTag = Tag(name=string)
         newTag.save()
-        return newTag 
+        return newTag
+
+#A helper function to serialize POST data.   
+def datasetFormatter(requestPOST):
+    globalVariableNameList = filter(None, requestPOST.getlist('globalVariableName'))
+    datasetVariableNameList = filter(None, requestPOST.getlist('datasetVariableName'))
+    globalVariableDict = {}
+    for name in globalVariableNameList:
+        globalVariableDict[name] = requestPOST[name]
+    datasetVariableList = []
+    numElements = len(requestPOST.getlist("dataSetName_"+datasetVariableNameList[0])) - 1
+    for number in range(0, numElements):
+        tempDict = {}    
+        for name in datasetVariableNameList:           
+            tempDict[name] = requestPOST.getlist("dataSetName_"+name)[number]
+        datasetVariableList.append(tempDict)
+    finalDict = {}
+    finalDict["Global Variables"] = globalVariableDict
+    finalDict["Data Set"] = datasetVariableList
+    finalJSON = json.dumps(finalDict)      
+    return finalJSON
+    

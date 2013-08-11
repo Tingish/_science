@@ -2,7 +2,7 @@
 # Create your views here.
 
 from django.shortcuts import render
-from _content.models import StructureNode, get_queryset_descendants, Paragraph, hashTagParser, tagSaveHelper, Image, Timelike
+from _content.models import StructureNode, get_queryset_descendants, Paragraph, hashTagParser, tagSaveHelper, Image, Timelike, Dataset, datasetFormatter
 from _user.forms import ParagraphFormLabbook, ImageFormLabbook, TimelikeFormLabbook, DataFormLabbook
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -39,8 +39,8 @@ def userLabbook(request, subject_url):
             image_form = imageFormLabbookSave(request)
         elif (request.POST['formType'] == 'timelikeForm'):
             timelike_form = timelikeFormLabbookSave(request)
-        elif (request.POST['formType'] == "testForm"):
-            print(request.POST['addNewVariable'])    
+        elif (request.POST['formType'] == "dataForm"):
+            dataFormLabbookSave(request)    
     if (subject_url):            
         labbook_list = StructureNode.objects.filter(isLabnote = True, author=request.user).exclude(content_type = None).order_by('-pubDate').filter(tag__name__iexact=subject_url)
     else:
@@ -138,4 +138,31 @@ def timelikeFormLabbookSave(request):
         else:
             print("nothing is ever valid")
             return TimelikeFormLabbook(request.POST)
-    
+        
+def dataFormLabbookSave(request):
+        if (DataFormLabbook(request.POST).is_valid()):
+            tempDataset = Dataset()
+            tempDataset.data = datasetFormatter(request.POST) 
+            tempDataset.save()
+            tempStructureNode = StructureNode()
+            tempStructureNode.title = request.POST['dataFormTitle']
+            tempStructureNode.author = request.user
+            tempStructureNode.content_type = ContentType.objects.get_for_model(Dataset)
+            tempStructureNode.object_id = tempDataset.id
+            tempStructureNode.isPublished = False
+            if StructureNode.objects.order_by('-position').exists():
+                tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
+            else:
+                tempStructureNode.position = 1
+            tempStructureNode.isComment = False
+            tempStructureNode.isLabnote = True
+            tempStructureNode.save()
+            tagList = hashTagParser(request.POST['dataFormTag'])
+            for tag in tagList:
+                tempStructureNode.tag_set.add(tagSaveHelper(tag))
+            tempStructureNode.save()    
+            print("something is valid")
+            return ParagraphFormLabbook()
+        else:
+            print("nothing is ever valid")
+            return ParagraphFormLabbook(request.POST)
