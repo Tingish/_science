@@ -6,7 +6,7 @@ from _content.models import StructureNode, get_queryset_descendants, Paragraph, 
 from _user.forms import ParagraphFormLabbook, ImageFormLabbook, TimelikeFormLabbook, DataFormLabbook
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-
+from django.http import HttpResponseRedirect
 
 @login_required
 def userDashboard(request):
@@ -22,6 +22,12 @@ def userComment(request):
     comment_list = StructureNode.objects.filter(isPublished = False)
     
     return render(request, '_commentGarden/commentgarden.html', {'comment_list': comment_list,}) #'form':CommentForm()})
+
+@login_required
+def userSearchForm(request):
+    if (request.method == 'POST'):
+        return HttpResponseRedirect('/user/labbook/'+request.POST['search'])
+
 
 @login_required
 def userLabbook(request, subject_url):
