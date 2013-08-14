@@ -46,7 +46,7 @@ def userLabbook(request, subject_url):
         elif (request.POST['formType'] == 'timelikeForm'):
             timelike_form = timelikeFormLabbookSave(request)
         elif (request.POST['formType'] == "dataForm"):
-            dataFormLabbookSave(request)    
+            data_form = dataFormLabbookSave(request)    
     if (subject_url):            
         labbook_list = StructureNode.objects.filter(isLabnote = True, author=request.user).exclude(content_type = None).order_by('-pubDate').filter(tag__name__iexact=subject_url)
     else:
@@ -170,5 +170,5 @@ def dataFormLabbookSave(request):
             print("something is valid")
             return DataFormLabbook()
         else:
-            print("nothing is ever valid")
+            print("nothing is ever valid data")
             return DataFormLabbook(request.POST)
