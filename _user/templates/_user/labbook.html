@@ -17,11 +17,12 @@ $(document).ready(function () {
 	           "{{ StructureNode.content_object.linkSource }}" );
 		{% endif %}
 	{% endfor %}
-
+		
 		$(".textFormView").hide();
 		$(".imageFormView").hide();
 		$(".timelikeFormView").hide();
 		$(".dataFormView").hide();
+	
 		$("#text-submit").click(function(){
 			$(".textFormView").show();
 			$(".submissionMenu").hide();
@@ -62,6 +63,18 @@ $(document).ready(function () {
 			$(".submissionBulk").width(412);
 		});
 		
+		{% if textForm.is_bound %}
+		$("#text-submit").click();
+		{% endif %}
+		{% if iamgeForm.is_bound %}
+		$("#image-submit").click();
+		{% endif %}
+		{% if timelikeForm.is_bound %}
+		$("#timelike-submit").click();
+		{% endif %}
+		{% if dataForm.is_bound %}
+		$("#data-submit").click();
+		{% endif %}
 		// The following code is for the data set form.
 		//Here are the variables relevant to the form.
 		var globalVariableCount = 1;

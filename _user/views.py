@@ -168,7 +168,7 @@ def dataFormLabbookSave(request):
                 tempStructureNode.tag_set.add(tagSaveHelper(tag))
             tempStructureNode.save()    
             print("something is valid")
-            return ParagraphFormLabbook()
+            return DataFormLabbook()
         else:
             print("nothing is ever valid")
-            return ParagraphFormLabbook(request.POST)
+            return DataFormLabbook(request.POST)
