@@ -311,6 +311,9 @@ $(document).ready(function () {
 			
 			
 			var isComplete = true;
+			if ($("#id_dataFormTitle").val().length == 0){
+				isComplete = false;
+			}
 			for (var x=0; x < globalVariableCount - 1;x++)
 			{
 				$(".globalVariableLevel_"+x).each(function(){
