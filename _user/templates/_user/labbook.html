@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends '_user/userBase.html' %}
 {% load mptt_tags %}
 {% load staticfiles %}
 
@@ -615,7 +615,5 @@ $(document).ready(function () {
 	{% endfor %}
 {% endblock %}
 
-{% block sideContent %}
-{% include '_user/userSidebar.html' %}
-{% endblock %}
+
 
