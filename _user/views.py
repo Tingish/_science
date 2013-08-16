@@ -24,6 +24,11 @@ def userComment(request):
     return render(request, '_commentGarden/commentgarden.html', {'comment_list': comment_list,}) #'form':CommentForm()})
 
 @login_required
+def userPublish(request):
+    
+    return render(request, '_user/publish.html')
+
+@login_required
 def userSearchForm(request):
     if (request.method == 'POST'):
         return HttpResponseRedirect('/user/labbook/'+request.POST['search'])
