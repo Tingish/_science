@@ -4471,13 +4471,26 @@ body {
   margin-left: 0;
   margin-right: 0;
 }
+.commentFlowerContainer .commentFlowerHead {
+  width: 99%;
+  overflow: hidden;
+}
 .commentFlowerContainer .commentFlowerHead div {
-  display: inline;
+  display: block;
   margin: 1px;
 }
-.commentFlowerContainer .commentFlowerHeadButtons {
+.commentFlowerContainer .commentFlowerHead .commentFlowerHeadTitle {
+  width: 89%;
+  float: left;
+  overflow: hidden;
+  border: 1px solid red;
+  padding: -1px;
+}
+.commentFlowerContainer .commentFlowerHead .commentFlowerHeadButtons {
+  width: 9%;
   float: right;
-  border: 1px;
+  border: 1px solid red;
+  padding: -1px;
 }
 .commentFlowerContainer .commentFlowerMeta {
   position: relative;

@@ -14,22 +14,33 @@
 	<div class="gardenPlot">
 		{% recursetree comment_list %}
      		{% if node.isTypeNone and node.isPublished == False and not node.is_root_node %}
-				{% if not node.get_previous_sibling %}<div class='commentFlowerContainer {{ node.slug }}'><div class="commentFlowerHead"><div>THIS IS THE MAIN TITLE</div><div class="commentFlowerHeadButtons"><a href="%">_</a> <a href="%">x</a></div></div>{% endif %}
-					<div class='commentFlowerMeta'>
-						<h5>{{node.pubDate|date}} {{node.mptt_level}}</h5>
-						<h5>{{node.title}}</h5>
-						{% if node.author %}
-						<h5>{{node.author.name}}</h5>
-						{% endif %}
-					</div>
+				{% if not node.get_previous_sibling %}
+					<div class='commentFlowerContainer {{ node.slug }}'>
+						<div class="commentFlowerHead">
+							<div class="commentFlowerHeadTitle">{{node.parent.title}}
+							</div>
+							<div class="commentFlowerHeadButtons">
+								<a href="#" onclick="$($(this).parent().parent().parent()).children('div.commentFlowerContent').hide()">_</a>
+								<a href="#" onclick="$($(this).parents('.commentFlowerContainer')).remove()">x</a>
+							</div>
+						</div>
+				{% endif %}
+						<div class='commentFlowerMeta'>
+							<p>{{node.pubDate|date}} {{node.mptt_level}}</p>
+							<p>{{node.title}}</p>
+							{% if node.author %}
+							<p>{{node.author.name}}</p>
+							{% endif %}
+						</div>
 					
 						{% if not node.is_leaf_node %}
-							<div class='commentFlowerContent'>
+						<div class='commentFlowerContent'>
 	        				{{ children }}
-	        				</div>
+	        			</div>
 	        			{% endif %}
 	        		
-	        	{% if not node.get_next_sibling %}</div>{% endif %}		
+			        	{% if not node.get_next_sibling %}
+	        		</div>{% endif %}		
 	    	{% elif node.isTypeParagraph and node.isPublished == False and not node.is_root_node %}
 	    		<div class='contentContainerParagragh {{ node.slug }}'>       
 	        	   <p>This is a Paragraph.

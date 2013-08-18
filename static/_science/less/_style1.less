@@ -135,13 +135,26 @@ body {
   font-size: smaller;
   display: block;
   .make-row();
-  .commentFlowerHead div{
-    display: inline;
-    margin: 1px;
-  }
-  .commentFlowerHeadButtons {
-    float: right;
-    border: 1px;
+  .commentFlowerHead {
+    width: 99%;
+    overflow: hidden;
+    div{
+      display: block;
+      margin: 1px;
+    }
+    .commentFlowerHeadTitle{
+      width: 89%;
+      float: left;
+      overflow: hidden;
+      border: 1px solid red;
+      padding: -1px;
+    }    
+    .commentFlowerHeadButtons {
+      width: 9%;
+      float: right;
+      border: 1px solid red;
+      padding: -1px;
+    }
   }
   .commentFlowerMeta{
     .make-column(12);
