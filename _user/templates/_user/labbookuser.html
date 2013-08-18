@@ -1,0 +1,98 @@
+{% extends '_user/userBase.html' %}
+{% load mptt_tags %}
+{% load staticfiles %}
+
+{% block title %}
+{{ user.username }} | Labbook
+{% endblock %}
+
+{% block head %}
+<script src="{%	static 'popcorn/js/popcorn-complete.min.js' %}"></script>
+<script>
+$(document).ready(function () {
+	{% for StructureNode in labbook_list %}
+		{% if StructureNode.isTypeTimelike %}
+			var timenode{{ StructureNode.id }}video{{ StructureNode.content_object.id }} = Popcorn.youtube(
+	           ".node{{ StructureNode.id }}video{{ StructureNode.content_object.id }}",
+	           "{{ StructureNode.content_object.linkSource }}" );
+		{% endif %}
+	{% endfor %}
+
+				
+	});
+</script>
+{% endblock %}
+
+{% block content %}
+	
+
+	{% for StructureNode in labbook_list %}
+		
+		<div class="postContainer">
+			<div class="postMeta">
+				{% ifchanged StructureNode.pubDate.date %} <h5>{{ StructureNode.pubDate|date }}</h5> {% endifchanged %}
+				<h5>{{ StructureNode.pubDate|time }}</h5>
+				<p>{{ StructureNode.title }}</p>{% if StructureNode.tag_set.all %}<p>{% for tag in StructureNode.tag_set.all %}<a href={% url 'userLabbook' userName|tag.name %}>#{{ tag.name }} </a>{% endfor %}</p>{% endif %}
+			</div>
+			
+			<div class="postContent">
+				{% if StructureNode.isTypeParagraph %}
+				<p>{{ StructureNode.content_object.text }}</p>
+				{% elif StructureNode.isTypeImage %}
+					{% if StructureNode.content_object.isLinkSource %}
+		    			<p>This is from a link.</p><div class='contentContainerImage {{ StructureNode.slug }}'><img src={{ StructureNode.content_object.linkSource }} alt="" /></div>
+		    		{% elif StructureNode.content_object.isLocalSource  %}
+		    			<p>This is local.</p> <div class='contentContainerImage {{ StructureNode.slug }}'><img src={{ StructureNode.content_object.localSource.url }} alt="" /></div> 
+		    		{% endif %}
+				{% elif StructureNode.isTypeTimelike %}					 
+		    		<p>This is a Timelike.</p>
+		    		{% if not StructureNode.content_object.isLinkSource%}
+		    			<p>This is from a link.</p> <div class="node{{ StructureNode.id }}video{{ StructureNode.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
+		    		{% elif StructureNode.content_object.isLocalSource %}
+		    			<p>This is local.</p>
+		    		{% endif %}	
+		    	{% elif StructureNode.isTypeDataset %}
+		    		<h3>Constants</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>		    					
+		    					{% for key, value in StructureNode.content_object.getGlobalDict.items %}
+		    						<th>{{ key }}</th>
+		    					{% endfor %}		    					
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				<tr>		    					
+		    					{% for key, value in StructureNode.content_object.getGlobalDict.items %}
+		    						<td>{{ value }}</td>
+		    					{% endfor %}
+		    				</tr>
+		    			</tbody>			
+		    		</table>
+		    		<h3>Data Set</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>
+		    					{% for key in StructureNode.content_object.getDatasetVariableNames %}		    						
+		    						<th>{{ key }}</th>		    						
+		    					{% endfor %}
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				{% for Dict in StructureNode.content_object.getDatasetList %}
+		    				<tr>		    							    					
+		    						{% for key, value in Dict.items %}
+		    						<td>{{ value }}</td>
+		    						{% endfor %}
+		    				</tr>
+		    				{% endfor %}
+		    			</tbody>	
+		    		</table>			
+				{% endif %}
+			</div>	
+		</div>	
+	{% endfor %}
+{% endblock %}
+
+
+

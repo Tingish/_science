@@ -33,6 +33,8 @@ class StructureNode(MPTTModel):
     start = models.PositiveIntegerField(blank=True, null=True)
     end = models.PositiveIntegerField(blank=True, null=True)
     isLabnote = models.BooleanField()
+    isSubhead = models.BooleanField()
+    isBlockquote = models.BooleanField()
     
     
     
@@ -140,6 +142,7 @@ class ViewCount(models.Model):
 class Paragraph(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
     text = models.TextField()
+    
     
     def __str__(self):
         if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":

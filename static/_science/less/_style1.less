@@ -35,7 +35,7 @@ body {
   .make-row();
   .sideContainer{
     .make-column(3);
-    
+    z-index: -1;
     .commentContainer {
         .make-row();
         
@@ -286,6 +286,7 @@ img {
     background: white;
     border-radius: 4px;
     overflow: auto;
+    z-index: 100;
     .submissionForms{
       .textFormView, .imageFormView, .timelikeFormView{
         button{
@@ -456,4 +457,8 @@ img {
     width: auto;
   }
   
+}
+
+#searchFormButton{
+  padding: 8px 8px;
 }
