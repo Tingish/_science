@@ -179,7 +179,7 @@ def userLabbookDataForm(request, subject_url=None):
         image_form = ImageFormLabbook()
         timelike_form = TimelikeFormLabbook()
         data_form = DataFormLabbook(request.POST)
-        if textFormLabbookSave(request):
+        if dataFormLabbookSave(request):
             return HttpResponseRedirect('/user/labbook/')
         else:
             if (subject_url):            
