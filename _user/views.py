@@ -3,7 +3,7 @@
 
 from django.shortcuts import render
 from _content.models import StructureNode, get_queryset_descendants, Paragraph, hashTagParser, tagSaveHelper, Image, Timelike, Dataset, datasetFormatter
-from _user.forms import ParagraphFormLabbook, ImageFormLabbook, TimelikeFormLabbook, DataFormLabbook
+from _user.forms import ParagraphFormLabbook, ImageFormLabbook, TimelikeFormLabbook, DataFormLabbook, PublishForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
@@ -26,8 +26,95 @@ def userComment(request):
 
 @login_required
 def userPublish(request):
-    
-    return render(request, '_user/publish.html', { })
+    labbook_imageNode_list = StructureNode.objects.filter(isLabnote = True, author=request.user, content_type__model='image') #when filtering model must be lower case.
+    labbook_timelikeNode_list = StructureNode.objects.filter(isLabnote = True, author=request.user, content_type__model='timelike')
+    labbook_dataNode_list = StructureNode.objects.filter(isLabnote = True, author=request.user, content_type__model='dataset')
+    publishForm = PublishForm()
+    if (request.method == 'POST'):
+        print(request.POST)
+        publishForm = PublishForm(request.POST)
+        if (publishForm.is_valid()):
+            experimentNode = StructureNode()
+            experimentNode.title = request.POST['publishFormTitle']
+            experimentNode.author = request.user
+            experimentNode.isPublished = True
+            experimentNode.position = getPositionForRoots()
+            experimentNode.save()
+            tagList = hashTagParser(request.POST['publishFormTag'])
+            for tag in tagList:
+                experimentNode.tag_set.add(tagSaveHelper(tag))
+            experimentNode.save()
+            for sectionNodeIndex in range(0, int(request.POST['numberOfSections'])):
+                sectionNode = StructureNode()
+                sectionNode.title = request.POST['section_title_'+str(sectionNodeIndex)]
+                sectionNode.parent = experimentNode
+                sectionNode.author = request.user
+                sectionNode.isPublished = True
+                sectionNode.position = sectionNodeIndex + 1
+                sectionNode.save()
+                for tag in tagList:
+                    sectionNode.tag_set.add(tagSaveHelper(tag))
+                sectionNode.save()
+                for contentNodeIndex in range(0, int(request.POST['numberOfContentSections_'+str(sectionNodeIndex)])):
+                    contentNode = StructureNode()
+                    contentNode.title = request.POST['section_title_'+str(sectionNodeIndex)] +"_content_"+str(contentNodeIndex)
+                    contentNode.parent = sectionNode
+                    contentNode.author = request.user
+                    contentNode.isPublished = True
+                    contentNode.position = contentNodeIndex +1
+                    if (request.POST['contentType_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)] == "textContent"):
+                        tempParagraph = Paragraph()
+                        tempParagraph.text = request.POST['text_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)]
+                        tempParagraph.save()
+                        contentNode.content_type = ContentType.objects.get_for_model(Paragraph)
+                        contentNode.object_id = tempParagraph.id                        
+                        contentNode.save()
+                    elif (request.POST['contentType_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)] == "imageContent"):
+                        contentNode.content_type = ContentType.objects.get_for_model(Image)
+                        if (request.POST.get('imageInputLinkSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex))):
+                            tempImage = Image()
+                            tempImage.linkSource = request.POST['imageInputLinkSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)]
+                            tempImage.save()
+                            contentNode.object_id = tempImage.id
+                            print("first")
+                        elif (request.FILES.get('imageInputLocalSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex))):
+                            tempImage = Image()
+                            tempImage.localSource = request.FILES['imageInputLocalSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)]
+                            tempImage.save()
+                            contentNode.object_id = tempImage.id
+                            print("second")
+                        elif (request.POST.get('imageInputLabbookSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex))):
+                            contentNode.object_id = int(request.POST['imageInputLabbookSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)])
+                            print("third")
+                        contentNode.save()
+                    elif (request.POST['contentType_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)] == "timelikeContent"):
+                        contentNode.content_type = ContentType.objects.get_for_model(Timelike)
+                        if (request.POST.get('timelikeInputLinkSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex))):
+                            tempTimelike = Timelike()
+                            tempTimelike.linkSource = request.POST['timelikeInputLinkSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)]
+                            tempTimelike.save()
+                            contentNode.object_id = tempTimelike.id
+                            print("first")
+                        elif (request.FILES.get('timelikeInputLocalSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex))):
+                            tempTimelike = Timelike()
+                            tempTimelike.localSource = request.FILES['timelikeInputLocalSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)]
+                            tempTimelike.save()
+                            contentNode.object_id = tempTimelike.id
+                            print("second")
+                        elif (request.POST.get('timelikeInputLabbookSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex))):
+                            contentNode.object_id = int(request.POST['timelikeInputLabbookSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)])
+                            print("third")
+                        contentNode.save()
+                    elif (request.POST['contentType_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)] == "dataContent"):
+                        contentNode.content_type = ContentType.objects.get_for_model(Dataset)
+                        if (request.POST.get('dataInputLabbookSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex))):
+                            contentNode.object_id = int(request.POST['dataInputLabbookSource_section_content_'+str(sectionNodeIndex)+"_"+str(contentNodeIndex)])
+                        contentNode.save()
+                    for tag in tagList:
+                        contentNode.tag_set.add(tagSaveHelper(tag))
+                    contentNode.save()
+                        
+    return render(request, '_user/publish.html', {'publishForm':publishForm, 'labbook_imageNode_list': labbook_imageNode_list, 'labbook_timelikeNode_list': labbook_timelikeNode_list, 'labbook_dataNode_list': labbook_dataNode_list, })
 
 @login_required
 def userSearchForm(request):
@@ -54,6 +141,7 @@ def userLabbookTextForm(request, subject_url=None):
          
 @login_required
 def userLabbookImageForm(request, subject_url=None):
+    print request.POST
     if (request.method == 'POST'):
         text_form = ParagraphFormLabbook()
         image_form = ImageFormLabbook(request.POST)
@@ -134,10 +222,7 @@ def textFormLabbookSave(request):
             tempStructureNode.content_type = ContentType.objects.get_for_model(Paragraph)
             tempStructureNode.object_id = tempParagraph.id
             tempStructureNode.isPublished = False
-            if StructureNode.objects.order_by('-position').exists():
-                tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
-            else:
-                tempStructureNode.position = 1
+            tempStructureNode.position = getPositionForRoots()
             tempStructureNode.isComment = False
             tempStructureNode.isLabnote = True
             tempStructureNode.save()
@@ -165,11 +250,7 @@ def imageFormLabbookSave(request):
             tempStructureNode.content_type = ContentType.objects.get_for_model(Image)
             tempStructureNode.object_id = tempImage.id
             tempStructureNode.isPublished = False
-            if StructureNode.objects.order_by('-position').exists():
-                tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
-            else:
-                tempStructureNode.position = 1
-            tempStructureNode.isComment = False
+            tempStructureNode.position = getPositionForRoots()
             tempStructureNode.isComment = False
             tempStructureNode.isLabnote = True
             tempStructureNode.save()
@@ -197,11 +278,7 @@ def timelikeFormLabbookSave(request):
             tempStructureNode.content_type = ContentType.objects.get_for_model(Timelike)
             tempStructureNode.object_id = tempTimelike.id
             tempStructureNode.isPublished = False
-            if StructureNode.objects.order_by('-position').exists():
-                tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
-            else:
-                tempStructureNode.position = 1
-            tempStructureNode.isComment = False
+            tempStructureNode.position = getPositionForRoots()
             tempStructureNode.isComment = False
             tempStructureNode.isLabnote = True
             tempStructureNode.save()
@@ -225,11 +302,8 @@ def dataFormLabbookSave(request):
             tempStructureNode.author = request.user
             tempStructureNode.content_type = ContentType.objects.get_for_model(Dataset)
             tempStructureNode.object_id = tempDataset.id
-            tempStructureNode.isPublished = False
-            if StructureNode.objects.order_by('-position').exists():
-                tempStructureNode.position = StructureNode.objects.order_by('-position')[0].position+1
-            else:
-                tempStructureNode.position = 1
+            tempStructureNode.isPublished = False            
+            tempStructureNode.position = getPositionForRoots()
             tempStructureNode.isComment = False
             tempStructureNode.isLabnote = True
             tempStructureNode.save()
@@ -242,3 +316,9 @@ def dataFormLabbookSave(request):
         else:
             print("nothing is ever valid data")
             return False
+        
+def getPositionForRoots():
+    if StructureNode.objects.filter(mptt_level=0).exists():
+        return StructureNode.objects.filter(mptt_level=0).order_by('-position')[0].position+1
+    else:
+        return 1

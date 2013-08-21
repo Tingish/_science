@@ -4,12 +4,12 @@ from _content.models import StructureNode, Timelike
 from django.http import Http404
 
 def index(request):
-    timelike_list = Timelike.objects.order_by('-id')
-    tree_list = StructureNode.objects.all()
-    return render(request, '_article/article.html', {'nodes':tree_list, 'timelike_list':timelike_list})
+   
+    tree_list = StructureNode.objects.filter(isPublished=True)
+    return render(request, '_article/article.html', {'nodes':tree_list, })
 
 def getArticle(request, article_url):
-    timelike_list = Timelike.objects.order_by('-id')
+    
     print(article_url)
     #creating a tree with ancestors and descendents of a node.
     try:
@@ -21,4 +21,4 @@ def getArticle(request, article_url):
     except StructureNode.DoesNotExist:
         raise Http404
     
-    return render(request, '_article/article.html', {'nodes':tree_list, 'timelike_list':timelike_list})
+    return render(request, '_article/article.html', {'nodes':tree_list,})

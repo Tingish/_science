@@ -66,7 +66,7 @@ $(document).ready(function () {
 		{% if textForm.is_bound %}
 		$("#text-submit").click();
 		{% endif %}
-		{% if iamgeForm.is_bound %}
+		{% if imageForm.is_bound %}
 		$("#image-submit").click();
 		{% endif %}
 		{% if timelikeForm.is_bound %}
@@ -408,7 +408,7 @@ $(document).ready(function () {
 					
 				</div>
 				<div class="imageFormView">
-					<form id="imageForm" action{% if subject_url %}{% url 'userLabbookImageForm' subject_url %}{% else %}{% url 'userLabbookImageForm' %}{% endif %} method="post" enctype="multipart/form-data">
+					<form id="imageForm" action={% if subject_url %}{% url 'userLabbookImageForm' subject_url %}{% else %}{% url 'userLabbookImageForm' %}{% endif %} method="post" enctype="multipart/form-data">
 						{% csrf_token %}{{ imageForm.non_field.errors }}
 						<div class="titleSubmission">
 							{{ imageForm.imageFormTitle.errors }}
@@ -450,7 +450,7 @@ $(document).ready(function () {
 					</form>
 				</div>
 				<div class="timelikeFormView">
-					<form id="timelikeForm" action{% if subject_url %}{% url 'userLabbookTimelikeForm' subject_url %}{% else %}{% url 'userLabbookTimelikeForm' %}{% endif %} method="post" enctype="multipart/form-data">
+					<form id="timelikeForm" action={% if subject_url %}{% url 'userLabbookTimelikeForm' subject_url %}{% else %}{% url 'userLabbookTimelikeForm' %}{% endif %} method="post" enctype="multipart/form-data">
 						{% csrf_token %}{{ timelikeForm.non_field.errors }}
 						<div class="titleSubmission">
 							{{ timelikeForm.timelikeFormTitle.errors }}
@@ -572,7 +572,7 @@ $(document).ready(function () {
 		    		{% endif %}
 				{% elif StructureNode.isTypeTimelike %}					 
 		    		<p>This is a Timelike.</p>
-		    		{% if not StructureNode.content_object.isLinkSource%}
+		    		{% if StructureNode.content_object.isLinkSource%}
 		    			<p>This is from a link.</p> <div class="node{{ StructureNode.id }}video{{ StructureNode.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
 		    		{% elif StructureNode.content_object.isLocalSource %}
 		    			<p>This is local.</p>

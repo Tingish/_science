@@ -43,8 +43,8 @@
 			<h2>{{ StructureNode.title }}</h2>
 			<p>{{ StructureNode.pubDate|date }}</p>
 			
-				{% if StructureNode.getNearestAbstractImage %}<div class="previewThumbnail"><img src={{ StructureNode.getNearestAbstractImage.localSource.url }} class="img-rounded" alt="" /></div>
-				<div class="previewParagraphWImage">{{ StructureNode.commentCount }}{{ StructureNode.getNearestAbstractParagraph }}</div>
+				{% if StructureNode.getNearestAbstractImage %}<div class="previewThumbnail"><img src={% if StructureNode.getNearestAbstractImage.localSource %}{{ StructureNode.getNearestAbstractImage.localSource.url }}{% else %}{{ StructureNode.getNearestAbstractImage.linkSource }}{% endif %} class="img-rounded" alt="" /></div>
+				<div class="previewParagraphWImage">{{ StructureNode.getNearestAbstractParagraph }}</div>
 				{% else %}<div class="previewParagraph">{{ StructureNode.getNearestAbstractParagraph }}</div>{% endif %}
 				<button type="button" class="btn btn-comment homeCommentPosition" id="{{ StructureNode.slug }}CommentButton">{{ StructureNode.commentCount }}</button>
 			</div>

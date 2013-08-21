@@ -5,13 +5,249 @@
 {% endblock %}
 
 {% block head %}
+<script>
+$(document).ready(function () {
+	var sectionCounter = 1;
+	
+	function nameSetterFunction(contentInputContainer, thisSectionPosition, thisSectionContentCounter){
+		var $child = $(contentInputContainer).children();
+		if ($child.hasClass("textSubmission")){
+			var $thisTextarea = $child.find("textarea");
+			var newName = "text_section_content_"+thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisTextarea.attr("name", newName);
+			var $thisContentType = $child.find(".contentType");
+			var contentTypeName = "contentType_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisContentType.attr("name", contentTypeName);
+		}
+		else if($child.hasClass("imageSubmission")){
+			var $thisContentType = $child.find(".contentType");
+			var contentTypeName = "contentType_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisContentType.attr("name", contentTypeName);
+			var $thisLocalSubmit = $child.find(".imageInputLocalSource");
+			var localSubmitNewName = "imageInputLocalSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLocalSubmit.attr("name", localSubmitNewName);
+			var $thisLinkSubmit = $child.find(".imageInputLinkSource");
+			var linkSubmitNewName = "imageInputLinkSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLinkSubmit.attr("name", linkSubmitNewName);
+			var $thisLabbookSubmit = $child.find(".imageInputLabbookSource");
+			var labbookSubmitNewName = "imageInputLabbookSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLabbookSubmit.attr("name", labbookSubmitNewName );
+		}
+		else if($child.hasClass("timelikeSubmission")){
+			var $thisContentType = $child.find(".contentType");
+			var contentTypeName = "contentType_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisContentType.attr("name", contentTypeName);
+			var $thisLocalSubmit = $child.find(".timelikeInputLocalSource");
+			var localSubmitNewName = "timelikeInputLocalSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLocalSubmit.attr("name", localSubmitNewName);
+			var $thisLinkSubmit = $child.find(".timelikeInputLinkSource");
+			var linkSubmitNewName = "timelikeInputLinkSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLinkSubmit.attr("name", linkSubmitNewName);
+			var $thisLabbookSubmit = $child.find(".timelikeInputLabbookSource");
+			var labbookSubmitNewName = "timelikeInputLabbookSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLabbookSubmit.attr("name", labbookSubmitNewName );
+		}
+		else if($child.hasClass("dataSubmission")){
+			var $thisContentType = $child.find(".contentType");
+			var contentTypeName = "contentType_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisContentType.attr("name", contentTypeName);
+			var $thisLabbookSubmit = $child.find(".dataInputLabbookSource");
+			var labbookSubmitNewName = "dataInputLabbookSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLabbookSubmit.attr("name", labbookSubmitNewName );
+		}
+		
+	}
+	
+	//Sets up the buttons for images
+	$("#publishForm").on("click", ".btn-upload", function(){
+		var $thisParent = $(this).parents(".contentInputContainer");
+		$thisParent.find(".localSourceSubmission").show();
+		$thisParent.find(".linkSourceSubmission").hide();
+		$thisParent.find(".labbookSourceSubmission").hide();
+		$thisParent.find(".inputLinkSource").val("");
+		var $thisAlsoNeedsReset = $thisParent.find(".inputLabbookSource");
+		$thisAlsoNeedsReset.prop('selectedIndex',0);
+		
+	});
+	
+	$("#publishForm").on("click", ".btn-link", function(){
+		var $thisParent = $(this).parents(".contentInputContainer");
+		$thisParent.find(".localSourceSubmission").hide();
+		$thisParent.find(".linkSourceSubmission").show();
+		$thisParent.find(".labbookSourceSubmission").hide();
+		var $thisNeedsReset = $thisParent.find(".inputLocalSource");
+		$thisNeedsReset.replaceWith( $thisNeedsReset = $thisNeedsReset.clone(true) );
+		var $thisAlsoNeedsReset = $thisParent.find(".inputLabbookSource");
+		$thisAlsoNeedsReset.prop('selectedIndex',0);
+	});
+	
+	$("#publishForm").on("click", ".btn-labbook", function(){
+		var $thisParent = $(this).parents(".contentInputContainer");
+		$thisParent.find(".localSourceSubmission").hide();
+		$thisParent.find(".linkSourceSubmission").hide();
+		$thisParent.find(".labbookSourceSubmission").show();
+		var $thisNeedsReset = $thisParent.find(".inputLocalSource");
+		$thisNeedsReset.replaceWith( $thisNeedsReset = $thisNeedsReset.clone(true) );
+		$thisParent.find(".inputLinkSource").val("");
+	});
+	
+	//sets up dataset buttons
+	$("#publishForm").on("click", ".btn-labbook-data", function(){
+		var $thisParent = $(this).parents(".contentInputContainer");
+		$thisParent.find(".manualSubmission").hide();
+		$thisParent.find(".labbookSourceSubmission").show();
+	});
+	
+	$("#publishForm").on("click", ".btn-manual-data", function(){
+		var $thisParent = $(this).parents(".contentInputContainer");
+		$thisParent.find(".manualSubmission").show();
+		$thisParent.find(".labbookSourceSubmission").hide();
+		var $thisNeedsReset = $thisParent.find(".inputLabbookSource");
+		$thisNeedsReset.prop('selectedIndex',0);
+	});
+	
+	//A function to bind the helper menu.
+	function helperMenuFunction(targetDiv){
+		$(".publishFormHelperMenu").on("click","#textContentButton", function(){
+			targetDiv.after('<div class="contentInputContainer"><div class="textSubmission"><div class="textInputContainer"><textarea class="form=control" rows="10" ></textarea></div><div class="hiddenfield"><input type="hidden" class="contentType" value="textContent"></div></div></div><div class="emptyContentContainer">Click to Add Content Here</div>');
+			var thisSectionPosition = targetDiv.parents(".sectionSubmission").find(".class_sectionPosition").val();
+			var thisSectionContentCounter = 0;
+			targetDiv.parents(".sectionSubmission").find(".contentInputContainer").each(function(){
+				nameSetterFunction(this, thisSectionPosition, thisSectionContentCounter);
+				thisSectionContentCounter++;
+			});
+			
+			targetDiv.parents(".sectionSubmission").find(".class_numberOfContentSections").val(thisSectionContentCounter);	
+		});
+		$(".publishFormHelperMenu").on("click","#imageContentButton", function(){
+			targetDiv.after('<div class="contentInputContainer"><div class="imageSubmission"><div class="imageInputContainer"><h3>Submit<div class="selectSource"><button type="button" class="btn btn-upload">Upload an Image</button><button type="button" class="btn btn-link">Link to an Image</button>{% if labbook_imageNode_list %}<button type="button" class="btn btn-labbook">Choose Image from Labbook</button>{% endif %}</div></h3><div class="localSourceSubmission"><div class="localSourceInputContainer"><input class="imageInputLocalSource inputLocalSource" id="id_imageFormLocalSource" type="file" /></div></div><div class="linkSourceSubmission"><div class="linkSourceInputContainer"><input id="id_imageFormLinkSource" class="imageInputLinkSource inputLinkSource" placeholder="Enter URL of image." type="text" /></div></div>{% if labbook_imageNode_list %}<div class="labbookSourceSubmission"><div class="labbookSourceInputContainer"><select class="imageInputLabbookSource inputLabbookSource" id="id_imageFormLabbookSource" ><option value="" selected="selected">---------</option>{% for imageNode in labbook_imageNode_list %}<option value="{{ imageNode.object_id }}">{{ imageNode.title }}</option>{% endfor %}</select></div></div>{% endif %}</div><div class="hiddenfield"><input type="hidden" class="contentType" value="imageContent"></div></div></div><div class="emptyContentContainer">Click to Add Content Here</div>');
+			var $newContentInputContainer = targetDiv.next();
+			$newContentInputContainer.find(".localSourceSubmission").hide();
+			$newContentInputContainer.find(".linkSourceSubmission").hide();
+			$newContentInputContainer.find(".labbookSourceSubmission").hide();
+			var thisSectionPosition = targetDiv.parents(".sectionSubmission").find(".class_sectionPosition").val();
+			var thisSectionContentCounter = 0;
+			targetDiv.parents(".sectionSubmission").find(".contentInputContainer").each(function(){
+				nameSetterFunction(this, thisSectionPosition, thisSectionContentCounter);
+				thisSectionContentCounter++;
+			});
+			
+			targetDiv.parents(".sectionSubmission").find(".class_numberOfContentSections").val(thisSectionContentCounter);
+		});
+		$(".publishFormHelperMenu").on("click","#videoContentButton", function(){
+			targetDiv.after('<div class="contentInputContainer"><div class="timelikeSubmission"><div class="timelikeInputContainer"><h3>Submit<div class="selectSource"><button type="button" class="btn btn-upload">Upload an Video</button><button type="button" class="btn btn-link">Link to an Video</button>{% if labbook_timelikeNode_list %}<button type="button" class="btn btn-labbook">Choose Video from Labbook</button>{% endif %}</div></h3><div class="localSourceSubmission"><div class="localSourceInputContainer"><input class="timelikeInputLocalSource inputLocalSource" id="id_timelikeFormLocalSource" type="file" /></div></div><div class="linkSourceSubmission"><div class="linkSourceInputContainer"><input id="id_timelikeFormLinkSource" class="timelikeInputLinkSource inputLinkSource" placeholder="Enter URL of Video." type="text" /></div></div>{% if labbook_timelikeNode_list %}<div class="labbookSourceSubmission"><div class="labbookSourceInputContainer"><select class="timelikeInputLabbookSource inputLabbookSource" id="id_timelikeFormLabbookSource" ><option value="" selected="selected">---------</option>{% for timelikeNode in labbook_timelikeNode_list %}<option value="{{ timelikeNode.object_id }}">{{ timelikeNode.title }}</option>{% endfor %}</select></div></div>{% endif %}</div><div class="hiddenfield"><input type="hidden" class="contentType" value="timelikeContent"></div></div></div><div class="emptyContentContainer">Click to Add Content Here</div>');
+			var $newContentInputContainer = targetDiv.next();
+			$newContentInputContainer.find(".localSourceSubmission").hide();
+			$newContentInputContainer.find(".linkSourceSubmission").hide();
+			$newContentInputContainer.find(".labbookSourceSubmission").hide();
+			var thisSectionPosition = targetDiv.parents(".sectionSubmission").find(".class_sectionPosition").val();
+			var thisSectionContentCounter = 0;
+			targetDiv.parents(".sectionSubmission").find(".contentInputContainer").each(function(){
+				nameSetterFunction(this, thisSectionPosition, thisSectionContentCounter);
+				thisSectionContentCounter++;
+			});
+			
+			targetDiv.parents(".sectionSubmission").find(".class_numberOfContentSections").val(thisSectionContentCounter);
+		});
+		$(".publishFormHelperMenu").on("click","#dataContentButton", function(){
+			targetDiv.after('<div class="contentInputContainer"><div class="dataSubmission"><div class="datanputContainer"><h3>Submit Data{% if labbook_dataNode_list %}<div class="selectSource"><button type="button" class="btn btn-manual-data">Manually</button><button type="button" class="btn btn-labbook-data">From Labbook</button></div>{% endif %}</h3><div class="manualSubmission"><div class="manualInputContainer"></div></div>{% if labbook_dataNode_list %}<div class="labbookSourceSubmission"><div class="labbookSourceInputContainer"><select class="dataInputLabbookSource inputLabbookSource"><option value="" selected="selected">---------</option>{% for dataNode in labbook_dataNode_list %}<option value="{{ dataNode.object_id }}">{{ dataNode.title }}</option>{% endfor %}</select></div></div>{% endif %}</div><div class="hiddenfield"><input type="hidden" class="contentType" value="dataContent"></div></div></div><div class="emptyContentContainer">Click to Add Content Here</div>');
+			var $newContentInputContainer = targetDiv.next();
+			{% if labbook_dataNode_list %}
+			$newContentInputContainer.find(".manualSubmission").hide();
+			$newContentInputContainer.find(".labbookSourceSubmission").hide();
+			{% endif %}
+			var thisSectionPosition = targetDiv.parents(".sectionSubmission").find(".class_sectionPosition").val();
+			var thisSectionContentCounter = 0;
+			targetDiv.parents(".sectionSubmission").find(".contentInputContainer").each(function(){
+				nameSetterFunction(this, thisSectionPosition, thisSectionContentCounter);
+				thisSectionContentCounter++;
+			});
+			
+			targetDiv.parents(".sectionSubmission").find(".class_numberOfContentSections").val(thisSectionContentCounter);
+		});
+	}
+	//Add New Section
+	$("#addNewSection").on('click', function(){
+		var $this = $(this);
+		$(".sectionSubmission").last().after('<div class="sectionSubmission"><div class="sectionTitleSubmission"><input class="sectionTitleInput form-control" name="section_title_'+ sectionCounter +'" type="text" placeholder="Section Title"></div><div class="emptyContentContainer">Click to Add Content Here</div><div class="hiddenFields""><input type="hidden" class="class_numberOfContentSections" id="id_numberOfContentSections_'+ sectionCounter +'" name="numberOfContentSections_'+ sectionCounter +'" value=0><input type="hidden" class="class_sectionPosition" name="sectionPosition" value='+ sectionCounter +'></div></div>');
+		sectionCounter++;
+		
+		
+		$("#input_numberOfSections").val(sectionCounter);
+		var newTop = $(".sectionSubmission").last().position().top;
+		$this.css({
+			"position": "relative",
+			"top": newTop + "px",
+		});
+				
+	});
+	
+	$("#publishForm").on('click', '.emptyContentContainer', function(){
+			var $this = $(this);
+			var newTop = $this.position().top-80
+			$(".publishFormHelperMenu").css({
+				"position":"relative",
+				"top": newTop + "px",
+				});
+			
+			$(".publishFormHelperMenu").unbind();
+			helperMenuFunction($this);
+	 });
+	
+});
+</script>	
 {% endblock %}
 
+
 {% block content %}
-<div class="publishFormHelperMenu">
-	<button class="btn btn-primary"><i class="icon-picture"></i></button>
-</div>
 <div class="publishFormContainer">
-	
+	<div class="publishFormMenuContainer">
+		<div class="publishFormHelperMenu">
+			<button id="textContentButton" class="btn btn-text btn-publish-menu big">&para;</button>
+			<button id="imageContentButton" class="btn btn-picture btn-publish-menu"><i class="icon-picture"></i></button>
+			<button id="videoContentButton" class="btn btn-timelike btn-publish-menu"><i class="icon-film"></i></button>
+			<button id="dataContentButton" class="btn btn-data btn-publish-menu"><i class="icon-bar-chart"></i></button>
+		</div>
+	</div>
+	<div class="publishFormSubmission">
+		<form id="publishForm" action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}{{ publishForm.non_field.errors }}
+			<div class="titleSubmission">
+				{{ publishForm.publishFormTitle.errors }}
+				<div class="titleInputContainer">
+					{{ publishForm.publishFormTitle }}
+				</div>
+			</div>
+			<div class="tagSubmission">	
+				{{ publishForm.publishFormTag.errors }}
+				<div class="tagInputContainer">
+					<div class="input-prepend">
+						<span class="add-on"><i class="icon-tags"></i></span>
+						{{ publishForm.publishFormTag }}
+					</div>
+				</div>
+			</div>
+			<div class="sectionSubmission">
+				<input class="sectionTitleInput form-control" name="section_title_0" type="text" placeholder="Section Title">
+				<div class="emptyContentContainer">Click to Add Content Here</div>
+				<div class="hiddenFields">
+					<input type="hidden" class="class_numberOfContentSections" id="id_numberOfContentSections_0" name="numberOfContentSections_0" value=0>
+					<input type="hidden" class="class_sectionPosition" name="sectionPosition" value=0>
+				</div>
+			</div>
+			<div class="hiddenFields">
+				<input id="input_numberOfSections" type="hidden" name="numberOfSections" value=1 >
+			</div>
+			<button id="publishFormButton" type="submit" class="btn btn-primary">Submit</button>
+			<button id="publishFormClose" class="btn btn-default pull-right">Close</button>		
+		</form>		
+	</div>
+	<div class="publishAddNewSectionContainer">
+		<button class="btn btn-primary btn-publish-newSection" id="addNewSection">Add New Section</button>
+	</div>
+		
 </div>
 {% endblock %}
+
+
+

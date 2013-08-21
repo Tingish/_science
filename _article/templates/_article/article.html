@@ -2,55 +2,49 @@
 {% load mptt_tags %}
 {% load staticfiles %}
 {% block head %}
+<script src="{%	static 'popcorn/js/popcorn-complete.min.js' %}"></script>
 
-	<script src="{%	static 'popcorn/js/popcorn-complete.min.js' %}"></script>
-
-	<script type="text/javascript">    // ensure the web page (DOM) has loaded
-	      $(document).ready(function(){ 
+<script>
+$(document).ready(function(){
 	var offset = 0;
-	var sideHeight = 1;      	
+	var sideHeight = 1;
+	{% recursetree nodes %}	{% if node.isTypeTimelike and node.isLabnote == False %}var timeNode{{ node.id }}video{{ node.object_id }} = Popcorn.youtube(".node{{ node.id }}video{{ node.object_id }}", "{{ node.content_object.linkSource }}" );{% endif %}
+		    {% if not node.is_leaf_node %}{{ children }}{% endif %}  
+		    {% endrecursetree %}
+	
 	{% recursetree nodes %}
-		{% if node.isTypeTimelike %}
-		         var time{{ Timelike.id }} = Popcorn.youtube(
-	           ".node{{ node.id }}video{{ node.content_object.id }}",
-	           "{{ node.content_object.linkSource }}" );
-	    {% endif %}
-	    
-	    {% if node.mptt_level == 2 %}var position{{ node.slug }} =  $(".{{ node.slug }}").position().top + $(".{{ node.slug }}").closest('.articleContainer').position().top;
-	    
-	    position{{ node.slug }} = position{{ node.slug }}-10;
-	 			$(".{{ node.slug }}CommentContainer").css({
-	 				"position": "relative", 
-	 				"top": position{{ node.slug }} + "px",
-	 			}).hide();
-	 			$("#{{ node.slug }}CommentButton").click(function(){
-	 				if($(".{{ node.slug }}CommentContainer").hasClass('showing'))
-	 				{
-	 					$(".{{ node.slug }}CommentContainer").hide().removeClass('showing');
-	 					$(".sideContainer").height(1);
-	 				}
-	 				else
-	 				{
-	 					$(".showing").hide().removeClass("showing");
-	 					$(".{{ node.slug }}CommentContainer").show().addClass("showing");
-	 					sideHeight = $(".{{ node.slug }}CommentContainer").height() + $(".{{ node.slug }}CommentContainer").position().top;
-	 					$(".sideContainer").height(sideHeight);
-	 				}
-	 			});
-	 			 {% endif %}{% if not node.is_leaf_node %}{{ children }}{% endif %}  
+	{% if node.mptt_level == 2 %} var position{{ node.slugfix }} = $(".{{ node.slug }}").position().top + $(".{{ node.slug }}").parents('.articleContainer').position().top; 
+	position{{ node.slugfix }} = position{{ node.slugfix }}-10;
+	$(".{{ node.slug }}CommentContainer").css({
+		 				"position": "relative", 
+		 				"top": position{{ node.slugfix }} + "px"
+		 			});
+	$("#{{ node.slug }}CommentButton").click(function(){
+		 				if($(".{{ node.slug }}CommentContainer").hasClass('showing'))
+		 				{
+		 					$(".{{ node.slug }}CommentContainer").hide().removeClass('showing');
+		 					$(".sideContainer").height(1);
+		 				}
+		 				else
+		 				{
+		 					$(".showing").hide().removeClass("showing");
+		 					$(".{{ node.slug }}CommentContainer").show().addClass("showing");
+		 					sideHeight = $(".{{ node.slug }}CommentContainer").height() + $(".{{ node.slug }}CommentContainer").position().top;
+		 					$(".sideContainer").height(sideHeight);
+		 				}
+		 			});	 			
+	{% endif %}
+	{% if not node.is_leaf_node %}{{ children }}{% endif %}  
 	{% endrecursetree %}
-	$(".sideContainer").height(sideHeight);
-		      });
-	    </script>
-	    
-
+});
+</script>
 	 
 {% endblock %}
 {% block content %}
 
 		
     {% recursetree nodes %}
-		{% if node.is_root_node %}
+		{% if node.is_root_node and node.isPublished %}
 		<div class="experimentTitle {{ node.content }}"><h1>{{ node.title }}</h1></div>
 			
 			{% if not node.is_leaf_node %}
@@ -61,7 +55,7 @@
 				<div class='articleContainer {{ node.slug }}'>
 					<div class='articleMeta'>
 						<h5>{{node.pubDate|date}}</h5>
-						<h5>{{node.title}}</h5>
+						
 						{% if node.author %}
 						<h5>{{node.author.name}}</h5>
 						{% endif %}
@@ -69,6 +63,7 @@
 					
 						{% if not node.is_leaf_node %}
 							<div class='articleContent'>
+								<h2>{{node.title}}</h2>
 	        				{{ children }}
 	        				</div>
 	        			{% endif %}
@@ -84,7 +79,7 @@
 	    		<div class='contentContainer {{ node.slug }}'>  	
 		    		<p>This is an Image.</p>
 		    		{% if node.content_object.isLinkSource and node.isPublished == True %}
-		    			<p>This is from a link.</p>
+		    			<p>This is from a link.</p><div class='contentContainerImage {{ node.slug }}'><img src={{ node.content_object.linkSource }} alt="" /></div>
 		    		{% elif node.content_object.isLocalSource and node.isPublished == True %}
 		    			<p>This is local.</p> <div class='contentContainerImage {{ node.slug }}'><img src={{ node.content_object.localSource.url }} alt="" /></div> 
 		    		{% endif %}
@@ -99,6 +94,46 @@
 		    			<p>This is local.</p>
 		    		{% endif %}
 		    		<button type="button" class="btn btn-comment articleCommentPosition" id="{{ node.slug }}CommentButton">{{ node.commentCount }}</button>
+		    	</div>
+		    {% elif node.isTypeDataset and node.isPublished == True %}
+		    	<div class='contentContainer {{ node.slug }}'> 	  
+		    		<h3>Constants</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>		    					
+		    					{% for key, value in node.content_object.getGlobalDict.items %}
+		    						<th>{{ key }}</th>
+		    					{% endfor %}		    					
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				<tr>		    					
+		    					{% for key, value in node.content_object.getGlobalDict.items %}
+		    						<td>{{ value }}</td>
+		    					{% endfor %}
+		    				</tr>
+		    			</tbody>			
+		    		</table>
+		    		<h3>Data Set</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>
+		    					{% for key in node.content_object.getDatasetVariableNames %}		    						
+		    						<th>{{ key }}</th>		    						
+		    					{% endfor %}
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				{% for Dict in node.content_object.getDatasetList %}
+		    				<tr>		    							    					
+		    						{% for key, value in Dict.items %}
+		    						<td>{{ value }}</td>
+		    						{% endfor %}
+		    				</tr>
+		    				{% endfor %}
+		    			</tbody>	
+		    		</table>			
+		    		<button type="button" class="btn btn-comment articleCommentPosition" id="{{ node.slug }}CommentButton">{{ node.commentCount }}</button>
 		    	</div>		
 	    	{% endif %}
 	    	 
@@ -107,8 +142,9 @@
     {% endblock %}
     {% block sideContent %}
     {% recursetree nodes %}
-     		{% if node.isTypeNone and node.isPublished == False and not node.is_root_node %}
-     			{% if not node.get_previous_sibling and node.mptt_level == 3 %}<div class="{{ node.parent.slug }}CommentContainer"> {% endif %}
+    		{% if node.mptt_level == 2 %}
+    			<div class="{{ node.slug }}CommentContainer">{% if not node.is_leaf_node %}{{ children }}{% endif %}</div>
+     		{% elif node.isTypeNone and node.isPublished == False and not node.is_root_node %}
 				<div class='commentContainer {{ node.slug }}'>
 					<div class='commentMeta'>
 						<h5>{{node.pubDate|date}}</h5>
@@ -125,7 +161,7 @@
 	        			{% endif %}
 	        		
 	        	</div>
-	        	{% if not node.get_next_sibling and node.mptt_level == 3 %}</div>{% endif %}		
+	        			
 	    	{% elif node.isTypeParagraph and node.isPublished == False and not node.is_root_node %}
 	    		<div class='contentContainerParagragh {{ node.slug }}'>       
 	        	   <p>This is a Paragraph.
@@ -143,7 +179,7 @@
 	    	{% elif node.isTypeTimelike and node.isPublished == False and not node.is_root_node %}
 	    		<div class='contentContainerTimelike {{ node.slug }}'> 	  
 		    		<p>This is a Timelike.</p>
-		    		{% if not node.content_object.isLinkSource and node.isPublished == False and not node.is_root_node %}
+		    		{% if node.content_object.isLinkSource and node.isPublished == False and not node.is_root_node %}
 		    			<p>This is from a link.</p> <div class="node{{ node.id }}video{{ node.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
 		    		{% elif node.content_object.isLocalSource and node.isPublished == False and not node.is_root_node %}
 		    			<p>This is local.</p>

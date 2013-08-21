@@ -84,7 +84,7 @@ class StructureNode(MPTTModel):
             else:
                 return False
                 
-    def __str__(self):
+    def __unicode__(self):
         return '%i %i %i %s' % (self.pubDate.year, self.pubDate.month, self.pubDate.day, self.title)
     
     #making a slug and creating ratings and views if it is an aritcle
@@ -99,7 +99,7 @@ class StructureNode(MPTTModel):
         super(StructureNode, self).save()
         if self.slug is None or self.slug == "":
             # create a slug that's unique to siblings
-            slug = slugify('title' + self.title)
+            slug = slugify(self.title)
             self.slug = slug
             siblings = self.get_siblings()
             i = 1
@@ -111,6 +111,10 @@ class StructureNode(MPTTModel):
         else:
             self.url = self.slug
         super(StructureNode, self).save()
+        
+    #slug produces invalid javascript variables
+    def slugfix(self):
+        return self.slug().replace('-', '_')
         
     # determines the number of comments on this structurenode
     
@@ -129,14 +133,14 @@ class Rating(models.Model):
     structureNode = TreeOneToOneField(StructureNode)
     rating = models.PositiveIntegerField()
     
-    def __str__(self):
+    def __unicode__(self):
         return self.structureNode.title
     
 class ViewCount(models.Model):
     structureNode = TreeOneToOneField(StructureNode)
     viewCount = models.PositiveIntegerField()
     
-    def __str__(self):
+    def __unicode__(self):
         return self.structureNode.title
     
 class Paragraph(models.Model):
@@ -144,7 +148,7 @@ class Paragraph(models.Model):
     text = models.TextField()
     
     
-    def __str__(self):
+    def __unicode__(self):
         if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":
             return self.structureNode.order_by('pubDate')[0].title
         
@@ -155,7 +159,7 @@ class Image(models.Model):
     linkSource = models.URLField(max_length=200, blank=True, null=True)
     localSource = models.ImageField(upload_to='content/image', blank=True, null=True)
     
-    def __str__(self):
+    def __unicode__(self):
         if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":
             return self.structureNode.order_by('pubDate')[0].title
         
@@ -179,9 +183,9 @@ class Image(models.Model):
 class Timelike(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
     linkSource = models.URLField(max_length=200, blank=True, null=True)
-    localSource = models.FileField(upload_to='content/image', blank=True, null=True)
+    localSource = models.FileField(upload_to='content/video', blank=True, null=True)
     
-    def __str__(self):
+    def __unicode__(self):
         if self.structureNode.order_by('pubDate').exists() and self.structureNode.order_by('pubDate')[0].title != "":
             return self.structureNode.order_by('pubDate')[0].title
         
@@ -238,7 +242,7 @@ class Tag(models.Model):
     name = models.CharField(max_length=200)
     nodes = models.ManyToManyField(StructureNode)
     
-    def __str__(self):
+    def __unicode__(self):
         return self.name
     
 #added filter to get descendants from queryset

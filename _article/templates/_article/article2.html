@@ -8,7 +8,7 @@
 	      	
 	{% recursetree nodes %}
 		{% if node.isTypeTimelike %}
-		         var time{{ Timelike.id }} = Popcorn.youtube(
+		         var node{{ node.id }}video{{ node.content_object.id }} = Popcorn.youtube(
 	           ".node{{ node.id }}video{{ node.content_object.id }}",
 	           "{{ node.content_object.linkSource }}" );
 	    {% endif %}{% if not node.is_leaf_node %}{{ children }}{% endif %}  
@@ -53,7 +53,7 @@
 	    			
 		    		<p>This is an Image.</p>
 		    		{% if node.content_object.isLinkSource and node.isPublished == True %}
-		    			<p>This is from a link.</p>
+		    			<p>This is from a link.</p><div class='contentContainerImage {{ StructureNode.slug }}'><img src={{ node.content_object.linkSource }} alt="" /></div>
 		    		{% elif node.content_object.isLocalSource and node.isPublished == True %}
 		    			<p>This is local.</p> <div class='contentContainerImage {{ node.slug }}'><img src={{ node.content_object.localSource.url }} alt="" /></div> 
 		    		{% endif %}
@@ -61,7 +61,7 @@
 	    	{% elif node.isTypeTimelike and node.isPublished == True and not node.is_root_node %}
 	    		<div class='contentContainer {{ node.slug }}'> 	  
 		    		<p>This is a Timelike.</p>
-		    		{% if not node.content_object.isLinkSource and node.isPublished == True and not node.is_root_node %}
+		    		{% if node.content_object.isLinkSource and node.isPublished == True and not node.is_root_node %}
 		    			<p>This is from a link.</p> <div class="node{{ node.id }}video{{ node.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
 		    		{% elif node.content_object.isLocalSource and node.isPublished == True and not node.is_root_node %}
 		    			<p>This is local.</p>
@@ -107,7 +107,7 @@
 	    	{% elif node.isTypeTimelike and node.isPublished == False and not node.is_root_node %}
 	    		<div class='contentContainerTimelike {{ node.slug }}'> 	  
 		    		<p>This is a Timelike.</p>
-		    		{% if not node.content_object.isLinkSource and node.isPublished == False and not node.is_root_node %}
+		    		{% if node.content_object.isLinkSource and node.isPublished == False and not node.is_root_node %}
 		    			<p>This is from a link.</p> <div class="node{{ node.id }}video{{ node.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
 		    		{% elif node.content_object.isLocalSource and node.isPublished == False and not node.is_root_node %}
 		    			<p>This is local.</p>

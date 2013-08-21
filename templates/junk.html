@@ -40,3 +40,34 @@
 	 					
 	 				}
 	 			});
+	 			
+		{% recursetree nodes %}	{% if node.isTypeTimelike %}var timeNode{{ node.id }}video{{ node.object_id }} = Popcorn.youtube(".node{{ node.id }}video{{ node.object_id }}", "{{ node.content_object.linkSource }}" );{% endif %}
+		    {% if not node.is_leaf_node %}{{ children }}{% endif %}  
+		    {% endrecursetree %}
+		    
+		    {% recursetree nodes %}	
+		    {% if node.mptt_level == 2 %}var position{{ node.slug }} =  $(".{{ node.slug }}").position().top + $(".{{ node.slug }}").closest('.articleContainer').position().top;
+		    
+		    position{{ node.slug }} = position{{ node.slug }}-10;
+		 			$(".{{ node.slug }}CommentContainer").css({
+		 				"position": "relative", 
+		 				"top": position{{ node.slug }} + "px",
+		 			}).hide();
+		 			$("#{{ node.slug }}CommentButton").click(function(){
+		 				if($(".{{ node.slug }}CommentContainer").hasClass('showing'))
+		 				{
+		 					$(".{{ node.slug }}CommentContainer").hide().removeClass('showing');
+		 					$(".sideContainer").height(1);
+		 				}
+		 				else
+		 				{
+		 					$(".showing").hide().removeClass("showing");
+		 					$(".{{ node.slug }}CommentContainer").show().addClass("showing");
+		 					sideHeight = $(".{{ node.slug }}CommentContainer").height() + $(".{{ node.slug }}CommentContainer").position().top;
+		 					$(".sideContainer").height(sideHeight);
+		 				}
+		 			});
+		 			 {% endif %}{% if not node.is_leaf_node %}{{ children }}{% endif %}  
+		{% endrecursetree %}
+		$(".sideContainer").height(sideHeight);
+	});

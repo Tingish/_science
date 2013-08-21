@@ -38,3 +38,7 @@ class TimelikeFormLabbook(forms.Form):
 class DataFormLabbook(forms.Form):
     dataFormTitle = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Title", }))
     dataFormTag = forms.CharField(required=False)
+    
+class PublishForm(forms.Form):
+    publishFormTitle = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Title", }))
+    publishFormTag = forms.CharField(required=False)
