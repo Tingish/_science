@@ -114,7 +114,10 @@ class StructureNode(MPTTModel):
         
     #slug produces invalid javascript variables
     def slugfix(self):
-        return self.slug().replace('-', '_')
+        slugfix = self.slug().replace('-', '_')
+        print(slugfix)
+        return slugfix
+        
         
     # determines the number of comments on this structurenode
     

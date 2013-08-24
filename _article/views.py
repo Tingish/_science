@@ -2,11 +2,12 @@
 from django.shortcuts import render
 from _content.models import StructureNode, Timelike
 from django.http import Http404
+from _article.forms import PublishForm
 
 def index(request):
-   
+    publishForm = PublishForm()
     tree_list = StructureNode.objects.filter(isPublished=True)
-    return render(request, '_article/article.html', {'nodes':tree_list, })
+    return render(request, '_article/article.html', {'nodes':tree_list, 'publishForm':publishForm, })
 
 def getArticle(request, article_url):
     
@@ -20,5 +21,5 @@ def getArticle(request, article_url):
         tree_list = ancestorList | descList
     except StructureNode.DoesNotExist:
         raise Http404
-    
-    return render(request, '_article/article.html', {'nodes':tree_list,})
+    publishForm = PublishForm()
+    return render(request, '_article/article.html', {'nodes':tree_list, 'publishForm':publishForm, })

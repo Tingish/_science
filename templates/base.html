@@ -31,7 +31,13 @@
 				{% block content %}{% endblock %}
 				</div>
 				<div class="sideContainer">
-					{% block sideContent %}Stuff{% endblock %}
+					{% block sideContent %}{% endblock %}
+				</div>
+				<div class="articleBulkContainer">
+					{% block articleBulkContent %}{% endblock %}
+				</div>
+				<div class="articleSideContainer">
+					{% block articleSideContent %}{% endblock %}
 				</div>	
 			</div>
 		{% include 'footer.html' %}

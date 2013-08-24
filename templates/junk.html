@@ -71,3 +71,20 @@
 		{% endrecursetree %}
 		$(".sideContainer").height(sideHeight);
 	});
+	
+	
+	function positionNewSectionButton(){
+		var newTop = $(".sectionSubmission").last().position().top;
+		$("#addNewSection").css({
+			"position": "relative",
+			"top": newTop + "px",
+		});
+	}
+	
+	function positionPublishFormHelperMenu(){
+		var newTop = $focusedEmptyContainer.position().top-80
+		$(".publishFormHelperMenu").css({
+				"position":"relative",
+				"top": newTop + "px",
+				});
+	}
