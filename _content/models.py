@@ -34,8 +34,7 @@ class StructureNode(MPTTModel):
     start = models.PositiveIntegerField(blank=True, null=True)
     end = models.PositiveIntegerField(blank=True, null=True)
     isLabnote = models.BooleanField()
-    isSubhead = models.BooleanField()
-    isBlockquote = models.BooleanField()
+    isUpdate = models.BooleanField()
     
     
     

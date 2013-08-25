@@ -9,7 +9,7 @@ $(document).ready(function(){
 	$(".publishFormContainer").hide();
 	var offset = 0;
 	var sideHeight = 1;
-	{% recursetree nodes %}	{% if node.isTypeTimelike and node.isLabnote == False %}var timeNode{{ node.id }}video{{ node.object_id }} = Popcorn.smart(".node{{ node.id }}video{{ node.object_id }}", "{{ node.content_object.linkSource }}" );{% endif %}
+	{% recursetree nodes %}	{% if node.isTypeTimelike and node.isLabnote == False %}var timeNode{{ node.id }}video{{ node.object_id }} = Popcorn.smart(".node{{ node.id }}video{{ node.object_id }}", "{{ node.content_object.linkSource }}" ); timeNode{{ node.id }}video{{ node.object_id }}.autoplay(false);{% endif %}
 		    {% if not node.is_leaf_node %}{{ children }}{% endif %}  
 		    {% endrecursetree %}
 	
@@ -540,8 +540,9 @@ $(document).ready(function(){
 	    	{% endif %}
     {% endrecursetree %}
 <div class="publishFormContainer">
-	{% if user.is_authenticated %}
+	
 	<div class="publishFormSubmission">
+		{% if user.is_authenticated %}
 	<div class="publishFormMenuContainer">
 		<div class="publishFormHelperMenu">
 			<button type="button" id="textContentButton" class="btn btn-text btn-publish-menu big" title="Add a new Paragraph">&para;</button>
@@ -581,11 +582,12 @@ $(document).ready(function(){
 			</div>
 			<button id="publishFormButton" type="submit" class="btn btn-primary">Submit</button>
 			<button type="button" id="publishFormClose" class="btn btn-default pull-right">Close</button>		
-		</form>		
+		</form>
+		{% else %}
+		<p><a href={% url "auth_login" %}?next={{ request.get_full_path }}>Sign in</a> to leave a comment.</p>
+		{% endif %}			
 	</div>
-	{% else %}
-	<p>Sign in to leave a comment.</p>
-	{% endif %}	
+	
 </div>
 
 

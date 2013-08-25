@@ -1,6 +1,6 @@
 # Create your views here.
 from django.shortcuts import render
-from _content.models import StructureNode, Timelike
+from _content.models import StructureNode
 from django.http import Http404
 from _article.forms import PublishForm
 

@@ -32,11 +32,11 @@
 		  <li><a href={% url "userLabbook" %}>Labbook</a></li>
 		</ul>
 		{% if user.is_authenticated %}
-			<a class="btn btn-default navbar-btn pull-right signInButton" href={% url 'auth_logout' %}>Sign Out</a>
+			<a class="btn btn-default navbar-btn pull-right signInButton" href={% url 'auth_logout' %}?next={{request.path}}>Sign Out</a>
 			<p class="navbar-text pull-right">Hello {{ user.username }}, welcome to our site.</p>
 			
 		{% else %}
-			<a class="btn btn-default navbar-btn pull-right signInButton" href={% url 'auth_login' %}>Sign In</a>
+			<a class="btn btn-default navbar-btn pull-right signInButton" href={% url 'auth_login' %}?next={{request.path}}>Sign In</a>
 		{% endif %}
     </div><!-- /.nav-collapse -->
   </div><!-- /.container -->
