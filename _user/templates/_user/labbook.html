@@ -118,11 +118,11 @@ $(document).ready(function () {
 				else
 				{
 				dataSetColumnsCount++;
-				$(".dataSetAddNewVariableInput").before('<div class="dataSetColumn dataSet_className_'+$thisval+  '"><input id="id_dataSet_variable_name_' + $thisval + '" class="dataSet_title_className_'+$thisval + ' datasetTitleInputBox datasetRowLevel_0" name="'+$this.val()  + '""></div>');
+				$(".dataSetAddNewVariableInput").before('<div class="dataSetColumn dataSet_className_'+$thisval+  '"><input id="id_dataSet_variable_name_' + $thisval + '" class="dataSet_title_className_'+$thisval + ' datasetTitleInputBox datasetRowLevel_0" name="'+$this.val()  + '"></div>');
 				$(".dataSetSubmissionInput").append('<div class="dataSetColumn dataSet_className_'+$thisval+  ' dataSet_point_className_'+$thisval+  '"><input id="id_dataSet_variable_point_' + $thisval + '_0" class="dataSet_pointInput_className_'+$thisval + ' datasetPointInputBox datasetRowLevel_0" name="dataSetName_'+$this.val()  + '"></div>');
 				for(var i=1; i < dataSetRowsCount; i++)
 				{
-					$('.dataSet_point_className_'+$thisval).append('<input id="id_dataSet_variable_point_' + $thisval + '_'+ dataSetRowsCount +'" class="dataSet_pointInput_className_'+$thisval + ' datasetPointInputBox datasetRowLevel_' +i+ '" name=dataSetName_"'+$this.val()  + '">');
+					$('.dataSet_point_className_'+$thisval).append('<input id="id_dataSet_variable_point_' + $thisval + '_'+ dataSetRowsCount +'" class="dataSet_pointInput_className_'+$thisval + ' datasetPointInputBox datasetRowLevel_' +i+ '" name="dataSetName_'+$this.val()  + '">');
 				}
 				$("#"+"id_dataSet_variable_name_"+$thisval).val($this.val());
 				var newWidth = Math.max(414, dataSetColumnsCount * 140);
