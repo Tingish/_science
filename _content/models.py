@@ -4,9 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.template.defaultfilters import slugify
-from json_field import JSONField
+from jsonfield import JSONField
 import json
 import re
+import collections
 
 
 # Create your models here.
@@ -122,7 +123,7 @@ class StructureNode(MPTTModel):
     # determines the number of comments on this structurenode
     
     def commentCount(self):
-        number = self.get_descendants().filter(content_type=None).count()
+        number = self.get_descendants().filter(content_type=None, isComment=True).count()
         return number
     
     class Meta:
@@ -211,32 +212,32 @@ class Timelike(models.Model):
     
 class Dataset(models.Model):
     structureNode = generic.GenericRelation(StructureNode)
-    data = JSONField(blank=True, null=True)
+    data = JSONField(load_kwargs={'object_pairs_hook': collections.OrderedDict} ,blank=True, null=True)
     dataFile = models.FileField(upload_to='content/data', blank=True, null=True)
     
     def getGlobalDict(self):
-        decodedData = json.loads(json.dumps(self.data))
+        decodedData = json.loads(json.dumps(self.data), object_pairs_hook=collections.OrderedDict)
         return decodedData["Global Variables"]
     
     def getDatasetList(self):
-        decodedData = json.loads(json.dumps(self.data))
+        decodedData = json.loads(json.dumps(self.data), object_pairs_hook=collections.OrderedDict)
         return decodedData["Data Set"]
     
     def getGlobalVariableNames(self):
-        decodedData = json.loads(json.dumps(self.data))
+        decodedData = json.loads(json.dumps(self.data), object_pairs_hook=collections.OrderedDict)
         print(decodedData["Global Variables"].keys())
         
         return decodedData["Global Variables"].keys()
     
     def getGlobalVariableValues(self):
-        decodedGlobalData = json.loads(json.dumps(self.data))["Global Variables"]
+        decodedGlobalData = json.loads(json.dumps(self.data), object_pairs_hook=collections.OrderedDict)["Global Variables"]
         decodedGlobalValues = []
         for name in self.getGlobalVariableNames():
             decodedGlobalValues.append(decodedGlobalData[name])
         return decodedGlobalValues
     
     def getDatasetVariableNames(self):
-        decodedDataSet = json.loads(json.dumps(self.data))["Data Set"][0]
+        decodedDataSet = json.loads(json.dumps(self.data), object_pairs_hook=collections.OrderedDict)["Data Set"][0]
         print(decodedDataSet.keys())     
         return decodedDataSet.keys()
 
@@ -280,19 +281,20 @@ def tagSaveHelper(string):
 def datasetFormatter(requestPOST):
     globalVariableNameList = filter(None, requestPOST.getlist('globalVariableName'))
     datasetVariableNameList = filter(None, requestPOST.getlist('datasetVariableName'))
+    print(datasetVariableNameList)
     globalVariableDict = {}
     for name in globalVariableNameList:
         globalVariableDict[name] = requestPOST[name]
     datasetVariableList = []
     numElements = len(requestPOST.getlist("dataSetName_"+datasetVariableNameList[0])) - 1
     for number in range(0, numElements):
-        tempDict = {}    
+        tempDict = collections.OrderedDict()    
         for name in datasetVariableNameList:           
             tempDict[name] = requestPOST.getlist("dataSetName_"+name)[number]
         datasetVariableList.append(tempDict)
-    finalDict = {}
+    finalDict = collections.OrderedDict()
     finalDict["Global Variables"] = globalVariableDict
     finalDict["Data Set"] = datasetVariableList
-    finalJSON = json.dumps(finalDict)      
+    finalJSON = finalDict     
     return finalJSON
     

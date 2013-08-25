@@ -1,9 +1,10 @@
 # Create your views here.
-from django.shortcuts import render
+import json
+from django.shortcuts import render, HttpResponse
 from _content.models import StructureNode, Timelike
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
-
+from django.contrib.auth import authenticate, login, logout
 
 def home(request):
     all_article_list = StructureNode.objects.exclude(rating__isnull=True).order_by('-rating__rating')
@@ -35,3 +36,4 @@ def getSubject(request, subject_url):
         raise Http404
     
     return render(request, '_home/home.html', {'top_article_list':top_article_list})
+

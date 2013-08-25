@@ -29,8 +29,15 @@
 		  <li><a href={% url "home" %}>Home</a></li>
 		  <li><a href="#">Link</a></li>
 		  <li><a href="#">Disabled</a></li>
+		  <li><a href={% url "userLabbook" %}>Labbook</a></li>
 		</ul>
-		<button type="button" class="btn btn-default navbar-btn pull-right signInButton">Sign in</button>
+		{% if user.is_authenticated %}
+			<a class="btn btn-default navbar-btn pull-right signInButton" href={% url 'auth_logout' %}>Sign Out</a>
+			<p class="navbar-text pull-right">Hello {{ user.username }}, welcome to our site.</p>
+			
+		{% else %}
+			<a class="btn btn-default navbar-btn pull-right signInButton" href={% url 'auth_login' %}>Sign In</a>
+		{% endif %}
     </div><!-- /.nav-collapse -->
   </div><!-- /.container -->
 </div><!-- /.navbar -->

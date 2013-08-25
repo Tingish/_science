@@ -50,6 +50,7 @@ $(document).ready(function(){
 	{% endif %}
 	{% if not node.is_leaf_node %}{{ children }}{% endif %}  
 	{% endrecursetree %}
+	{% if user.is_authenticated %}
 	var sectionCounter = 1;
 	var $focusedEmptyContainer;
 	
@@ -341,7 +342,7 @@ $(document).ready(function(){
 		$(".publishFormContainer").hide();
 	});
 	//Hides the comment menu when button is clicked
-
+	{% endif %}
 });
 </script>
 	 
@@ -539,7 +540,7 @@ $(document).ready(function(){
 	    	{% endif %}
     {% endrecursetree %}
 <div class="publishFormContainer">
-
+	{% if user.is_authenticated %}
 	<div class="publishFormSubmission">
 	<div class="publishFormMenuContainer">
 		<div class="publishFormHelperMenu">
@@ -582,7 +583,9 @@ $(document).ready(function(){
 			<button type="button" id="publishFormClose" class="btn btn-default pull-right">Close</button>		
 		</form>		
 	</div>
-		
+	{% else %}
+	<p>Sign in to leave a comment.</p>
+	{% endif %}	
 </div>
 
 

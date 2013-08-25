@@ -174,7 +174,9 @@ def userLabbookTimelikeForm(request, subject_url=None):
          
 @login_required
 def userLabbookDataForm(request, subject_url=None):
+    
     if (request.method == 'POST'):
+        print(request.POST)
         text_form = ParagraphFormLabbook()
         image_form = ImageFormLabbook()
         timelike_form = TimelikeFormLabbook()
