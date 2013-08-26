@@ -26,11 +26,11 @@ $(document).ready(function(){
 			<div class="heroUnitLeft">
 				<div class="heroUnitElement1 element0">
 				
-					<div class="heroUnitElement1Caption">
+					<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.0.url %}';" >
 						<h3>{{ top_article_list.0.title }}</h3>
 						<p><b>By:</b> {{ top_article_list.0.author.username }} on {{ top_article_list.0.pubDate|date }}</p>
 					</div>
-					<div class="heroUnitElement1Filter">
+					<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.0.url %}';">
 					</div>
 					<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.0.slug }}CommentButton">{{ top_article_list.0.commentCount }}</button>
 					
@@ -43,11 +43,11 @@ $(document).ready(function(){
 				<div class="heroUnitTopLeft">
 					<div class="heroUnitElement1 element1">
 					
-						<div class="heroUnitElement1Caption">
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.1.url %}';">
 							<h3>{{ top_article_list.1.title }}</h3>
 							<p><b>By:</b> {{ top_article_list.1.author.username }} on {{ top_article_list.1.pubDate|date }}</p>
 						</div>
-						<div class="heroUnitElement1Filter">
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.1.url %}';">
 						</div>
 						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.1.slug }}CommentButton">{{ top_article_list.1.commentCount }}</button>
 						
@@ -56,11 +56,11 @@ $(document).ready(function(){
 				<div class="heroUnitTopRight">
 					<div class="heroUnitElement1 element2">
 					
-						<div class="heroUnitElement1Caption">
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.2.url %}';">
 							<h3>{{ top_article_list.2.title }}</h3>
 							<p><b>By:</b> {{ top_article_list.2.author.username }} on {{ top_article_list.2.pubDate|date }}</p>
 						</div>
-						<div class="heroUnitElement1Filter">
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.2.url %}';">
 						</div>
 						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.2.slug }}CommentButton">{{ top_article_list.2.commentCount }}</button>
 						
@@ -72,11 +72,11 @@ $(document).ready(function(){
 				<div class="heroUnitBotLeft">
 					<div class="heroUnitElement1 element3">
 					
-						<div class="heroUnitElement1Caption">
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.3.url %}';">
 							<h3>{{ top_article_list.3.title }}</h3>
 							<p><b>By:</b> {{ top_article_list.3.author.username }} on {{ top_article_list.3.pubDate|date }}</p>
 						</div>
-						<div class="heroUnitElement1Filter">
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.3.url %}';">
 						</div>
 						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.3.slug }}CommentButton">{{ top_article_list.3.commentCount }}</button>
 						
@@ -85,11 +85,11 @@ $(document).ready(function(){
 				<div class="heroUnitBotRight">
 					<div class="heroUnitElement1 element4">
 					
-						<div class="heroUnitElement1Caption">
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.4.url %}';">
 							<h3>{{ top_article_list.4.title }}</h3>
 							<p><b>By:</b> {{ top_article_list.4.author.username }} on {{ top_article_list.4.pubDate|date }}</p>
 						</div>
-						<div class="heroUnitElement1Filter">
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.4.url %}';">
 						</div>
 						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.4.slug }}CommentButton">{{ top_article_list.4.commentCount }}</button>
 						

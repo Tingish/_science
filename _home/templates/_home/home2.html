@@ -15,7 +15,7 @@
 
 			
 			<div class="articlePreviewContainer">
-				<h2>{{ StructureNode.title }}</h2>
+				<h2><a href={% url "article" StructureNode.url %}>{{ StructureNode.title }}</a></h2>
 				<p>{{ StructureNode.pubDate|date }}</p>
 				{% if StructureNode.getNearestAbstractImage %}<div class="previewThumbnail"><div class="contentContainerImage"><img src={% if StructureNode.getNearestAbstractImage.localSource %}{{ StructureNode.getNearestAbstractImage.localSource.url }}{% else %}{{ StructureNode.getNearestAbstractImage.linkSource }}{% endif %} alt="" /></div></div>
 				<div class="previewParagraphWImage">{{ StructureNode.getNearestAbstractParagraph }}</div>
