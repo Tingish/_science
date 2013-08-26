@@ -6,33 +6,101 @@
 {% endblock %}
 
 {% block head %}
+<script>
+$(document).ready(function(){
+	{% for StructureNode in top_article_list %}
+		{% if forloop.counter < 6 and StructureNode.getNearestAbstractImage %}
+		var tempIndex = {{forloop.counter}}-1;
+		$(".element" + tempIndex).css("background-image", "url({% if StructureNode.getNearestAbstractImage.localSource %}{{ StructureNode.getNearestAbstractImage.localSource.url }}{% else %}{{ StructureNode.getNearestAbstractImage.linkSource }}{% endif %})");
+		{% endif %}
+	{% endfor %}
+});
+</script>
 {% endblock %}
 
 {% block mainContent %}
+<div class="container">
+	{% if top_article_list %}
+	<div class="heroUnit">
 
-	{% for StructureNode in top_article_list %}
-		{% if forloop.counter == 1 %}
-			<div class="heroUnit">
-				<div class="heroUnitBody">
-					<div class="heroUnitElement{{forloop.counter}}">
-						<div class="heroUnitArticle1">
-							<span class="commentSqaure"></span>
-							<div class="heroUnitArticle1Body">
-								<div class="heroUnitArticle1Head">
-									
-								</div>
-							</div>
+			<div class="heroUnitLeft">
+				<div class="heroUnitElement1 element0">
+				
+					<div class="heroUnitElement1Caption">
+						<h3>{{ top_article_list.0.title }}</h3>
+						<p><b>By:</b> {{ top_article_list.0.author.username }} on {{ top_article_list.0.pubDate|date }}</p>
+					</div>
+					<div class="heroUnitElement1Filter">
+					</div>
+					<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.0.slug }}CommentButton">{{ top_article_list.0.commentCount }}</button>
+					
+				</div>	
+			</div>
+
+			
+		<div class="heroUnitRight">
+			<div class="heroUnitTop">
+				<div class="heroUnitTopLeft">
+					<div class="heroUnitElement1 element1">
+					
+						<div class="heroUnitElement1Caption">
+							<h3>{{ top_article_list.1.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.1.author.username }} on {{ top_article_list.1.pubDate|date }}</p>
 						</div>
+						<div class="heroUnitElement1Filter">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.1.slug }}CommentButton">{{ top_article_list.1.commentCount }}</button>
+						
 					</div>	
-		{% endif %}
-		{% if forloop.counter < 6 %}			
-			<div class="heroUnitElement{{forloop.counter}}">{{ StructureNode.title }}</div>	
-		{% endif %}
-		{% if forloop.counter == 5 %}
+				</div>
+				<div class="heroUnitTopRight">
+					<div class="heroUnitElement1 element2">
+					
+						<div class="heroUnitElement1Caption">
+							<h3>{{ top_article_list.2.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.2.author.username }} on {{ top_article_list.2.pubDate|date }}</p>
+						</div>
+						<div class="heroUnitElement1Filter">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.2.slug }}CommentButton">{{ top_article_list.2.commentCount }}</button>
+						
+					</div>	
 				</div>
 			</div>
-		{% endif %}
-	{% endfor %}
+			
+			<div class="heroUnitBot">
+				<div class="heroUnitBotLeft">
+					<div class="heroUnitElement1 element3">
+					
+						<div class="heroUnitElement1Caption">
+							<h3>{{ top_article_list.3.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.3.author.username }} on {{ top_article_list.3.pubDate|date }}</p>
+						</div>
+						<div class="heroUnitElement1Filter">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.3.slug }}CommentButton">{{ top_article_list.3.commentCount }}</button>
+						
+					</div>	
+				</div>
+				<div class="heroUnitBotRight">
+					<div class="heroUnitElement1 element4">
+					
+						<div class="heroUnitElement1Caption">
+							<h3>{{ top_article_list.4.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.4.author.username }} on {{ top_article_list.4.pubDate|date }}</p>
+						</div>
+						<div class="heroUnitElement1Filter">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.4.slug }}CommentButton">{{ top_article_list.4.commentCount }}</button>
+						
+					</div>	
+				</div>
+			</div>		
+		</div>		
+
+	</div>
+	{% endif %}
+</div>
 {% endblock %}	
 {% block content %}	
 	<div class="articlePreviewList">
@@ -40,7 +108,7 @@
 			
 		{% if forloop.counter >= 6 %}
 			<div class="articlePreviewContainer">
-			<h2>{{ StructureNode.title }}</h2>
+			<h2><a href={% url "article" StructureNode.url %}>{{ StructureNode.title }}</a></h2>
 			<p>{{ StructureNode.pubDate|date }}</p>
 			
 				{% if StructureNode.getNearestAbstractImage %}<div class="previewThumbnail"><img src={% if StructureNode.getNearestAbstractImage.localSource %}{{ StructureNode.getNearestAbstractImage.localSource.url }}{% else %}{{ StructureNode.getNearestAbstractImage.linkSource }}{% endif %} class="img-rounded" alt="" /></div>

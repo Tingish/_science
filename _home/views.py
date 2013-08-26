@@ -5,9 +5,11 @@ from _content.models import StructureNode, Timelike
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
 from django.contrib.auth import authenticate, login, logout
+from django.db.models import Q
+
 
 def home(request):
-    all_article_list = StructureNode.objects.exclude(rating__isnull=True).order_by('-rating__rating')
+    all_article_list = StructureNode.objects.filter(Q(mptt_level=0)|Q(isUpdate=True)).exclude(rating__isnull=True).order_by('-rating__rating')
     paginator = Paginator(all_article_list, 25) # Show 25 contacts per page
     
     page = request.GET.get('page')
@@ -31,7 +33,7 @@ def home(request):
 
 def getSubject(request, subject_url):
     try:
-        top_article_list = StructureNode.objects.exclude(rating__isnull=True).order_by('-rating__rating').filter(tag__name__iexact=subject_url)
+        top_article_list = StructureNode.objects.filter(Q(mptt_level=0)|Q(isUpdate=True)).exclude(rating__isnull=True).order_by('-rating__rating').filter(tag__name__iexact=subject_url)
     except StructureNode.DoesNotExist:
         raise Http404
     
