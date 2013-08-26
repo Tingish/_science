@@ -26,7 +26,7 @@ $(document).ready(function(){
 			<div class="heroUnitLeft">
 				<div class="heroUnitElement1 element0">
 				
-					<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.0.url %}';" >
+					<div class="heroUnitElement1Caption" onclick="window.location={% url 'article' top_article_list.0.url %};" >
 						<h3>{{ top_article_list.0.title }}</h3>
 						<p><b>By:</b> {{ top_article_list.0.author.username }} on {{ top_article_list.0.pubDate|date }}</p>
 					</div>
@@ -67,7 +67,7 @@ $(document).ready(function(){
 					</div>	
 				</div>
 			</div>
-			
+	
 			<div class="heroUnitBot">
 				<div class="heroUnitBotLeft">
 					<div class="heroUnitElement1 element3">
@@ -95,9 +95,9 @@ $(document).ready(function(){
 						
 					</div>	
 				</div>
-			</div>		
-		</div>		
-
+			</div>
+	
+		</div>
 	</div>
 	{% endif %}
 </div>
