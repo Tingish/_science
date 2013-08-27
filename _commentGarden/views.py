@@ -3,6 +3,7 @@
 from django.shortcuts import render
 from _content.models import StructureNode, hashTagParser, tagSaveHelper, Image, Timelike, Dataset, datasetFormatter, Paragraph
 from _article.forms import PublishForm
+from _user.views import restrictedTagListSave
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 
@@ -26,9 +27,7 @@ def submitComment(request):
             commentNode.isComment = True
             commentNode.position = getPositionForComments(request)
             commentNode.save()
-            for tag in tagList:
-                commentNode.tag_set.add(tagSaveHelper(tag))
-            commentNode.save()
+            restrictedTagListSave(request, commentNode, tagList) 
             for contentNodeIndex in range(0, int(request.POST['numberOfContentSections_'+str(0)])):
                 contentNode = StructureNode()
                 contentNode.title = request.POST['publishFormTitle'] +"_content_"+str(contentNodeIndex)
@@ -84,9 +83,7 @@ def submitComment(request):
                     if (request.POST.get('dataInputLabbookSource_section_content_'+str(0)+"_"+str(contentNodeIndex))):
                         contentNode.object_id = int(request.POST['dataInputLabbookSource_section_content_'+str(0)+"_"+str(contentNodeIndex)])
                     contentNode.save()
-                for tag in tagList:
-                    contentNode.tag_set.add(tagSaveHelper(tag))
-                contentNode.save()
+                restrictedTagListSave(request, contentNode, tagList) 
             
     return HttpResponseRedirect(request.POST['prevPage'])
 

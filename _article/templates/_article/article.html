@@ -292,7 +292,7 @@ $(document).ready(function(){
 			{% if node.isTypeNone and node.isPublished == True and not node.is_root_node %}
 				<div class='articleContainer {{ node.slug }}'>
 					<div class='articleMeta'>
-						{% ifchanged node.pubDate.date %}<h5>{{node.pubDate|date}}</h5>{% endifchanged %}
+						{% ifchanged node.pubDate|date %}<h5>{{node.pubDate|date}}</h5>{% endifchanged %}
 						
 						{% if node.author %}
 						<h5>{{node.author.name}}</h5>

@@ -10,13 +10,39 @@
 <script src="{%	static 'popcorn/js/popcorn-complete.min.js' %}"></script>
 <script>
 $(document).ready(function () {
+	$("#updateForm").hide();
 	{% for StructureNode in labbook_list %}
 		{% if StructureNode.isTypeTimelike %}
 			var timenode{{ StructureNode.id }}video{{ StructureNode.content_object.id }} = Popcorn.youtube(
 	           ".node{{ StructureNode.id }}video{{ StructureNode.content_object.id }}",
 	           "{{ StructureNode.content_object.linkSource }}" );
 		{% endif %}
+			
 	{% endfor %}
+	
+	function prevTitleTagSetter(targetNode){
+		{% for StructureNode in labbook_list %}
+		var nodeTitle{{ StructureNode.id }} = "{{ StructureNode.title }}";
+		var nodeTag{{ StructureNode.id }} = "" {% if StructureNode.tag_set.all %}{% for tag in StructureNode.tag_set.all %} + " #{{ tag.name }}" {% endfor %}{% endif %};
+		if (targetNode.attr("data-ParentID") == "{{ StructureNode.id }}"){
+			$(".parentID").val("{{ StructureNode.id }}");
+			$("#id_updateFormTitle").val(nodeTitle{{ StructureNode.id }});
+			$("#id_updateFormTag").val(nodeTag{{ StructureNode.id }});
+		}
+		{% endfor %}
+		
+	}
+	$("#updateFormClose").click(function(){
+		$("#updateForm").hide();
+	});
+	
+	$(".editButton").click(function(){
+		var $this = $(this);
+		var $targetParent = $this.parents(".postMeta");
+		$targetParent.append($("#updateForm"));
+		prevTitleTagSetter($targetParent);
+		$("#updateForm").show();
+	});
 		
 		$(".textFormView").hide();
 		$(".imageFormView").hide();
@@ -551,14 +577,38 @@ $(document).ready(function () {
 			</div>
 		</div>
 	</div>
-
+	<form id="updateForm" action={% url 'userLabbookUpdateForm' %} method="post" enctype="multipart/form-data">
+			{% csrf_token %}{{ updateForm.non_field.errors }}
+			<div class="titleSubmission">
+				{{ updateForm.updateFormTitle.errors }}
+				<div class="titleInputContainer">
+					{{ updateForm.updateFormTitle }}
+				</div>
+			</div>
+			<div class="tagSubmission">	
+				{{ updateForm.updateFormTag.errors }}
+				<div class="tagInputContainer">
+					<div class="input-prepend">
+						<span class="add-on"><i class="icon-tags"></i></span>
+						{{ updateForm.updateFormTag }}
+					</div>
+				</div>
+			</div>
+			<div class="hiddenFields">
+				<input class="parentID" name="parentID" type="hidden">
+				
+			</div>
+			<button id="updateFormButton" type="submit" class="btn btn-primary">Submit</button>
+			<button id="updateFormClose" type="button" class="btn btn-default pull-right">Close</button>	
+	</form>		
 	{% for StructureNode in labbook_list %}
 		
 		<div class="postContainer">
-			<div class="postMeta">
-				{% ifchanged StructureNode.pubDate.date %} <h5>{{ StructureNode.pubDate|date }}</h5> {% endifchanged %}
+			<div class="postMeta" data-ParentID="{{ StructureNode.id }}">
+				{% ifchanged StructureNode.pubDate|date %} <h5>{{ StructureNode.pubDate|date }}</h5> {% endifchanged %}
 				<h5>{{ StructureNode.pubDate|time }}</h5>
 				<p>{{ StructureNode.title }}</p>{% if StructureNode.tag_set.all %}<p>{% for tag in StructureNode.tag_set.all %}<a href={% url 'userLabbookTag' tag.name %}>#{{ tag.name }} </a>{% endfor %}</p>{% endif %}
+				<button class="btn btn-default heroUnitCommentButtonPosition editButton" title="Edit Title and Tags"><i class="icon-pencil"></i></button>	
 			</div>
 			
 			<div class="postContent">

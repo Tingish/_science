@@ -24,5 +24,6 @@ urlpatterns = patterns('',
                        url(r'^labbook/submit/dataform/$', views.userLabbookDataForm, name='userLabbookDataForm'),
                        url(r'^search/labbook/$', views.userSearchForm, name='userSearchForm'),
                        url(r'^publish/$', views.userPublish, name='userPublish'),
-                       url(r'^publish/manage/$', views.userPublish, name='userPublishManage')
+                       url(r'^publish/manage/$', views.userPublish, name='userPublishManage'),
+                       url(r'^labbook/submit/updateform/$', views.userLabbookUpdateForm, name='userLabbookUpdateForm'),
                       )

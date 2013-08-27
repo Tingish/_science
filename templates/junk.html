@@ -133,3 +133,34 @@
 	    <span class="icon-next"></span>
 	</div>
 </div>
+
+		
+			<div class="heroUnitBot">
+				<div class="heroUnitBotLeft">
+					<div class="heroUnitElement1 element3">
+					
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.3.url %}';">
+							<h3>{{ top_article_list.3.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.3.author.username }} on {{ top_article_list.3.pubDate|date }}</p>
+						</div>
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.3.url %}';">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.3.slug }}CommentButton">{{ top_article_list.3.commentCount }}</button>
+						
+					</div>	
+				</div>
+				<div class="heroUnitBotRight">
+					<div class="heroUnitElement1 element4">
+					
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.4.url %}';">
+							<h3>{{ top_article_list.4.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.4.author.username }} on {{ top_article_list.4.pubDate|date }}</p>
+						</div>
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.4.url %}';">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.4.slug }}CommentButton">{{ top_article_list.4.commentCount }}</button>
+						
+					</div>	
+				</div>
+			</div>		
+		</div>		

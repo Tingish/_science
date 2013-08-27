@@ -7,12 +7,26 @@ $(document).ready(function(){
 		$(".timelikeContainer").height(newTimelikeHeight);
 		
 	});
-	var newHeroUnitHeight = 0.5625*$(".heroUnit").width();
+	var newHeroUnitHeight;
+	var newGlobalMainContentHeight;
+	if($(window).width() < 768){
+		newGlobalMainContentHeight = 3*0.5625*$(".heroUnit").width();
+	}
+	else{
+		newGlobalMainContentHeight = 0.5625*$(".heroUnit").width();
+	}
+	newHeroUnitHeight = 0.5625*$(".heroUnit").width();
 	$(".heroUnit").height(newHeroUnitHeight);
-	
+	$(".globalMainContent").height(newGlobalMainContentHeight);
 	$(window).resize(function(){
 		newHeroUnitHeight = 0.5625*$(".heroUnit").width();
 		$(".heroUnit").height(newHeroUnitHeight);
-		
+		if($(window).width() < 768){
+			newGlobalMainContentHeight = 3*0.5625*$(".heroUnit").width();
+		}
+		else{
+			newGlobalMainContentHeight = 0.5625*$(".heroUnit").width();
+		}
+		$(".globalMainContent").height(newGlobalMainContentHeight);
 	});
 });

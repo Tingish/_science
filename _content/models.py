@@ -266,7 +266,10 @@ def get_queryset_descendants(nodes, include_self=True):
 
 #splits on multiple white space or a hashtag    
 def hashTagParser(string):
-    return filter(None, re.split(r'\s{2,}|#', string))
+    listOfTags = re.split(r'\s{2,}|#', string)
+    listOfTags = map(unicode.strip, listOfTags)
+    listOfTags = filter(None, listOfTags)
+    return listOfTags
 
 def tagSaveHelper(string):
     if Tag.objects.filter(name=string).exists():
