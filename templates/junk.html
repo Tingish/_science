@@ -1,0 +1,166 @@
+<li>
+			        <a href="#">
+			            <img src="images/1.jpg" alt=""/>
+			            <span class="nav-active"></span>
+			            <span class="nav-wrapper">
+			                <span class="nav-link">Portfolio</span>
+			                <span class="nav-descr">My work</span>
+			            </span>
+			        </a>
+			        <div class="nav-box">
+			            <a href="#">Websites</a>
+			            <a href="#">Illustrations</a>
+			            <a href="#">Photography</a>
+			        </div>
+			    </li>
+			    <li>
+			        <a href="#">
+			            <img src="images/1.jpg" alt=""/>
+			            <span class="nav-active"></span>
+			            <span class="nav-wrapper">
+			                <span class="nav-link">Portfolio</span>
+			                <span class="nav-descr">My work</span>
+			            </span>
+			        </a>
+			        <div class="nav-box">
+			            <a href="#">Websites</a>
+			            <a href="#">Illustrations</a>
+			            <a href="#">Photography</a>
+			        </div>
+			    </li>
+			    
+	 			if( sideHeight < $(".{{ node.slug }}CommentContainer").height() + $(".{{ node.slug }}CommentContainer").position().top ) {sideHeight = $(".{{ node.slug }}CommentContainer").height() + $(".{{ node.slug }}CommentContainer").position().top;}
+	 			$(".{{ node.slug }}CommentContainer").click(function(){
+	 				if($(".{{ node.slug }}CommentContainer").hasClass('showing'))
+	 				{
+	 					
+	 				}
+	 				else
+	 				{
+	 					
+	 				}
+	 			});
+	 			
+		{% recursetree nodes %}	{% if node.isTypeTimelike %}var timeNode{{ node.id }}video{{ node.object_id }} = Popcorn.youtube(".node{{ node.id }}video{{ node.object_id }}", "{{ node.content_object.linkSource }}" );{% endif %}
+		    {% if not node.is_leaf_node %}{{ children }}{% endif %}  
+		    {% endrecursetree %}
+		    
+		    {% recursetree nodes %}	
+		    {% if node.mptt_level == 2 %}var position{{ node.slug }} =  $(".{{ node.slug }}").position().top + $(".{{ node.slug }}").closest('.articleContainer').position().top;
+		    
+		    position{{ node.slug }} = position{{ node.slug }}-10;
+		 			$(".{{ node.slug }}CommentContainer").css({
+		 				"position": "relative", 
+		 				"top": position{{ node.slug }} + "px",
+		 			}).hide();
+		 			$("#{{ node.slug }}CommentButton").click(function(){
+		 				if($(".{{ node.slug }}CommentContainer").hasClass('showing'))
+		 				{
+		 					$(".{{ node.slug }}CommentContainer").hide().removeClass('showing');
+		 					$(".sideContainer").height(1);
+		 				}
+		 				else
+		 				{
+		 					$(".showing").hide().removeClass("showing");
+		 					$(".{{ node.slug }}CommentContainer").show().addClass("showing");
+		 					sideHeight = $(".{{ node.slug }}CommentContainer").height() + $(".{{ node.slug }}CommentContainer").position().top;
+		 					$(".sideContainer").height(sideHeight);
+		 				}
+		 			});
+		 			 {% endif %}{% if not node.is_leaf_node %}{{ children }}{% endif %}  
+		{% endrecursetree %}
+		$(".sideContainer").height(sideHeight);
+	});
+	
+	
+	function positionNewSectionButton(){
+		var newTop = $(".sectionSubmission").last().position().top;
+		$("#addNewSection").css({
+			"position": "relative",
+			"top": newTop + "px",
+		});
+	}
+	
+	function positionPublishFormHelperMenu(){
+		var newTop = $focusedEmptyContainer.position().top-80
+		$(".publishFormHelperMenu").css({
+				"position":"relative",
+				"top": newTop + "px",
+				});
+	}
+	
+<button type="button" class="btn btn-default navbar-btn pull-right signInButton">Sign in</button>
+
+<div class="container">
+	<div id="carousel-example-generic" class="carousel slide">
+		<ol class="carousel-indicators">
+			<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+		{% for StructureNode in top_article_list %}
+			{% if forloop.counter < 6 %}			
+				<li data-target="#carousel-example-generic" data-slide-to="{{forloop.counter}}"></li>
+			{% endif %}
+		{% endfor %}
+		</ol>
+		
+		<!-- Wrapper for slides -->
+	  <div class="carousel-inner">
+	  	
+	    <div class="item active">
+	      <!--<img src="" alt="">-->
+	      <div class="carousel-caption">
+			<h3></h3>
+			<p></p>
+	      </div>
+	    </div>
+	    {% for StructureNode in top_article_list %}
+			{% if forloop.counter < 6 %}		
+		    <div class="item">
+		      <!--<img src="" alt="">-->
+		      <div class="carousel-caption">
+				<h3>{{ StructureNode.title }}</h3>
+				<p><b>By:</b> {{ StructureNode.author.username }}, on {{ StructureNode.pubDate|date }}</p>
+		      </div>
+		    </div>
+	    	{% endif %}
+		{% endfor %}
+	    	    
+	  </div>
+		
+	  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+	    <span class="icon-prev"></span>
+	  </a>
+	  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+	    <span class="icon-next"></span>
+	</div>
+</div>
+
+		
+			<div class="heroUnitBot">
+				<div class="heroUnitBotLeft">
+					<div class="heroUnitElement1 element3">
+					
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.3.url %}';">
+							<h3>{{ top_article_list.3.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.3.author.username }} on {{ top_article_list.3.pubDate|date }}</p>
+						</div>
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.3.url %}';">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.3.slug }}CommentButton">{{ top_article_list.3.commentCount }}</button>
+						
+					</div>	
+				</div>
+				<div class="heroUnitBotRight">
+					<div class="heroUnitElement1 element4">
+					
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.4.url %}';">
+							<h3>{{ top_article_list.4.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.4.author.username }} on {{ top_article_list.4.pubDate|date }}</p>
+						</div>
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.4.url %}';">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.4.slug }}CommentButton">{{ top_article_list.4.commentCount }}</button>
+						
+					</div>	
+				</div>
+			</div>		
+		</div>		

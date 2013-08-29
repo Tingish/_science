@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+    	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    	<meta name="description" content="">
+    	<meta name="viewport" content = "device-width, initial-scale=1.0">
+    	<title>_Science{% block title %}{% endblock %}</title>
+    	<link rel = "stylesheet" type="text/css" href="{% static '_science/css/_style1.css' %}"/>
+    	<link rel="stylesheet" type="text/css" href="{% static 'font-awesome/css/font-awesome.min.css' %}"/>
+    	<script src="{% static 'jquery/js/jquery-1.9.1.min.js' %}"></script> 	
+    	<script src="{% static '_science/js/_science.js' %}"></script>
+    	<script src="{% static '_science/js/bootstrap.min.js' %}"></script>	
+		<script>
+		    document.documentElement.className = document.documentElement.className.replace("no-js","js");
+		</script>
+    	{% block head %}{% endblock %}
+    	
+	</head>
+	<body>
+		<div class="globalHead">
+			<div class="container">
+			{% include 'navbar.html' %}
+			</div>
+		</div>
+		<div class="globalMainContent">
+		{% block mainContent %}{% endblock %}
+		</div>
+		<div class="container">
+			<div class="mainContentContainer">
+				<div class="bulkContainer">
+				{% block content %}{% endblock %}
+				</div>
+				<div class="sideContainer">
+					{% block sideContent %}{% endblock %}
+				</div>
+				<div class="articleBulkContainer">
+					{% block articleBulkContent %}{% endblock %}
+				</div>
+				<div class="articleSideContainer">
+					{% block articleSideContent %}{% endblock %}
+				</div>	
+			</div>
+		
+		</div>
+		<div class="globalFooter">
+		{% include 'footer.html' %}
+		</div>
+	</body>
+</html>

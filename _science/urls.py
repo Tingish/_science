@@ -7,7 +7,12 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', '_science.views.home', name='home'),
+     url(r'^$', '_home.views.home', name='home'),
+     url(r'^article/', include('_article.urls')),
+     url(r'^subject/', include('_home.urls')),
+     url(r'^comment/', include('_commentGarden.urls')),
+     url(r'^user/', include('_user.urls')),
+
     # url(r'^_science/', include('_science.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
@@ -15,6 +20,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
      url(r'^admin/', include(admin.site.urls)),
+     url(r'^accounts/', include('registration.backends.default.urls')),
 )
 
 if settings.DEBUG:

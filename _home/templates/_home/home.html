@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load mptt_tags %}
+
+{% block title %}
+ Homepage
+{% endblock %}
+
+{% block head %}
+<script>
+$(document).ready(function(){
+	{% for StructureNode in top_article_list %}
+		{% if forloop.counter < 6 and StructureNode.getNearestAbstractImage %}
+		var tempIndex = {{forloop.counter}}-1;
+		$(".element" + tempIndex).css("background-image", "url({% if StructureNode.getNearestAbstractImage.localSource %}{{ StructureNode.getNearestAbstractImage.localSource.url }}{% else %}{{ StructureNode.getNearestAbstractImage.linkSource }}{% endif %})");
+		{% endif %}
+	{% endfor %}
+});
+</script>
+{% endblock %}
+
+{% block mainContent %}
+<div class="container">
+	{% if top_article_list %}
+	<div class="heroUnit">
+
+			<div class="heroUnitLeft">
+				<div class="heroUnitElement1 element0">
+				
+					<div class="heroUnitElement1Caption" onclick="window.location={% url 'article' top_article_list.0.url %};" >
+						<h3>{{ top_article_list.0.title }}</h3>
+						<p><b>By:</b> {{ top_article_list.0.author.username }} on {{ top_article_list.0.pubDate|date }}</p>
+					</div>
+					<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.0.url %}';">
+					</div>
+					<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.0.slug }}CommentButton">{{ top_article_list.0.commentCount }}</button>
+					
+				</div>	
+			</div>
+
+			
+		<div class="heroUnitRight">
+			<div class="heroUnitTop">
+				<div class="heroUnitTopLeft">
+					<div class="heroUnitElement1 element1">
+					
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.1.url %}';">
+							<h3>{{ top_article_list.1.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.1.author.username }} on {{ top_article_list.1.pubDate|date }}</p>
+						</div>
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.1.url %}';">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.1.slug }}CommentButton">{{ top_article_list.1.commentCount }}</button>
+						
+					</div>	
+				</div>
+				<div class="heroUnitTopRight">
+					<div class="heroUnitElement1 element2">
+					
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.2.url %}';">
+							<h3>{{ top_article_list.2.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.2.author.username }} on {{ top_article_list.2.pubDate|date }}</p>
+						</div>
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.2.url %}';">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.2.slug }}CommentButton">{{ top_article_list.2.commentCount }}</button>
+						
+					</div>	
+				</div>
+			</div>
+	
+			<div class="heroUnitBot">
+				<div class="heroUnitBotLeft">
+					<div class="heroUnitElement1 element3">
+					
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.3.url %}';">
+							<h3>{{ top_article_list.3.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.3.author.username }} on {{ top_article_list.3.pubDate|date }}</p>
+						</div>
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.3.url %}';">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.3.slug }}CommentButton">{{ top_article_list.3.commentCount }}</button>
+						
+					</div>	
+				</div>
+				<div class="heroUnitBotRight">
+					<div class="heroUnitElement1 element4">
+					
+						<div class="heroUnitElement1Caption" onclick="window.location='{% url 'article' top_article_list.4.url %}';">
+							<h3>{{ top_article_list.4.title }}</h3>
+							<p><b>By:</b> {{ top_article_list.4.author.username }} on {{ top_article_list.4.pubDate|date }}</p>
+						</div>
+						<div class="heroUnitElement1Filter" onclick="window.location='{% url 'article' top_article_list.4.url %}';">
+						</div>
+						<button type="button" class="btn btn-comment heroUnitCommentButtonPosition" id="{{ top_article_list.4.slug }}CommentButton">{{ top_article_list.4.commentCount }}</button>
+						
+					</div>	
+				</div>
+			</div>
+	
+		</div>
+	</div>
+	{% endif %}
+</div>
+{% endblock %}	
+{% block content %}	
+	<div class="articlePreviewList">
+	{% for StructureNode in top_article_list %}		
+			
+		{% if forloop.counter >= 6 %}
+			<div class="articlePreviewContainer">
+			<h2><a href={% url "article" StructureNode.url %}>{{ StructureNode.title }}</a></h2>
+			<p>{{ StructureNode.pubDate|date }}</p>
+			
+				{% if StructureNode.getNearestAbstractImage %}<div class="previewThumbnail"><img src={% if StructureNode.getNearestAbstractImage.localSource %}{{ StructureNode.getNearestAbstractImage.localSource.url }}{% else %}{{ StructureNode.getNearestAbstractImage.linkSource }}{% endif %} class="img-rounded" alt="" /></div>
+				<div class="previewParagraphWImage">{{ StructureNode.getNearestAbstractParagraph }}</div>
+				{% else %}<div class="previewParagraph">{{ StructureNode.getNearestAbstractParagraph }}</div>{% endif %}
+				<button type="button" class="btn btn-comment homeCommentPosition" id="{{ StructureNode.slug }}CommentButton">{{ StructureNode.commentCount }}</button>
+			</div>
+		{% endif %}
+		
+	{% endfor %}
+	</div>
+	<div class="pagination">
+    <span class="step-links">
+    	{% if top_article_list.has_previous or top_article_list.has_next %}
+        {% if top_article_list.has_previous %}
+            <a href="?page={{ top_article_list.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ top_article_list.number }} of {{ top_article_list.paginator.num_pages }}.
+        </span>
+
+        {% if top_article_list.has_next %}
+            <a href="?page={{ top_article_list.next_page_number }}">next</a>
+        {% endif %}
+        {% endif %}
+    </span>
+</div>	
+{% endblock %}

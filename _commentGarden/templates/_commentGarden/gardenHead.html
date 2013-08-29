@@ -1,0 +1,16 @@
+{% load staticfiles %}
+ <script src="{% static 'masonry/js/jquery.masonry.min.js' %}"></script>
+ <script type="text/javascript">
+ 	$(window).load(function(){
+ 		$(".gardenPlot").masonry({
+ 			
+ 			itemselector : ".commentFlowerContainer",
+ 			isAnimated:true,
+ 			
+ 		});
+ 		$(".gardenPlot").masonry("reload");
+ 	});
+ 		$(window).resize(function(){
+		$(".gardenPlot").masonry("reload");
+	});
+ </script>

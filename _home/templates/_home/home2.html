@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load mptt_tags %}
+
+{% block title %}
+ Homepage
+{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+	<div class="articlePreviewList">
+	{% for StructureNode in top_article_list %}		
+
+			
+			<div class="articlePreviewContainer">
+				<h2><a href={% url "article" StructureNode.url %}>{{ StructureNode.title }}</a></h2>
+				<p>{{ StructureNode.pubDate|date }}</p>
+				{% if StructureNode.getNearestAbstractImage %}<div class="previewThumbnail"><div class="contentContainerImage"><img src={% if StructureNode.getNearestAbstractImage.localSource %}{{ StructureNode.getNearestAbstractImage.localSource.url }}{% else %}{{ StructureNode.getNearestAbstractImage.linkSource }}{% endif %} alt="" /></div></div>
+				<div class="previewParagraphWImage">{{ StructureNode.getNearestAbstractParagraph }}</div>
+				{% else %}<div class="previewParagraph">{{ StructureNode.getNearestAbstractParagraph }}</div>{% endif %}
+				<button type="button" class="btn btn-comment homeCommentPosition" id="{{ StructureNode.slug }}CommentButton">{{ StructureNode.commentCount }}</button>
+			</div>
+		
+	{% endfor %}
+	</div>
+	<div class="pagination">
+	    <span class="step-links">
+	    	{% if top_article_list.has_previous or top_article_list.has_next %}
+	        {% if top_article_list.has_previous %}
+	            <a href="?page={{ top_article_list.previous_page_number }}">previous</a>
+	        {% endif %}
+	
+	        <span class="current">
+	            Page {{ top_article_list.number }} of {{ top_article_list.paginator.num_pages }}.
+	        </span>
+	
+	        {% if top_article_list.has_next %}
+	            <a href="?page={{ top_article_list.next_page_number }}">next</a>
+	        {% endif %}
+	        {% endif %}
+	    </span>
+	</div>	
+{% endblock %}

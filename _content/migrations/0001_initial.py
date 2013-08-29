@@ -23,7 +23,7 @@ class Migration(SchemaMigration):
             ('lft', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
             ('rght', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
             ('tree_id', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
-            ('level', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
+            ('mptt_level', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
         ))
         db.send_create_signal(u'_content', ['StructureNode'])
 
@@ -32,14 +32,16 @@ class Migration(SchemaMigration):
 
         # Adding model 'Rating'
         db.create_table(u'_content_rating', (
-            ('structureNode', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['_content.StructureNode'], unique=True, primary_key=True)),
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('structureNode', self.gf('mptt.fields.TreeOneToOneField')(to=orm['_content.StructureNode'], unique=True)),
             ('rating', self.gf('django.db.models.fields.PositiveIntegerField')()),
         ))
         db.send_create_signal(u'_content', ['Rating'])
 
         # Adding model 'ViewCount'
         db.create_table(u'_content_viewcount', (
-            ('structureNode', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['_content.StructureNode'], unique=True, primary_key=True)),
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('structureNode', self.gf('mptt.fields.TreeOneToOneField')(to=orm['_content.StructureNode'], unique=True)),
             ('viewCount', self.gf('django.db.models.fields.PositiveIntegerField')()),
         ))
         db.send_create_signal(u'_content', ['ViewCount'])
@@ -105,8 +107,9 @@ class Migration(SchemaMigration):
         },
         u'_content.rating': {
             'Meta': {'object_name': 'Rating'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'rating': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'structureNode': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['_content.StructureNode']", 'unique': 'True', 'primary_key': 'True'})
+            'structureNode': ('mptt.fields.TreeOneToOneField', [], {'to': u"orm['_content.StructureNode']", 'unique': 'True'})
         },
         u'_content.structurenode': {
             'Meta': {'unique_together': "(('parent', 'position'),)", 'object_name': 'StructureNode'},
@@ -114,8 +117,8 @@ class Migration(SchemaMigration):
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'isPublished': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'lft': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
+            'mptt_level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
             'parent': ('mptt.fields.TreeForeignKey', [], {'blank': 'True', 'related_name': "'children'", 'null': 'True', 'to': u"orm['_content.StructureNode']"}),
             'position': ('django.db.models.fields.PositiveIntegerField', [], {}),
@@ -133,7 +136,8 @@ class Migration(SchemaMigration):
         },
         u'_content.viewcount': {
             'Meta': {'object_name': 'ViewCount'},
-            'structureNode': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['_content.StructureNode']", 'unique': 'True', 'primary_key': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'structureNode': ('mptt.fields.TreeOneToOneField', [], {'to': u"orm['_content.StructureNode']", 'unique': 'True'}),
             'viewCount': ('django.db.models.fields.PositiveIntegerField', [], {})
         },
         u'auth.group': {

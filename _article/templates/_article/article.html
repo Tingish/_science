@@ -1,0 +1,526 @@
+{% extends 'base.html' %}
+{% load mptt_tags %}
+{% load staticfiles %}
+{% block head %}
+<script src="{%	static 'popcorn/js/popcorn-complete.min.js' %}"></script>
+
+<script>
+$(document).ready(function(){
+
+	$(".publishFormContainer").hide();
+	var offset = 0;
+	var sideHeight = 1;
+	{% recursetree nodes %}	{% if node.isTypeTimelike and node.isLabnote == False %}var timeNode{{ node.id }}video{{ node.object_id }} = Popcorn.smart(".node{{ node.id }}video{{ node.object_id }}", "{{ node.content_object.linkSource }}" ); timeNode{{ node.id }}video{{ node.object_id }}.autoplay(false);{% endif %}
+		    {% if not node.is_leaf_node %}{{ children }}{% endif %}  
+		    {% endrecursetree %}
+	
+	{% recursetree nodes %}
+	{% if node.mptt_level == 2 %} var position{{ node.id }} = $(".{{ node.slug }}").position().top + $(".{{ node.slug }}").parents('.articleContainer').position().top; 
+	position{{ node.id }} = position{{ node.id }}-10;
+	$(".{{ node.slug }}CommentContainer").css({
+		 				"position": "relative", 
+		 				"top": position{{ node.id }} + "px"
+		 			});
+	$(".{{ node.slug }}CommentContainer").hide();	 			
+	$("#{{ node.slug }}CommentButton").click(function(){
+		 				if($(".{{ node.slug }}CommentContainer").hasClass('showing'))
+		 				{
+		 					$(".{{ node.slug }}CommentContainer").hide().removeClass('showing');
+		 					$(".articleSideContainer").height(1);
+		 				}
+		 				else
+		 				{
+		 					$(".showing").hide().removeClass("showing");
+		 					$(".{{ node.slug }}CommentContainer").show().addClass("showing");
+		 					sideHeight = $(".{{ node.slug }}CommentContainer").height() + $(".{{ node.slug }}CommentContainer").position().top;
+		 					$(".articleSideContainer").height(sideHeight);
+		 				}
+		 			});
+	$("#{{ node.slug }}CommentButtonAdd").click(function(){
+		if ($(".publishFormContainer").position().top == position{{ node.id }}){
+			$(".publishFormContainer").toggle();
+		}
+		else {
+			$(".publishFormContainer").show();
+		}
+		$(".class_sectionParent").val({{ node.id }});
+		$(".publishFormContainer").css({
+		 				"position": "relative", 
+		 				"top": position{{ node.id }} + "px"
+		 			});			
+	});	 				 			
+	{% endif %}
+	{% if not node.is_leaf_node %}{{ children }}{% endif %}  
+	{% endrecursetree %}
+	{% if user.is_authenticated %}
+	var sectionCounter = 1;
+	var $focusedEmptyContainer;
+	
+	//positionNewSectionButton();
+	function nameSetterFunction(contentInputContainer, thisSectionPosition, thisSectionContentCounter){
+		var $child = $(contentInputContainer).children();
+		if ($child.hasClass("textSubmission")){
+			var $thisTextarea = $child.find("textarea");
+			var newName = "text_section_content_"+thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisTextarea.attr("name", newName);
+			var $thisContentType = $child.find(".contentType");
+			var contentTypeName = "contentType_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisContentType.attr("name", contentTypeName);
+		}
+		else if($child.hasClass("imageSubmission")){
+			var $thisContentType = $child.find(".contentType");
+			var contentTypeName = "contentType_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisContentType.attr("name", contentTypeName);
+			var $thisLocalSubmit = $child.find(".imageInputLocalSource");
+			var localSubmitNewName = "imageInputLocalSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLocalSubmit.attr("name", localSubmitNewName);
+			var $thisLinkSubmit = $child.find(".imageInputLinkSource");
+			var linkSubmitNewName = "imageInputLinkSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLinkSubmit.attr("name", linkSubmitNewName);
+			var $thisLabbookSubmit = $child.find(".imageInputLabbookSource");
+			var labbookSubmitNewName = "imageInputLabbookSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLabbookSubmit.attr("name", labbookSubmitNewName );
+		}
+		else if($child.hasClass("timelikeSubmission")){
+			var $thisContentType = $child.find(".contentType");
+			var contentTypeName = "contentType_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisContentType.attr("name", contentTypeName);
+			var $thisLocalSubmit = $child.find(".timelikeInputLocalSource");
+			var localSubmitNewName = "timelikeInputLocalSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLocalSubmit.attr("name", localSubmitNewName);
+			var $thisLinkSubmit = $child.find(".timelikeInputLinkSource");
+			var linkSubmitNewName = "timelikeInputLinkSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLinkSubmit.attr("name", linkSubmitNewName);
+			var $thisLabbookSubmit = $child.find(".timelikeInputLabbookSource");
+			var labbookSubmitNewName = "timelikeInputLabbookSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLabbookSubmit.attr("name", labbookSubmitNewName );
+		}
+		else if($child.hasClass("dataSubmission")){
+			var $thisContentType = $child.find(".contentType");
+			var contentTypeName = "contentType_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisContentType.attr("name", contentTypeName);
+			var $thisLabbookSubmit = $child.find(".dataInputLabbookSource");
+			var labbookSubmitNewName = "dataInputLabbookSource_section_content_"+ thisSectionPosition +"_"+thisSectionContentCounter;
+			$thisLabbookSubmit.attr("name", labbookSubmitNewName );
+		}
+		
+	}
+	
+	//Sets up the buttons for images
+	$("#publishForm").on("click", ".btn-upload", function(){
+		var $thisParent = $(this).parents(".contentInputContainer");
+		$thisParent.find(".localSourceSubmission").show();
+		$thisParent.find(".linkSourceSubmission").hide();
+		$thisParent.find(".labbookSourceSubmission").hide();
+		$thisParent.find(".inputLinkSource").val("");
+		var $thisAlsoNeedsReset = $thisParent.find(".inputLabbookSource");
+		$thisAlsoNeedsReset.prop('selectedIndex',0);
+		//positionNewSectionButton();
+		//positionPublishFormHelperMenu();
+	});
+	
+	$("#publishForm").on("click", ".btn-link", function(){
+		var $thisParent = $(this).parents(".contentInputContainer");
+		$thisParent.find(".localSourceSubmission").hide();
+		$thisParent.find(".linkSourceSubmission").show();
+		$thisParent.find(".labbookSourceSubmission").hide();
+		var $thisNeedsReset = $thisParent.find(".inputLocalSource");
+		$thisNeedsReset.replaceWith( $thisNeedsReset = $thisNeedsReset.clone(true) );
+		var $thisAlsoNeedsReset = $thisParent.find(".inputLabbookSource");
+		$thisAlsoNeedsReset.prop('selectedIndex',0);
+		//positionNewSectionButton();
+		//positionPublishFormHelperMenu();
+	});
+	
+	$("#publishForm").on("click", ".btn-labbook", function(){
+		var $thisParent = $(this).parents(".contentInputContainer");
+		$thisParent.find(".localSourceSubmission").hide();
+		$thisParent.find(".linkSourceSubmission").hide();
+		$thisParent.find(".labbookSourceSubmission").show();
+		var $thisNeedsReset = $thisParent.find(".inputLocalSource");
+		$thisNeedsReset.replaceWith( $thisNeedsReset = $thisNeedsReset.clone(true) );
+		$thisParent.find(".inputLinkSource").val("");
+		//positionNewSectionButton();
+		//positionPublishFormHelperMenu();
+	});
+	
+	//sets up dataset buttons
+	$("#publishForm").on("click", ".btn-labbook-data", function(){
+		var $thisParent = $(this).parents(".contentInputContainer");
+		$thisParent.find(".manualSubmission").hide();
+		$thisParent.find(".labbookSourceSubmission").show();
+		//positionNewSectionButton();
+		//positionPublishFormHelperMenu();
+	});
+	
+	$("#publishForm").on("click", ".btn-manual-data", function(){
+		var $thisParent = $(this).parents(".contentInputContainer");
+		$thisParent.find(".manualSubmission").show();
+		$thisParent.find(".labbookSourceSubmission").hide();
+		var $thisNeedsReset = $thisParent.find(".inputLabbookSource");
+		$thisNeedsReset.prop('selectedIndex',0);
+		//positionNewSectionButton();
+		//positionPublishFormHelperMenu();
+	});
+	
+	//Hides the pulbish form helper menu.
+	$(".publishFormHelperMenu").hide();
+	//A function to bind the helper menu.
+	{% include '_user/helperMenuFunction.js' %}
+	
+	//positions and binds the helper form
+	$("#publishForm").on('click', '.emptyContentContainer', function(){
+		if ($focusedEmptyContainer != null){
+			if ($focusedEmptyContainer.is($(this))){
+				$(".publishFormHelperMenu").toggle();
+			}
+			else {
+				$focusedEmptyContainer = $(this);
+				$focusedEmptyContainer.after($(".publishFormHelperMenu"));
+				
+				
+				$(".publishFormHelperMenu").unbind();
+				helperMenuFunction($focusedEmptyContainer);
+				$(".publishFormHelperMenu").show();
+			}
+		}	
+		else {
+			$focusedEmptyContainer = $(this);
+			$focusedEmptyContainer.after($(".publishFormHelperMenu"));
+			
+			
+			$(".publishFormHelperMenu").unbind();
+			helperMenuFunction($focusedEmptyContainer);
+			$(".publishFormHelperMenu").show();
+		}
+	 });
+	
+	//moves a content section up if possible.
+	$("#publishForm").on('click', '.btn-move-up', function(){
+		var $thisParent = $(this).parents('.contentInputContainer');
+		
+		if ($thisParent.prevAll('.contentInputContainer').length > 0){
+			
+			var $prevContent = $thisParent.prevAll('.contentInputContainer').first();
+			
+			$prevContent.before($thisParent);
+			$prevContent.next().after($prevContent);
+			var thisSectionPosition = $thisParent.parents(".sectionSubmission").find(".class_sectionPosition").val();
+			var thisSectionContentCounter = 0;
+			$thisParent.parents(".sectionSubmission").find(".contentInputContainer").each(function(){
+				nameSetterFunction(this, thisSectionPosition, thisSectionContentCounter);
+				thisSectionContentCounter++;
+			});
+			//positionNewSectionButton();
+			//positionPublishFormHelperMenu();
+			//$(".publishFormHelperMenu").hide();
+			$thisParent.parents(".sectionSubmission").find(".class_numberOfContentSections").val(thisSectionContentCounter);
+			
+		}
+	});
+	
+	//moves a content section down if possible.
+	$("#publishForm").on('click', '.btn-move-down', function(){
+		var $thisParent = $(this).parents('.contentInputContainer');
+		
+		if ($thisParent.nextAll('.contentInputContainer').length > 0){
+			
+			var $nextContent = $thisParent.nextAll('.contentInputContainer').first();
+			
+			$nextContent.after($thisParent);
+			$nextContent.prev().before($nextContent);
+			var thisSectionPosition = $thisParent.parents(".sectionSubmission").find(".class_sectionPosition").val();
+			var thisSectionContentCounter = 0;
+			$thisParent.parents(".sectionSubmission").find(".contentInputContainer").each(function(){
+				nameSetterFunction(this, thisSectionPosition, thisSectionContentCounter);
+				thisSectionContentCounter++;
+			});
+			//positionNewSectionButton();
+			//positionPublishFormHelperMenu();
+			//$(".publishFormHelperMenu").hide();
+			$thisParent.parents(".sectionSubmission").find(".class_numberOfContentSections").val(thisSectionContentCounter);
+			
+		}
+	});
+
+	//moves a content section down if possible.
+	$("#publishForm").on('click', '.btn-delete', function(){
+		var $thisParent = $(this).parents('.contentInputContainer');
+		
+		if ($thisParent.next().is($focusedEmptyContainer)){
+			$thisParent.prev().remove();	
+		} 
+		else {
+			$thisParent.next().remove();
+		}
+		
+		var thisSectionPosition = $thisParent.parents(".sectionSubmission").find(".class_sectionPosition").val();
+		var thisSectionContentCounter = 0;
+		$thisParent.parents(".sectionSubmission").find(".contentInputContainer").each(function(){
+			nameSetterFunction(this, thisSectionPosition, thisSectionContentCounter);
+			thisSectionContentCounter++;
+		});
+		//positionNewSectionButton();
+		//positionPublishFormHelperMenu();
+		//$(".publishFormHelperMenu").hide();
+		$thisParent.parents(".sectionSubmission").find(".class_numberOfContentSections").val(thisSectionContentCounter);
+		
+		$thisParent.remove();	
+		
+	});
+	
+	$("#publishForm").on('click','#publishFormClose', function(){
+		$(".publishFormContainer").hide();
+	});
+	//Hides the comment menu when button is clicked
+	{% endif %}
+});
+</script>
+	 
+{% endblock %}
+{% block articleBulkContent %}
+
+		
+    {% recursetree nodes %}
+		{% if node.is_root_node and node.isPublished %}
+		<div class="experimentTitle {{ node.content }}"><h1>{{ node.title }}</h1></div>
+			
+			{% if not node.is_leaf_node %}
+				{{ children }}
+			{% endif %}
+		{% endif %}
+			{% if node.isTypeNone and node.isPublished == True and not node.is_root_node %}
+				<div class='articleContainer {{ node.slug }}'>
+					<div class='articleMeta'>
+						{% ifchanged node.pubDate|date %}<h5>{{node.pubDate|date}}</h5>{% endifchanged %}
+						
+						{% if node.author %}
+						<h5>{{node.author.name}}</h5>
+						{% endif %}
+					</div>
+					
+						{% if not node.is_leaf_node %}
+							<div class='articleContent'>
+								<h2>{{node.title}}</h2>
+	        				{{ children }}
+	        				</div>
+	        			{% endif %}
+	        		
+	        	</div>		
+	    	{% elif node.isTypeParagraph and node.isPublished == True and not node.is_root_node %}
+	    		<div class='contentContainer {{ node.slug }}'>       
+	        	   <p>
+	        	   {{ node.content_object.text }}</p>
+	        	   <button type="button" class="btn btn-comment articleCommentPosition" id="{{ node.slug }}CommentButton">{{ node.commentCount }}</button>
+	        	   <button type="button" class="btn btn-comment articleAddCommentPosition" id="{{ node.slug }}CommentButtonAdd" title="Add a New Comment"><i class="icon-plus"></i></button>
+	        	</div>
+	    	{% elif node.isTypeImage and node.isPublished == True and not node.is_root_node %}
+	    		<div class='contentContainer {{ node.slug }}'>  	
+		    		
+		    		{% if node.content_object.isLinkSource and node.isPublished == True %}
+		    			<div class='contentContainerImage {{ node.slug }}'><img src={{ node.content_object.linkSource }} alt="" /></div>
+		    		{% elif node.content_object.isLocalSource and node.isPublished == True %}
+		    			<div class='contentContainerImage {{ node.slug }}'><img src={{ node.content_object.localSource.url }} alt="" /></div> 
+		    		{% endif %}
+		    		<button type="button" class="btn btn-comment articleCommentPosition" id="{{ node.slug }}CommentButton">{{ node.commentCount }}</button>
+		    		<button type="button" class="btn btn-comment articleAddCommentPosition" id="{{ node.slug }}CommentButtonAdd" title="Add a New Comment"><i class="icon-plus"></i></button>
+		    	</div>
+	    	{% elif node.isTypeTimelike and node.isPublished == True and not node.is_root_node %}
+	    		<div class='contentContainer {{ node.slug }}'> 	  
+		    		
+		    		{% if node.content_object.isLinkSource and node.isPublished == True and not node.is_root_node %}
+		    			 <div class="node{{ node.id }}video{{ node.content_object.id }} timelikeContainer" ></div>
+		    		{% elif node.content_object.isLocalSource and node.isPublished == True and not node.is_root_node %}
+		    			
+		    		{% endif %}
+		    		<button type="button" class="btn btn-comment articleCommentPosition" id="{{ node.slug }}CommentButton">{{ node.commentCount }}</button>
+		    		<button type="button" class="btn btn-comment articleAddCommentPosition" id="{{ node.slug }}CommentButtonAdd" title="Add a New Comment"><i class="icon-plus"></i></button>
+		    	</div>
+		    {% elif node.isTypeDataset and node.isPublished == True %}
+		    	<div class='contentContainer {{ node.slug }}'> 	  
+		    		<h3>Constants</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>		    					
+		    					{% for key, value in node.content_object.getGlobalDict.items %}
+		    						<th>{{ key }}</th>
+		    					{% endfor %}		    					
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				<tr>		    					
+		    					{% for key, value in node.content_object.getGlobalDict.items %}
+		    						<td>{{ value }}</td>
+		    					{% endfor %}
+		    				</tr>
+		    			</tbody>			
+		    		</table>
+		    		<h3>Data Set</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>
+		    					{% for key in node.content_object.getDatasetVariableNames %}		    						
+		    						<th>{{ key }}</th>		    						
+		    					{% endfor %}
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				{% for Dict in node.content_object.getDatasetList %}
+		    				<tr>		    							    					
+		    						{% for key, value in Dict.items %}
+		    						<td>{{ value }}</td>
+		    						{% endfor %}
+		    				</tr>
+		    				{% endfor %}
+		    			</tbody>	
+		    		</table>			
+		    		<button type="button" class="btn btn-comment articleCommentPosition" id="{{ node.slug }}CommentButton">{{ node.commentCount }}</button>
+		    		<button type="button" class="btn btn-comment articleAddCommentPosition" id="{{ node.slug }}CommentButtonAdd" title="Add a New Comment"><i class="icon-plus"></i></button>
+		    	</div>		
+	    	{% endif %}
+	    	 
+	
+    {% endrecursetree %}
+    {% endblock %}
+    {% block articleSideContent %}
+    {% recursetree nodes %}
+    		{% if node.mptt_level == 2 %}
+    			<div class="{{ node.slug }}CommentContainer">{% if not node.is_leaf_node %}{{ children }}{% endif %}	
+    			</div>
+     		{% elif node.isTypeNone and node.isComment == True and not node.is_root_node %}
+				<div class='commentContainer {{ node.slug }}'>
+					<div class='commentMeta'>
+						<h5>{{node.pubDate|date}}</h5>
+						<h5>{{node.title}}</h5>
+						{% if node.author %}
+						<h5>{{node.author.name}}</h5>
+						{% endif %}
+					</div>
+					
+						{% if not node.is_leaf_node %}
+							<div class='commentContent'>
+	        				{{ children }}
+	        				</div>
+	        			{% endif %}
+	        		
+	        	</div>
+	        			
+	    	{% elif node.isTypeParagraph and node.isComment == True %}
+	    		<div class='contentContainerParagragh {{ node.slug }}'>       
+	        	   <p>
+	        	   {{ node.content_object.text }}</p>
+	        	</div>
+	    	{% elif node.isTypeImage and node.isComment == True %}
+	
+		    		{% if node.content_object.isLinkSource %}
+		    			<div class='contentContainerImage {{ node.slug }}'><img src={{ node.content_object.linkSource }} alt="" /></div>
+		    		{% elif node.content_object.isLocalSource %}
+		    			<div class='contentContainerImage {{ node.slug }}'><img src={{ node.content_object.localSource.url }} alt="" /></div> 
+		    		{% endif %}
+		    	
+	    	{% elif node.isTypeTimelike and node.isComment == True%}
+	    		<div class='contentContainerTimelike {{ node.slug }}'> 	  
+		    		
+		    		{% if node.content_object.isLinkSource and node.isPublished == False and not node.is_root_node %}
+		    			 <div class="node{{ node.id }}video{{ node.content_object.id }} timelikeContainer"   ></div>
+		    		{% elif node.content_object.isLocalSource and node.isPublished == False and not node.is_root_node %}
+		    			
+		    		{% endif %}
+		    	</div>
+		    	{% elif node.isTypeDataset and node.isComment == True %}
+		    	<div class='contentContainer {{ node.slug }}'> 	  
+		    		<h3>Constants</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>		    					
+		    					{% for key, value in node.content_object.getGlobalDict.items %}
+		    						<th>{{ key }}</th>
+		    					{% endfor %}		    					
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				<tr>		    					
+		    					{% for key, value in node.content_object.getGlobalDict.items %}
+		    						<td>{{ value }}</td>
+		    					{% endfor %}
+		    				</tr>
+		    			</tbody>			
+		    		</table>
+		    		<h3>Data Set</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>
+		    					{% for key in node.content_object.getDatasetVariableNames %}		    						
+		    						<th>{{ key }}</th>		    						
+		    					{% endfor %}
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				{% for Dict in node.content_object.getDatasetList %}
+		    				<tr>		    							    					
+		    						{% for key, value in Dict.items %}
+		    						<td>{{ value }}</td>
+		    						{% endfor %}
+		    				</tr>
+		    				{% endfor %}
+		    			</tbody>	
+		    		</table>			
+		    	</div>
+		    {% else %}
+		    	{% if not node.is_leaf_node %}{{ children }}{% endif %} 			
+	    	{% endif %}
+    {% endrecursetree %}
+<div class="publishFormContainer">
+	
+	<div class="publishFormSubmission">
+		{% if user.is_authenticated %}
+	<div class="publishFormMenuContainer">
+		<div class="publishFormHelperMenu">
+			<button type="button" id="textContentButton" class="btn btn-text btn-publish-menu big" title="Add a new Paragraph">&para;</button>
+			<button type="button" id="imageContentButton" class="btn btn-picture btn-publish-menu" title="Add a new Image"><i class="icon-picture"></i></button>
+			<button type="button" id="videoContentButton" class="btn btn-timelike btn-publish-menu" title="Add a new Video"><i class="icon-film"></i></button>
+			<button type="button" id="dataContentButton" class="btn btn-data btn-publish-menu" title="Add a new Dataset"><i class="icon-bar-chart"></i></button>
+		</div>
+	</div>
+		<form id="publishForm" action={% url "submitComment" %} method="post" enctype="multipart/form-data">
+			{% csrf_token %}{{ publishForm.non_field.errors }}
+			<div class="titleSubmission">
+				{{ publishForm.publishFormTitle.errors }}
+				<div class="titleInputContainer">
+					{{ publishForm.publishFormTitle }}
+				</div>
+			</div>
+			<div class="tagSubmission">	
+				{{ publishForm.publishFormTag.errors }}
+				<div class="tagInputContainer">
+					<div class="input-prepend">
+						<span class="add-on"><i class="icon-tags"></i></span>
+						{{ publishForm.publishFormTag }}
+					</div>
+				</div>
+			</div>
+			<div class="sectionSubmission">				
+				<div class="emptyContentContainer">Click to Add Content Here</div>
+				<div class="hiddenFields">
+					<input type="hidden" class="class_numberOfContentSections" id="id_numberOfContentSections_0" name="numberOfContentSections_0" value=0>
+					
+					<input type="hidden" class="class_sectionPosition" name="sectionPosition" value=0>
+				</div>
+			</div>
+			<div class="hiddenFields">
+				<input id="input_numberOfSections" type="hidden" name="numberOfSections" value=1 >
+				<input type="hidden" class="class_sectionParent" name="sectionParent">
+				<input type="hidden" name="prevPage" value={{ request.get_full_path }}>
+			</div>
+			<button id="publishFormButton" type="submit" class="btn btn-primary">Submit</button>
+			<button type="button" id="publishFormClose" class="btn btn-default pull-right">Close</button>		
+		</form>
+		{% else %}
+		<p><a href={% url "auth_login" %}?next={{ request.get_full_path }}>Sign in</a> to leave a comment.</p>
+		{% endif %}			
+	</div>
+	
+</div>
+
+
+{% endblock %}

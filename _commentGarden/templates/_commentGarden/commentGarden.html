@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load mptt_tags %}
+{% load staticfiles %}
+
+{% block title %}
+ Comments
+{% endblock %}
+
+{% block head %}
+	{% include "_commentGarden/gardenHead.html" %}
+{% endblock %}
+
+{% block content %}
+	<div class="gardenPlot">
+{% recursetree comment_list %}
+     		{% if node.isTypeNone and node.isPublished == False and not node.is_root_node %}
+				{% if not node.get_previous_sibling %}<div class='commentFlowerContainer {{ node.slug }}'><div class="commentFlowerHead">THIS IS THE MAIN TITLE</div>{% endif %}
+					<div class='commentFlowerMeta'>
+						<h5>{{node.pubDate|date}} {{node.mptt_level}}</h5>
+						<h5>{{node.title}}</h5>
+						{% if node.author %}
+						<h5>{{node.author.name}}</h5>
+						{% endif %}
+					</div>
+					
+						{% if not node.is_leaf_node %}
+							<div class='commentFlowerContent'>
+	        				{{ children }}
+	        				</div>
+	        			{% endif %}
+	        		
+	        	{% if not node.get_next_sibling %}</div>{% endif %}		
+	    	{% elif node.isTypeParagraph and node.isPublished == False and not node.is_root_node %}
+	    		<div class='contentContainerParagragh {{ node.slug }}'>       
+	        	   <p>This is a Paragraph.
+	        	   {{ node.content_object.text }}</p>
+	        	</div>
+	    	{% elif node.isTypeImage and node.isPublished == False and not node.is_root_node %}
+	    			
+		    		<p>This is an Image.</p>
+		    		{% if node.content_object.isLinkSource and node.isPublished == False %}
+		    			<p>This is from a link.</p>
+		    		{% elif node.content_object.isLocalSource and node.isPublished == False %}
+		    			<p>This is local.</p> <div class='contentContainerImage {{ node.slug }}'><img src={{ node.content_object.localSource.url }} alt="" /></div> 
+		    		{% endif %}
+		    	
+	    	{% elif node.isTypeTimelike and node.isPublished == False and not node.is_root_node %}
+	    		<div class='contentContainerTimelike {{ node.slug }}'> 	  
+		    		<p>This is a Timelike.</p>
+		    		{% if not node.content_object.isLinkSource and node.isPublished == False and not node.is_root_node %}
+		    			<p>This is from a link.</p> <div class="node{{ node.id }}video{{ node.content_object.id }}"  style="width: 360px; height: 300px;" ></div>
+		    		{% elif node.content_object.isLocalSource and node.isPublished == False and not node.is_root_node %}
+		    			<p>This is local.</p>
+		    		{% endif %}
+		    	</div>
+		    {% else %}
+		    	{% if not node.is_leaf_node %}{{ children }}{% endif %} 			
+	    	{% endif %}
+    {% endrecursetree %}	
+    </div>
+
+{% endblock %}
+

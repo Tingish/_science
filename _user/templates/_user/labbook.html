@@ -1,0 +1,674 @@
+{% extends '_user/userBase.html' %}
+{% load mptt_tags %}
+{% load staticfiles %}
+
+{% block title %}
+{{ user.username }} | Labbook
+{% endblock %}
+
+{% block head %}
+<script src="{%	static 'popcorn/js/popcorn-complete.min.js' %}"></script>
+<script>
+$(document).ready(function () {
+	$("#updateForm").hide();
+	{% for StructureNode in labbook_list %}
+		{% if StructureNode.isTypeTimelike %}
+			var timenode{{ StructureNode.id }}video{{ StructureNode.content_object.id }} = Popcorn.youtube(
+	           ".node{{ StructureNode.id }}video{{ StructureNode.content_object.id }}",
+	           "{{ StructureNode.content_object.linkSource }}" );
+		{% endif %}
+			
+	{% endfor %}
+	
+	function prevTitleTagSetter(targetNode){
+		{% for StructureNode in labbook_list %}
+		var nodeTitle{{ StructureNode.id }} = "{{ StructureNode.title }}";
+		var nodeTag{{ StructureNode.id }} = "" {% if StructureNode.tag_set.all %}{% for tag in StructureNode.tag_set.all %} + " #{{ tag.name }}" {% endfor %}{% endif %};
+		if (targetNode.attr("data-ParentID") == "{{ StructureNode.id }}"){
+			$(".parentID").val("{{ StructureNode.id }}");
+			$("#id_updateFormTitle").val(nodeTitle{{ StructureNode.id }});
+			$("#id_updateFormTag").val(nodeTag{{ StructureNode.id }});
+		}
+		{% endfor %}
+		
+	}
+	$("#updateFormClose").click(function(){
+		$("#updateForm").hide();
+	});
+	
+	$(".editButton").click(function(){
+		var $this = $(this);
+		var $targetParent = $this.parents(".postMeta");
+		$targetParent.append($("#updateForm"));
+		prevTitleTagSetter($targetParent);
+		$("#updateForm").show();
+	});
+		
+		$(".textFormView").hide();
+		$(".imageFormView").hide();
+		$(".timelikeFormView").hide();
+		$(".dataFormView").hide();
+	
+		$("#text-submit").click(function(){
+			$(".textFormView").show();
+			$(".submissionMenu").hide();
+		});
+		$("#image-submit").click(function(){
+			$(".imageFormView").show();
+			$(".submissionMenu").hide();
+		});
+		$("#timelike-submit").click(function(){
+			$(".timelikeFormView").show();
+			$(".submissionMenu").hide();
+		});
+		$("#data-submit").click(function(){
+			$(".dataFormView").show();
+			$(".submissionMenu").hide();
+			var newWidth = Math.max(412, dataSetColumnsCount * 140);
+			$(".submissionBulk").width( newWidth );
+		});
+		$("#textFormClose").click(function(e){
+			e.preventDefault();
+			$(".submissionMenu").show();
+			$(".textFormView").hide();
+		});
+		$("#imageFormClose").click(function(e){
+			e.preventDefault();
+			$(".submissionMenu").show();
+			$(".imageFormView").hide();
+		});
+		$("#timelikeFormClose").click(function(e){
+			e.preventDefault();
+			$(".submissionMenu").show();
+			$(".timelikeFormView").hide();
+		});
+		$("#dataFormClose").click(function(e){
+			e.preventDefault();
+			$(".submissionMenu").show();
+			$(".dataFormView").hide();
+			$(".submissionBulk").width(414);
+		});
+		
+		{% if textForm.is_bound %}
+		$("#text-submit").click();
+		{% endif %}
+		{% if imageForm.is_bound %}
+		$("#image-submit").click();
+		{% endif %}
+		{% if timelikeForm.is_bound %}
+		$("#timelike-submit").click();
+		{% endif %}
+		{% if dataForm.is_bound %}
+		$("#data-submit").click();
+		{% endif %}
+		// The following code is for the data set form.
+		//Here are the variables relevant to the form.
+		var globalVariableCount = 1;
+		var dataSetRowsCount = 1;
+		var dataSetColumnsCount =1;
+		 
+		 //On key up this checks if the global variable form is filled out.  If it is it adds another line to the form so that the user can fill it out.
+		 //Additionally it sets the name of the value input to be the name of the variable set in the name field.
+		 //The globalVariableNameInputBox is the selector that allows us to on submit rename all the name fields to name so that they can be parsed in the backend.
+		$(".globalVariableSubmission").on("keyup", ".globalVariableInputBox", function(){
+			var $typingIn;
+			$typingIn = $(this);
+			var isEveryBoxFilled;
+			isEveryBoxFilled = true;
+			$("#" + $typingIn.attr("name")).attr("name", $typingIn.val());
+			$(".globalVariableInputBox").each(function(){
+				if ($(this).val().length == 0){
+					isEveryBoxFilled = false;
+				}
+				
+			});
+			if (isEveryBoxFilled)
+				{
+					$(".globalVariableNameInput").append('<input id="id_global_variable_name_' + globalVariableCount + '" class="globalVariableInputBox globalVariableNameInputBox globalVariableLevel_'+ globalVariableCount + '" type="text" name="id_global_variable_value_'+ globalVariableCount +'">');
+					$(".globalVariableValueInput").append('<input id="id_global_variable_value_' + globalVariableCount + '" class="globalVariableInputBox globalVariableLevel_'+globalVariableCount +'" type="text" name="value">');
+					globalVariableCount++;
+				}
+			
+		});
+		
+		
+		//This adds a new variable to the dataset if there is some text in the addNewVariable Input.
+		$("#addNewVariable").blur(function(){
+			 var $this = $(this);
+			 var $thisval = $this.val().replace(/\s+/g, '_');
+			if($this.val().length != 0){
+				if($("#"+"id_dataSet_variable_name_"+$thisval).length)
+				{
+					alert("A variable with the same name already exists!");
+				}
+				else
+				{
+				dataSetColumnsCount++;
+				$(".dataSetAddNewVariableInput").before('<div class="dataSetColumn dataSet_className_'+$thisval+  '"><input id="id_dataSet_variable_name_' + $thisval + '" class="dataSet_title_className_'+$thisval + ' datasetTitleInputBox datasetRowLevel_0" name="'+$this.val()  + '"></div>');
+				$(".dataSetSubmissionInput").append('<div class="dataSetColumn dataSet_className_'+$thisval+  ' dataSet_point_className_'+$thisval+  '"><input id="id_dataSet_variable_point_' + $thisval + '_0" class="dataSet_pointInput_className_'+$thisval + ' datasetPointInputBox datasetRowLevel_0" name="dataSetName_'+$this.val()  + '"></div>');
+				for(var i=1; i < dataSetRowsCount; i++)
+				{
+					$('.dataSet_point_className_'+$thisval).append('<input id="id_dataSet_variable_point_' + $thisval + '_'+ dataSetRowsCount +'" class="dataSet_pointInput_className_'+$thisval + ' datasetPointInputBox datasetRowLevel_' +i+ '" name="dataSetName_'+$this.val()  + '">');
+				}
+				$("#"+"id_dataSet_variable_name_"+$thisval).val($this.val());
+				var newWidth = Math.max(414, dataSetColumnsCount * 140);
+				var newTagWidth = Math.max(393-30, (dataSetColumnsCount *140 )- 53);
+				$("#id_dataFormTag").width(newTagWidth);
+				$(".submissionBulk").width( newWidth );
+				$("#addNewVariable").val("");
+				$("#addNewVariable").focus();	
+				}
+				
+			}
+			
+			
+		});
+		
+		//This allows submission into inputs using enter instead of tab or clicking away.
+		$(".dataSetSubmissionTitle").on("keyup", "#addNewVariable, .datasetTitleInputBox",function(e){
+			if (e.which == 13)
+			{
+				$(this).blur();
+			}
+		});
+		
+		//This prevents the overall form submission.
+		$(".dataSetSubmissionTitle, .globalVariableInput, .dataSetSubmissionInput").on("keypress", function(e){
+			return (e.which != 13);
+		});
+		
+		
+		//The following sets up the desired tabbing behaviour.
+		$(".globalVariableInput").on('keyup', ".globalVariableInputBox", function(e){
+			var tempPosition;
+			if (e.which == 13)
+			{	
+				
+				var $this = $(this);
+				
+				if ($this.parent().hasClass("globalVariableNameInput"))
+				{
+					tempPosition = $this.index() + 1;
+					$this.blur();
+					$(".globalVariableValueInput .globalVariableInputBox:nth-child("+ tempPosition +")").focus();
+					
+					
+				}
+				else 
+				{
+					tempPosition = $this.index()+2;
+					$(".globalVariableNameInput .globalVariableInputBox:nth-child("+ tempPosition +")").focus();
+					
+				}
+			}
+		});
+		
+		$(".globalVariableInput").on('keydown', ".globalVariableInputBox", function(e){
+			var tempPosition;
+			if (e.which == 9)
+			{	
+				
+				
+				var $this = $(this);
+				
+				if ($this.parent().hasClass("globalVariableNameInput"))				
+				{
+					e.preventDefault();
+					tempPosition = $this.index() + 1;
+					$this.blur();
+					$(".globalVariableValueInput .globalVariableInputBox:nth-child("+ tempPosition +")").focus();
+					
+					
+				}
+				else if($this.is(".globalVariableValueInput .globalVariableInputBox:last-child")){
+					
+				}
+				else 
+				{
+					e.preventDefault();
+					tempPosition = $this.index()+2;
+					$(".globalVariableNameInput .globalVariableInputBox:nth-child("+ tempPosition +")").focus();
+					
+				}
+			}
+		});
+		
+		$(".dataSetSubmissionInput").on('keydown', '.datasetPointInputBox', function(e){			
+			var tempRow;
+			var tempColumn;
+			if (e.which == 9)
+			{
+				var $this =$(this);
+				if ($this.is(".dataSetColumn:last-child .datasetPointInputBox:last-child")){
+					
+				}
+				else if($this.is(".dataSetColumn:last-child .datasetPointInputBox")){
+					
+					e.preventDefault();
+					tempRow = $this.index()+2;
+					tempColumn = 1;
+					$this.blur();
+					$(".dataSetSubmissionInput .dataSetColumn:nth-child("+tempColumn +") .datasetPointInputBox:nth-child("+ tempRow +")").focus();
+				}
+				else {
+					
+					e.preventDefault();
+					tempRow = $this.index()+1;
+					tempColumn = $this.parent().index() + 2;
+					$this.blur();
+					$(".dataSetSubmissionInput .dataSetColumn:nth-child("+tempColumn +") .datasetPointInputBox:nth-child("+ tempRow +")").focus();
+				}
+			}
+		});
+		
+		$(".dataSetSubmissionInput").on('keyup', '.datasetPointInputBox', function(e){			
+
+			if (e.which == 13)
+			{
+				var $this =$(this);
+				if($this.is(".dataSetColumn:last-child .datasetPointInputBox:last-child")){
+					$(".dataSubmission").next().find('input').focus();
+				}
+				else {
+				var newe = $.Event("keydown", { which: 9});
+				$(this).trigger(newe);
+				}
+			}
+		});
+			
+		//This checks to see if every box is filled to add more lines to the dataset submission form.	
+		$(".dataSetSubmissionInput").on("keyup", function(){
+			var isEveryBoxFilled;
+			isEveryBoxFilled = true;
+			$(".datasetPointInputBox").each(function(){
+				if ($(this).val().length == 0){
+					isEveryBoxFilled = false;
+				}
+				
+			});
+			if (isEveryBoxFilled)
+				{
+					$(".datasetTitleInputBox").each(function(){
+						var $this = $(this);
+						var $thisval = $this.val().replace(/\s+/g, '_');
+						$('.dataSet_point_className_'+$thisval).append('<input id="id_dataSet_variable_point_' + $thisval + '_'+ dataSetRowsCount +'" class="dataSet_pointInput_className_'+$thisval + ' datasetPointInputBox datasetRowLevel_'+dataSetRowsCount+'" name="dataSetName_'+$this.val()  + '">');
+					});
+					dataSetRowsCount++;
+				}
+			
+		});
+		
+		//This checks to see if the name has been deleted or edited.
+		$(".dataSetSubmissionTitle").on("blur", ".datasetTitleInputBox",function(){
+			var $this = $(this)
+			var $thisname = $(this).attr("name").replace(/\s+/g, '_');
+			var j=0;
+			if ($this.val().length == 0)
+			{
+				var confirmDelete = confirm("Are you sure you want to remove this variable?")
+				if (confirmDelete==true){
+					$('.dataSet_className_'+$thisname).remove();
+					dataSetColumnsCount--;
+					var newWidth = Math.max(414, dataSetColumnsCount * 140);
+					var newTagWidth = Math.max(393-30, (dataSetColumnsCount *140 )- 53);
+					$("#id_dataFormTag").width(newTagWidth);
+					$(".submissionBulk").width( newWidth );
+				}
+				else
+				{
+					
+				}
+			}
+			else
+			{	
+				var $thisNewName = $this.val();
+				var $thisNewClassName = $thisNewName.replace(/\s+/g, '_');
+				if ( $thisname != $thisNewClassName )
+				{
+					$('.dataSet_className_'+$thisname).addClass('dataSet_className_'+$thisNewClassName).removeClass('dataSet_className_'+$thisname);
+					$('.dataSet_pointInput_className_'+$thisname).each(function(){
+						$(this).attr("id",'id_dataSet_variable_point_'+  $thisNewClassName + "_" + j).addClass('dataSet_pointInput_className_'+$thisNewClassName).removeClass('dataSet_pointInput_className_'+$thisname).attr("name", "dataSetName_"+$thisNewName );
+						j++;
+					});
+					$('.dataSet_point_className_'+$thisname).addClass('dataSet_point_className_'+$thisNewClassName).removeClass('dataSet_point_className_'+$thisname);
+					$this.attr("id", 'id_dataSet_variable_name_' + $thisNewClassName).addClass('dataSet_title_className_'+$thisNewClassName).removeClass('dataSet_title_className_'+$thisname).attr("name", $thisNewName );
+				}
+			}
+		});
+		
+		//This is to validate submission for the data set form.
+		$("#dataForm").on('submit', function(e){
+			//First we check that all the lines except the last are completed.
+			
+			
+			var isComplete = true;
+			if ($("#id_dataFormTitle").val().length == 0){
+				isComplete = false;
+			}
+			for (var x=0; x < globalVariableCount - 1;x++)
+			{
+				$(".globalVariableLevel_"+x).each(function(){
+					if($(this).val().length == 0){
+						isComplete = false;
+					}
+					
+				});
+
+			}
+			
+
+			for(var y=0; y < dataSetRowsCount -1; y++ )
+			{
+				$(".datasetRowLevel_"+y).each(function(){
+					if($(this).val().length == 0){
+						isComplete = false;
+					}
+				});
+
+			}
+				
+			
+			if(!(isComplete)){
+					
+					alert("The form is not complete.");
+					return false;	
+				}
+				else
+				{
+					
+					$(".globalVariableNameInputBox").attr("name", "globalVariableName");
+					$(".datasetTitleInputBox").attr("name", "datasetVariableName");
+					return true;				
+				}
+		});
+		
+				
+	});
+</script>
+{% endblock %}
+
+{% block content %}
+	<div class="submission">
+		<div class="submitLabel">
+			<h3>Submit:</h3>
+		</div>	
+		<div class="submissionBulk">
+			<div class="submissionMenu">	
+				<button type="button" class="btn btn-text" id="text-submit">Text</button>
+				<button type="button" class="btn btn-picture" id="image-submit">Photo</button>
+				<button type="button" class="btn btn-timelike" id="timelike-submit">Video</button>
+				<button type="button" class="btn btn-data"id="data-submit">Data</button>
+			</div>				
+			<div class="submissionForms">
+				<div class="textFormView">
+					<form id="textForm" action={% if subject_url %}{% url 'userLabbookTextForm' subject_url %}{% else %}{% url 'userLabbookTextForm' %}{% endif %} method="post">
+						{% csrf_token %}{{ textForm.non_field.errors }}
+						<div class="titleSubmission">
+							{{ textForm.textFormTitle.errors }}
+							<div class="titleInputContainer">
+								{{ textForm.textFormTitle }}
+							</div>
+						</div>
+						<div class="textSubmission">
+							{{ textForm.textFormText.errors }}
+							<div class="textInputContainer">
+								{{ textForm.textFormText }}
+							</div>
+						</div>
+						<div class="tagSubmission">
+							{{ textForm.textFormTag.errors }}
+							<div class="tagInputContainer">
+								<div class="input-prepend">
+									<span class="add-on"><i class="icon-tags"></i></span>
+									{{ textForm.textFormTag }}
+								</div>
+							</div>
+						</div>
+						<div class="hiddenFields">
+							<input type="hidden" name="formType" value="textForm">
+							<input type="hidden" name="isLabnote" value=true>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+						<button id="textFormClose" class="btn btn-default pull-right">Close</button>
+					</form>
+					
+				</div>
+				<div class="imageFormView">
+					<form id="imageForm" action={% if subject_url %}{% url 'userLabbookImageForm' subject_url %}{% else %}{% url 'userLabbookImageForm' %}{% endif %} method="post" enctype="multipart/form-data">
+						{% csrf_token %}{{ imageForm.non_field.errors }}
+						<div class="titleSubmission">
+							{{ imageForm.imageFormTitle.errors }}
+							<div class="titleInputContainer">
+								{{ imageForm.imageFormTitle }}
+							</div>
+						</div>
+						<div class="imageSubmission">
+							<h3>Submit Image</h3>
+							<div class="localSourceSubmission">
+								{{ imageForm.imageFormLocalSource.errors }}
+								<div class="localSourceInputContainer">
+									{{ imageForm.imageFormLocalSource }}
+								</div>
+							</div>
+							<h3>Or</h3>
+							<div class="linkSourceSubmission">
+								{{ imageForm.imageFormLinkSource.errors }}
+								<div class="linkSourceInputContainer">
+									{{ imageForm.imageFormLinkSource }}
+								</div>
+							</div>
+						</div>	
+						<div class="tagSubmission">
+							{{ imageForm.imageFormTag.errors }}
+							<div class="tagInputContainer">
+								<div class="input-prepend">
+									<span class="add-on"><i class="icon-tags"></i></span>
+									{{ imageForm.imageFormTag }}
+								</div>
+							</div>
+						</div>
+						<div class="hiddenFields">
+							<input type="hidden" name="formType" value="imageForm">
+							<input type="hidden" name="isLabnote" value=true>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+						<button id="imageFormClose" class="btn btn-default pull-right">Close</button>							
+					</form>
+				</div>
+				<div class="timelikeFormView">
+					<form id="timelikeForm" action={% if subject_url %}{% url 'userLabbookTimelikeForm' subject_url %}{% else %}{% url 'userLabbookTimelikeForm' %}{% endif %} method="post" enctype="multipart/form-data">
+						{% csrf_token %}{{ timelikeForm.non_field.errors }}
+						<div class="titleSubmission">
+							{{ timelikeForm.timelikeFormTitle.errors }}
+							<div class="titleInputContainer">
+								{{ timelikeForm.timelikeFormTitle }}
+							</div>
+						</div>
+						<div class="timelikeSubmission">
+							<h3>Submit Video</h3>
+							<div class="localSourceSubmission">
+								{{ timelikeForm.timelikeFormLocalSource.errors }}
+								<div class="localSourceInputContainer">
+									{{ timelikeForm.timelikeFormLocalSource }}
+								</div>
+							</div>
+							<h3>Or</h3>
+							<div class="linkSourceSubmission">
+								{{ timelikeForm.timelikeFormLinkSource.errors }}
+								<div class="linkSourceInputContainer">
+									{{ timelikeForm.timelikeFormLinkSource }}
+								</div>
+							</div>
+						</div>	
+						<div class="tagSubmission">	
+							{{ timelikeForm.timelikeFormTag.errors }}
+							<div class="tagInputContainer">
+								<div class="input-prepend">
+									<span class="add-on"><i class="icon-tags"></i></span>
+									{{ timelikeForm.timelikeFormTag }}
+								</div>
+							</div>
+						</div>
+						<div class="hiddenFields">
+							<input type="hidden" name="formType" value="timelikeForm">
+							<input type="hidden" name="isLabnote" value=true>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+						<button id="timelikeFormClose" class="btn btn-default pull-right">Close</button>							
+					</form>
+				</div>
+				<div class="dataFormView">
+					<form id="dataForm" action={% if subject_url %}{% url 'userLabbookDataForm' subject_url %}{% else %}{% url 'userLabbookDataForm' %}{% endif %} method="post">
+						{% csrf_token %}{{ dataForm.non_field.errors }}
+						<div class="titleSubmission">
+							{{ dataForm.dataFormTitle.errors }}
+							<div class="titleInputContainer">
+								{{ dataForm.dataFormTitle }}
+							</div>
+						</div>
+						<div class="dataSubmission">
+							<div class="globalVariableSubmission">
+								<div class="globalVariableTitle">
+									<h3>Constants:</h3>
+									<div class="globalVariableName">
+										<h4>Name:</h4>
+									</div>
+									<div class="globalVariableValue">
+										<h4>Value:</h4>
+									</div>
+								</div>
+								<div class="globalVariableInput">
+									<div class="globalVariableNameInput">
+										<input id="id_global_variable_name_0" class="globalVariableInputBox globalVariableNameInputBox globalVariableLevel_0" type="text" name="id_global_variable_value_0">										
+									</div>
+									<div class="globalVariableValueInput">
+										<input id="id_global_variable_value_0" class="globalVariableInputBox globalVariableLevel_0" type="text" name="value">										
+									</div>	
+								</div>		
+							</div>
+							<h3>Data Set:</h3>
+							<div class="dataSetSubmission">
+								<div class="dataSetSubmissionTitle">
+									<div class="dataSetAddNewVariableInput">
+										<input id="addNewVariable"  type="text" name="addNewVariable" placeholder="Add New Variable">
+									</div>
+								</div>
+								<div class="dataSetSubmissionInput">
+								</div>
+							</div>		
+						</div>
+						<div class="tagSubmission">
+							{{ dataForm.dataFormTag.errors }}
+							<div class="tagInputContainer">
+								<div class="input-prepend">
+									<span class="add-on"><i class="icon-tags"></i></span>
+									{{ dataForm.dataFormTag }}
+								</div>
+							</div>
+						</div>
+						<div class="hiddenFields">
+							<input type="hidden" name="formType" value="dataForm">
+							<input type="hidden" name="isLabnote" value=true>
+						</div>
+						<button id="dataFormButton" type="submit" class="btn btn-primary">Submit</button>
+						<button id="dataFormClose" class="btn btn-default pull-right">Close</button>	
+					</form>	
+				</div>
+			</div>
+		</div>
+	</div>
+	<form id="updateForm" action={% url 'userLabbookUpdateForm' %} method="post" enctype="multipart/form-data">
+			{% csrf_token %}{{ updateForm.non_field.errors }}
+			<div class="titleSubmission">
+				{{ updateForm.updateFormTitle.errors }}
+				<div class="titleInputContainer">
+					{{ updateForm.updateFormTitle }}
+				</div>
+			</div>
+			<div class="tagSubmission">	
+				{{ updateForm.updateFormTag.errors }}
+				<div class="tagInputContainer">
+					<div class="input-prepend">
+						<span class="add-on"><i class="icon-tags"></i></span>
+						{{ updateForm.updateFormTag }}
+					</div>
+				</div>
+			</div>
+			<div class="hiddenFields">
+				<input class="parentID" name="parentID" type="hidden">
+				
+			</div>
+			<button id="updateFormButton" type="submit" class="btn btn-primary">Submit</button>
+			<button id="updateFormClose" type="button" class="btn btn-default pull-right">Close</button>	
+	</form>		
+	{% for StructureNode in labbook_list %}
+		
+		<div class="postContainer">
+			<div class="postMeta" data-ParentID="{{ StructureNode.id }}">
+				{% ifchanged StructureNode.pubDate|date %} <h5>{{ StructureNode.pubDate|date }}</h5> {% endifchanged %}
+				<h5>{{ StructureNode.pubDate|time }}</h5>
+				<p>{{ StructureNode.title }}</p>{% if StructureNode.tag_set.all %}<p>{% for tag in StructureNode.tag_set.all %}<a href={% url 'userLabbookTag' tag.name %}>#{{ tag.name }} </a>{% endfor %}</p>{% endif %}
+				<button class="btn btn-default heroUnitCommentButtonPosition editButton" title="Edit Title and Tags"><i class="icon-pencil"></i></button>	
+			</div>
+			
+			<div class="postContent">
+				{% if StructureNode.isTypeParagraph %}
+				<p>{{ StructureNode.content_object.text }}</p>
+				{% elif StructureNode.isTypeImage %}
+					{% if StructureNode.content_object.isLinkSource %}
+		    			<p>This is from a link.</p><div class='contentContainerImage {{ StructureNode.slug }}'><img src={{ StructureNode.content_object.linkSource }} alt="" /></div>
+		    		{% elif StructureNode.content_object.isLocalSource  %}
+		    			<p>This is local.</p> <div class='contentContainerImage {{ StructureNode.slug }}'><img src={{ StructureNode.content_object.localSource.url }} alt="" /></div> 
+		    		{% endif %}
+				{% elif StructureNode.isTypeTimelike %}					 
+		    		<p>This is a Timelike.</p>
+		    		{% if StructureNode.content_object.isLinkSource%}
+		    			<p>This is from a link.</p> <div class="node{{ StructureNode.id }}video{{ StructureNode.content_object.id }} timelikeContainer" ></div>
+		    		{% elif StructureNode.content_object.isLocalSource %}
+		    			<p>This is local.</p>
+		    		{% endif %}	
+		    	{% elif StructureNode.isTypeDataset %}
+		    		<h3>Constants</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>		    					
+		    					{% for key, value in StructureNode.content_object.getGlobalDict.items %}
+		    						<th>{{ key }}</th>
+		    					{% endfor %}		    					
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				<tr>		    					
+		    					{% for key, value in StructureNode.content_object.getGlobalDict.items %}
+		    						<td>{{ value }}</td>
+		    					{% endfor %}
+		    				</tr>
+		    			</tbody>			
+		    		</table>
+		    		<h3>Data Set</h3>
+		    		<table class="table">
+		    			<thead>
+		    				<tr>
+		    					{% for key in StructureNode.content_object.getDatasetVariableNames %}		    						
+		    						<th>{{ key }}</th>		    						
+		    					{% endfor %}
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				{% for Dict in StructureNode.content_object.getDatasetList %}
+		    				<tr>		    							    					
+		    						{% for key, value in Dict.items %}
+		    						<td>{{ value }}</td>
+		    						{% endfor %}
+		    				</tr>
+		    				{% endfor %}
+		    			</tbody>	
+		    		</table>			
+				{% endif %}
+			</div>	
+		</div>	
+	{% endfor %}
+{% endblock %}
+
+
+
